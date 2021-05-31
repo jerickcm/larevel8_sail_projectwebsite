@@ -13,8 +13,17 @@
 ## Commnds
 
 ```bash
-
+     copy .env.dev .env
     # Use command to run docker sail
     APP_PORT=3001 vendor/bin/sail up
+    
+```
+## Fix docker containers 
+
+```bash
+
+    # Use command to run docker sail
+    APP_PORT=3001 vendor/bin/sail down -volumes
+    vendor/bin/sail up -build
     
 ```

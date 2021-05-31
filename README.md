@@ -27,3 +27,12 @@
     vendor/bin/sail up -build
     
 ```
+
+## add image storage 
+
+```bash
+
+    # Use command to run docker sail
+    php artisan storage:link
+    
+```

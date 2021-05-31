@@ -25,7 +25,6 @@ class PostController extends Controller
             $request->user()
             // 'errors' => $validator->errors(),
         ], 200);
-
     }
 
     /**
@@ -34,11 +33,11 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     // public function create()
-    public function create( $id)
+    public function create($id)
     {
-        $user= User::findOrFail($id);
+        $user = User::findOrFail($id);
 
-        $user->posts()->save(new Post(['title'=>'test','content'=>'test']));
+        $user->posts()->save(new Post(['title' => 'test', 'content' => 'test']));
     }
 
     /**
@@ -62,9 +61,9 @@ class PostController extends Controller
     {
         $user = User::findOrFail($id);
 
-        foreach($user->posts as $post){
+        foreach ($user->posts as $post) {
 
-            echo $post->title ." " .$post->content . '<br/>';
+            echo $post->title . " " . $post->content . '<br/>';
         }
     }
 
@@ -86,7 +85,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $user_id,$post_id)
+    public function update(Request $request, $user_id, $post_id)
     {
 
         // var_dump($user_id);
@@ -95,7 +94,7 @@ class PostController extends Controller
         // die();
         $user = User::findOrFail($user_id);
 
-        $user->posts()->whereId($post_id)->update(['title'=>'my title','content'=>'my content']);
+        $user->posts()->whereId($post_id)->update(['title' => 'my title', 'content' => 'my content']);
     }
 
     /**
@@ -104,7 +103,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($user_id,$post_id)
+    public function destroy($user_id, $post_id)
     {
 
         // $datum  = FaqFile::find($id);
@@ -113,5 +112,53 @@ class PostController extends Controller
         $user = User::findOrFail($user_id);
 
         $user->posts()->whereId($post_id)->delete();
+    }
+
+    public function ckeditor(Request $request)
+    {
+
+
+        $filenameWithExt = $request->file('upload')->getClientOriginalName();
+        //      // Get just filename
+        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+
+        //      // Get just ext
+        $extension = $request->file('upload')->getClientOriginalExtension();
+
+        //      // filename to store
+        $FileNameToStore = $filename . '_' . time() . "." . $extension;
+
+        //      // Upload Image
+        $path = $request->file('upload')->storeAs('public/upload_posts', $FileNameToStore);
+        //         // return  $response = \Response::json( $path, 200);
+
+        $is_upload = 1;
+
+        $data["domain"] = $_SERVER['SERVER_NAME'];
+        $FileNameToStore = 'storage/upload_posts/' . $FileNameToStore;
+        // switch ($data["domain"]) {
+        //      case 'deloitte-backend.local.nmgdev.com':
+        //           $FileNameToStore = 'storage/upload_menu/'.$FileNameToStore;
+        //         break;
+        //      default:
+        //           $FileNameToStore  = 'public/storage/upload_menu/'.$FileNameToStore;
+
+        // }
+
+        $mydata['success']  = 1;
+        $mydata["ret"] =  $filenameWithExt;
+        $mydata["data"] = $request->upload;
+        switch ($data["domain"]) {
+            case 'bback.api.test':
+                $mydata["url"] =  url($FileNameToStore);
+
+                break;
+            default:
+                $mydata["url"] =  secure_url($FileNameToStore);
+        }
+        // $mydata["url"]=  secure_url($FileNameToStore );
+
+        return  $response = \Response::json($mydata, 200);
+
     }
 }

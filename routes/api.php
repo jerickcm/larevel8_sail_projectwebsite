@@ -64,3 +64,4 @@ Route::post('/post', function (Request $request) {
 
 Route::post('/create-post', [PostController::class, 'create']);
 
+Route::post('/ckeditor', [PostController::class, 'ckeditor']);

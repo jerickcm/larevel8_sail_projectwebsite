@@ -15,12 +15,12 @@ class Post extends Model
     protected $table = "posts";
     public $timestamps = true;
     protected $fillable = [
-        'title', 'content', 'user_id', 'name'
+        'title', 'content', 'user_id', 'name','slug','video','image'
     ];
-
 
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
     }
+
 }

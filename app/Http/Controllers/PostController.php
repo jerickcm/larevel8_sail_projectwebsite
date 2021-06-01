@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -32,12 +33,34 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function create()
-    public function create($id)
-    {
-        $user = User::findOrFail($id);
 
-        $user->posts()->save(new Post(['title' => 'test', 'content' => 'test']));
+    public function create(Request $request)
+    {
+        $user= User::findOrFail($request->user()->id);
+
+        $newpost = new Post(
+                        [
+                            'title'=> $request->input('title'),
+                            'content'=> $request->input('content'),
+                            'slug'=> Str::slug($request->input('title'), '-')
+                        ]
+                    );
+
+        $user->posts()->save($newpost);
+
+        $time_start = microtime(true);
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'success' => true,
+            '_elapsed_time' => $timeend,
+            'user'=> $request->user(),
+            'user_id' => $request->user()->id,
+            'data'=>$request->input('name')
+
+        ], 200);
+
     }
 
     /**
@@ -57,6 +80,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
         $user = User::findOrFail($id);
@@ -114,51 +138,37 @@ class PostController extends Controller
         $user->posts()->whereId($post_id)->delete();
     }
 
-    public function ckeditor(Request $request)
-    {
 
+    public function ckeditor(Request $request){
+
+        $time_start = microtime(true);
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'success' => true,
+            '_elapsed_time' => $timeend,
+            'user'=> $request->user(),
+            // 'user_id' => $request->user()->id,
+            // 'data'=>$request->input('name')
+        ], 200);
+
+        // return  $response = \Response::json($mydata, 200);
 
         $filenameWithExt = $request->file('upload')->getClientOriginalName();
-        //      // Get just filename
         $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-
-        //      // Get just ext
         $extension = $request->file('upload')->getClientOriginalExtension();
-
-        //      // filename to store
-        $FileNameToStore = $filename . '_' . time() . "." . $extension;
-
-        //      // Upload Image
-        $path = $request->file('upload')->storeAs('public/upload_posts', $FileNameToStore);
-        //         // return  $response = \Response::json( $path, 200);
-
-        $is_upload = 1;
-
+        $FileNameToStore = $filename.'_'.time().".".$extension;
+        $path = $request->file('upload')->storeAs('public/upload_menu',$FileNameToStore);
         $data["domain"] = $_SERVER['SERVER_NAME'];
-        $FileNameToStore = 'storage/upload_posts/' . $FileNameToStore;
-        // switch ($data["domain"]) {
-        //      case 'deloitte-backend.local.nmgdev.com':
-        //           $FileNameToStore = 'storage/upload_menu/'.$FileNameToStore;
-        //         break;
-        //      default:
-        //           $FileNameToStore  = 'public/storage/upload_menu/'.$FileNameToStore;
-
-        // }
-
-        $mydata['success']  = 1;
+        $FileNameToStore = 'storage/upload_post/'.$FileNameToStore;
+        $mydata['success']  = 1 ;
         $mydata["ret"] =  $filenameWithExt;
         $mydata["data"] = $request->upload;
-        switch ($data["domain"]) {
-            case 'bback.api.test':
-                $mydata["url"] =  url($FileNameToStore);
-
-                break;
-            default:
-                $mydata["url"] =  secure_url($FileNameToStore);
-        }
-        // $mydata["url"]=  secure_url($FileNameToStore );
+        $mydata["url"] =  url($FileNameToStore);
 
         return  $response = \Response::json($mydata, 200);
 
     }
+
 }

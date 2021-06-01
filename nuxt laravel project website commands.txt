@@ -132,3 +132,8 @@ php sail artisan make:seeder TaggableTableSeeder
 php sail artisan make:model Taggable
 
 php sail artisan db:seed --class=TaggableTableSeeder 
+
+docker exec -it nuxt_client_nuxt-app
+
+
+php sail artisan make:migration add_slug_imagevideo_posts_table --create=role_user

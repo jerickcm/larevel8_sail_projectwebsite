@@ -70,3 +70,17 @@ Route::get('many2many/video_id/{id}/tag/{tag_id}/update',  [TagVideoPostControll
 
 Route::get('many2many/post_id/{id}/tag/{tag_id}/delete',  [TagVideoPostController::class, 'destroy_tagpost']);
 Route::get('many2many/video_id/{id}/tag/{tag_id}/delete',  [TagVideoPostController::class, 'destroy_tagvideo']);
+
+
+Route::post('/ckeditor', function () {
+    return response()->json([
+        'success' => true,
+
+    ], 200);
+});
+Route::get('/ckeditor', function () {
+    return response()->json([
+        'success' => true,
+
+    ], 200);
+});

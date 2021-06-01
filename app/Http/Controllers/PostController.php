@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -34,11 +35,37 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     // public function create()
-    public function create( $id)
+    // public function create( $id)
+    // {
+    //     $user= User::findOrFail($id);
+    //     $user->posts()->save(new Post(['title'=>'test','content'=>'test']));
+    // }
+    public function create(Request $request)
     {
-        $user= User::findOrFail($id);
+        $user= User::findOrFail($request->user()->id);
 
-        $user->posts()->save(new Post(['title'=>'test','content'=>'test']));
+        $newpost = new Post(
+                        [
+                            'title'=> $request->input('title'),
+                            'content'=> $request->input('content'),
+                            'slug'=> Str::slug($request->input('title'), '-')
+                        ]
+                    );
+
+        $user->posts()->save($newpost);
+
+        $time_start = microtime(true);
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'success' => true,
+            '_elapsed_time' => $timeend,
+            'user'=> $request->user(),
+            'user_id' => $request->user()->id,
+            'data'=>$request->input('name')
+
+        ], 200);
     }
 
     /**
@@ -58,6 +85,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
         $user = User::findOrFail($id);

@@ -22,10 +22,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login',LoginController::class);
+Route::post('/login', LoginController::class);
 
 
-Route::post('/logout', function(Request $request){
+Route::post('/logout', function (Request $request) {
     $time_start = microtime(true);
 
     auth()->guard('web')->logout();
@@ -44,15 +44,13 @@ Route::post('/logout', function(Request $request){
         '_elapsed_time' => $timeend,
         // 'errors' => $validator->errors(),
     ], 200);
-
-
 });
 
 Route::post('/register', [RegisterController::class, 'register']);
 
 Route::post('/post/get', [PostController::class, 'index']);
 
-Route::post('/post', function(Request $request){
+Route::post('/post', function (Request $request) {
     $time_start = microtime(true);
     $time_end = microtime(true);
     $timeend = $time_end - $time_start;
@@ -62,5 +60,7 @@ Route::post('/post', function(Request $request){
         '_elapsed_time' => $timeend,
         // 'errors' => $validator->errors(),
     ], 200);
-
 });
+
+Route::post('/create-post', [PostController::class, 'create']);
+

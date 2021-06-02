@@ -173,6 +173,7 @@ class PostController extends Controller
         ], 200);
     }
 
+
     public function datatable(Request $request)
     {
 
@@ -195,16 +196,20 @@ class PostController extends Controller
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
             $posts = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
                 ->get();
 
             $posts_count = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug')
+
                 ->get();
         } else {
 
@@ -218,8 +223,10 @@ class PostController extends Controller
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
             $posts = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -227,20 +234,49 @@ class PostController extends Controller
                 ->get();
 
             $posts_count = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug')
                 ->get();
         }
 
-
+        $postsCs =   $posts->count();
         $postsCount =  $posts_count->count();
 
+
+        if ($postsCs > 0 && $postsCount == 0) {
+            $postsCount =   $postsCs;
+        }
         return response()->json([
-            'items' =>  $posts->toArray(),
             'data' => $posts,
             'total' =>  $postsCount,
             'skip' => $skip,
             'take' => $request->itemsPerPage
         ], 200);
     }
+
+    public function datatable_delete(Request $request)
+    {
+        $post = Post::findOrFail($request->post_id);
+        $post->delete();
+        return response()->json([
+
+            'success' => 1,
+            'user' => $request->user()
+        ], 200);
+    }
+
+    public function datatable_update(Request $request)
+    {
+        $post = Post::findOrFail($request->post_id);
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->update();
+        return response()->json([
+            'data' =>  $post,
+            'success' => 1,
+            'user' => $request->user()
+        ], 200);
+    }
+
 }

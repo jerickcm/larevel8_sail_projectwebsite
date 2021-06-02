@@ -55,3 +55,5 @@ Route::post('/create-post', [PostController::class, 'create']);
 Route::post('/ckeditor', [PostController::class, 'ckeditor']);
 
 Route::post('/post/datatable', [PostController::class, 'datatable']);
+Route::post('/post/delete', [PostController::class, 'datatable_delete']);
+Route::post('/post/update', [PostController::class, 'datatable_update']);

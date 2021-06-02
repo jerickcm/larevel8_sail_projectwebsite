@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Post;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class PostFactory extends Factory
 {
@@ -22,7 +23,8 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->sentence($nbWords =3, $variableNbWords = true),
+            'title' => $title = $this->faker->sentence($nbWords =3, $variableNbWords = true),
+            'slug' => Str::slug( $title),
             'name' =>  $this->faker->sentence($nbWords =5, $variableNbWords = true),
             'content' =>  $this->faker->sentence($nbWords =7, $variableNbWords = true),
             'user_id' => rand(1,10),

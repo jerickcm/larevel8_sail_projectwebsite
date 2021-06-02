@@ -50,18 +50,8 @@ Route::post('/register', [RegisterController::class, 'register']);
 
 Route::post('/post/get', [PostController::class, 'index']);
 
-Route::post('/post', function (Request $request) {
-    $time_start = microtime(true);
-    $time_end = microtime(true);
-    $timeend = $time_end - $time_start;
-
-    return response()->json([
-        'success' => true,
-        '_elapsed_time' => $timeend,
-        // 'errors' => $validator->errors(),
-    ], 200);
-});
 
 Route::post('/create-post', [PostController::class, 'create']);
-
 Route::post('/ckeditor', [PostController::class, 'ckeditor']);
+
+Route::post('/post/datatable', [PostController::class, 'datatable']);

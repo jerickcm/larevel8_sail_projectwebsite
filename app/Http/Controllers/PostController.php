@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Post;
 use App\Models\Ckeditorupload;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -43,7 +44,7 @@ class PostController extends Controller
             [
                 'title' => $request->input('title'),
                 'content' => $request->input('content'),
-                'slug' => Str::slug($request->input('title')."-".time() , '-')
+                'slug' => Str::slug($request->input('title') . "-" . time(), '-')
             ]
         );
 
@@ -142,7 +143,6 @@ class PostController extends Controller
     public function ckeditor(Request $request)
     {
 
-
         $filenameWithExt = $request->file('upload')->getClientOriginalName();
 
         $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -159,7 +159,7 @@ class PostController extends Controller
         $mydata["ret"] =  $filenameWithExt;
 
         $image_log = new Ckeditorupload;
-        $image_log->user_id= $request->user()->id;
+        $image_log->user_id = $request->user()->id;
         $image_log->image_name = $path;
         $image_log->save();
 
@@ -171,7 +171,76 @@ class PostController extends Controller
             'path' => $path,
             'url' =>  $mydata["url"] =  url($FileNameToStore)
         ], 200);
+    }
+
+    public function datatable(Request $request)
+    {
+
+        // $user->posts()->whereId($post_id)->delete();
+        // $posts = DB::table('posts')
+        // ->join('users', 'users.id', '=', 'posts.user_id')
+        // // ->join('orders', 'users.id', '=', 'orders.user_id')
+        // ->select('users.name','users.email', 'posts.id', 'posts.title', 'posts.content','posts.slug')
+        // ->get();
+
+        $skip = $request->page;
+        if ($request->page == 1) {
+            $skip = 0;
+        } else {
+            $skip = $request->page * $request->page;
+        }
+
+        if ($request->sortBy == ""  && $request->sortDesc == "") {
+            $page = $request->has('page') ? $request->get('page') : 1;
+            $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
+
+            $posts = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug')
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->take($request->itemsPerPage)
+                ->get();
+
+            $posts_count = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug')
+                ->get();
+        } else {
+
+            if ($request->sortDesc) {
+                $order = 'desc';
+            } else {
+                $order = 'asc';
+            }
+
+            $page = $request->has('page') ? $request->get('page') : 1;
+            $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
+
+            $posts = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug')
+                ->orderBy($request->sortBy, $order)
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->take($request->itemsPerPage)
+                ->get();
+
+            $posts_count = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug')
+                ->get();
+        }
 
 
+        $postsCount =  $posts_count->count();
+
+        return response()->json([
+            'items' =>  $posts->toArray(),
+            'data' => $posts,
+            'total' =>  $postsCount,
+            'skip' => $skip,
+            'take' => $request->itemsPerPage
+        ], 200);
     }
 }

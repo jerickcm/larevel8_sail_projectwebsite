@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Ckeditorupload;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -36,15 +37,15 @@ class PostController extends Controller
 
     public function create(Request $request)
     {
-        $user= User::findOrFail($request->user()->id);
+        $user = User::findOrFail($request->user()->id);
 
         $newpost = new Post(
-                        [
-                            'title'=> $request->input('title'),
-                            'content'=> $request->input('content'),
-                            'slug'=> Str::slug($request->input('title'), '-')
-                        ]
-                    );
+            [
+                'title' => $request->input('title'),
+                'content' => $request->input('content'),
+                'slug' => Str::slug($request->input('title')."-".time() , '-')
+            ]
+        );
 
         $user->posts()->save($newpost);
 
@@ -55,12 +56,11 @@ class PostController extends Controller
         return response()->json([
             'success' => true,
             '_elapsed_time' => $timeend,
-            'user'=> $request->user(),
+            'user' => $request->user(),
             'user_id' => $request->user()->id,
-            'data'=>$request->input('name')
+            'data' => $request->input('name')
 
         ], 200);
-
     }
 
     /**
@@ -139,36 +139,39 @@ class PostController extends Controller
     }
 
 
-    public function ckeditor(Request $request){
+    public function ckeditor(Request $request)
+    {
 
-        $time_start = microtime(true);
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
-
-        return response()->json([
-            'success' => true,
-            '_elapsed_time' => $timeend,
-            'user'=> $request->user(),
-            // 'user_id' => $request->user()->id,
-            // 'data'=>$request->input('name')
-        ], 200);
-
-        // return  $response = \Response::json($mydata, 200);
 
         $filenameWithExt = $request->file('upload')->getClientOriginalName();
-        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-        $extension = $request->file('upload')->getClientOriginalExtension();
-        $FileNameToStore = $filename.'_'.time().".".$extension;
-        $path = $request->file('upload')->storeAs('public/upload_menu',$FileNameToStore);
-        $data["domain"] = $_SERVER['SERVER_NAME'];
-        $FileNameToStore = 'storage/upload_post/'.$FileNameToStore;
-        $mydata['success']  = 1 ;
-        $mydata["ret"] =  $filenameWithExt;
-        $mydata["data"] = $request->upload;
-        $mydata["url"] =  url($FileNameToStore);
 
-        return  $response = \Response::json($mydata, 200);
+        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+
+        $extension = $request->file('upload')->getClientOriginalExtension();
+
+        $FileNameToStore = $filename . '_' . time() . "." . $extension;
+
+        $path = $request->file('upload')->storeAs('public/upload_ckeditor', $FileNameToStore);
+
+        $data["domain"] = $_SERVER['SERVER_NAME'];
+        $FileNameToStore = 'storage/upload_ckeditor/' . $FileNameToStore;
+
+        $mydata["ret"] =  $filenameWithExt;
+
+        $image_log = new Ckeditorupload;
+        $image_log->user_id= $request->user()->id;
+        $image_log->image_name = $path;
+        $image_log->save();
+
+
+        return response()->json([
+            'data' => $request,
+            'user' => $request->user(),
+            'success' => 1,
+            'path' => $path,
+            'url' =>  $mydata["url"] =  url($FileNameToStore)
+        ], 200);
+
 
     }
-
 }

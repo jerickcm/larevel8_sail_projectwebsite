@@ -78,9 +78,9 @@ Route::post('/ckeditor', function () {
 
     ], 200);
 });
-Route::get('/ckeditor', function () {
-    return response()->json([
-        'success' => true,
+// Route::get('/ckeditor', function () {
+//     return response()->json([
+//         'success' => true,
 
-    ], 200);
-});
+//     ], 200);
+// });

@@ -137,3 +137,8 @@ docker exec -it nuxt_client_nuxt-app
 
 
 php sail artisan make:migration add_slug_imagevideo_posts_table --create=role_user
+
+
+php sail artisan make:migration create_imagelogs_ckeditoruploads_table --create="ckeditoruploads"
+
+php sail  artisan make:model Ckeditorupload

@@ -13,6 +13,10 @@
 ## Commnds
 
 ```bash
+
+    alias sail='bash vendor/bin/sail'
+
+
      copy .env.dev .env
     # Use command to run docker sail
     APP_PORT=3001 vendor/bin/sail up

@@ -24,7 +24,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', LoginController::class);
 
-
 Route::post('/logout', function (Request $request) {
     $time_start = microtime(true);
 
@@ -54,6 +53,8 @@ Route::post('/post/get', [PostController::class, 'index']);
 Route::post('/create-post', [PostController::class, 'create']);
 Route::post('/ckeditor', [PostController::class, 'ckeditor']);
 
+
 Route::post('/post/datatable', [PostController::class, 'datatable']);
 Route::post('/post/delete', [PostController::class, 'datatable_delete']);
 Route::post('/post/update', [PostController::class, 'datatable_update']);
+Route::post('/post/list', [PostController::class, 'show']);

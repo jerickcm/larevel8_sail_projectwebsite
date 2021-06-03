@@ -8,7 +8,7 @@ use App\Models\Post;
 use App\Models\Ckeditorupload;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 class PostController extends Controller
 {
     /**
@@ -43,6 +43,7 @@ class PostController extends Controller
         $newpost = new Post(
             [
                 'title' => $request->input('title'),
+                'publish' => $request->input('publish'),
                 'content' => $request->input('content'),
                 'slug' => Str::slug($request->input('title') . "-" . time(), '-')
             ]
@@ -82,7 +83,7 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function show($id)
+    public function show_($id)
     {
         $user = User::findOrFail($id);
 
@@ -176,14 +177,6 @@ class PostController extends Controller
 
     public function datatable(Request $request)
     {
-
-        // $user->posts()->whereId($post_id)->delete();
-        // $posts = DB::table('posts')
-        // ->join('users', 'users.id', '=', 'posts.user_id')
-        // // ->join('orders', 'users.id', '=', 'orders.user_id')
-        // ->select('users.name','users.email', 'posts.id', 'posts.title', 'posts.content','posts.slug')
-        // ->get();
-
         $skip = $request->page;
         if ($request->page == 1) {
             $skip = 0;
@@ -199,7 +192,7 @@ class PostController extends Controller
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -209,8 +202,8 @@ class PostController extends Controller
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-
                 ->get();
+
         } else {
 
             if ($request->sortDesc) {
@@ -226,7 +219,7 @@ class PostController extends Controller
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -271,11 +264,38 @@ class PostController extends Controller
         $post = Post::findOrFail($request->post_id);
         $post->title = $request->title;
         $post->content = $request->content;
+        $post->publish = $request->publish;
         $post->update();
         return response()->json([
             'data' =>  $post,
             'success' => 1,
             'user' => $request->user()
+        ], 200);
+    }
+
+    public function show(Request $request)
+    {
+        // if($request->page){
+            $page=$request->page;
+        // }else{
+        //     $page=0;
+        // }
+
+        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
+        ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish','posts.created_at')
+        ->orderBy('posts.created_at','desc')
+        ->limit(10)
+        ->offset(($page - 1) * 10)
+        ->take(10)
+        ->get();
+
+        foreach($posts as $key => $value){
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+        }
+
+        return response()->json([
+            'data' => $posts,
+            'success' => 1,
         ], 200);
     }
 

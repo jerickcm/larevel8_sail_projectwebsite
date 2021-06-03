@@ -18,6 +18,7 @@ class CreatePostTable extends Migration
             $table->string('title')->nullable();
             $table->string('name')->nullable();
             $table->text('content')->nullable();
+            $table->integer('publish')->default('1');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -58,3 +58,5 @@ Route::post('/post/datatable', [PostController::class, 'datatable']);
 Route::post('/post/delete', [PostController::class, 'datatable_delete']);
 Route::post('/post/update', [PostController::class, 'datatable_update']);
 Route::post('/post/list', [PostController::class, 'show']);
+
+Route::post('/post/getbyslug', [PostController::class, 'show_by_slug']);

@@ -387,4 +387,20 @@ class PostController extends Controller
             'success' => 1,
         ], 200);
     }
+
+
+    public function show_by_slug(Request $request){
+
+        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
+        ->where('posts.slug', $request->slug)
+        ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
+        ->get();
+        return response()->json([
+            'data' => $posts,
+            'success' => 1,
+        ], 200);
+
+    }
+
+
 }

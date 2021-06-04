@@ -22,9 +22,15 @@ class PostFactory extends Factory
      */
     public function definition()
     {
+
+        $publish = rand(1,2);
+
+
         return [
             'title' => $title = $this->faker->sentence($nbWords =3, $variableNbWords = true),
             'slug' => Str::slug( $title),
+            'publish' =>  $publish ,
+            'publish_text' =>  ($publish == 1)? 'draft':'publish',
             'name' =>  $this->faker->sentence($nbWords =5, $variableNbWords = true),
             'content' =>  $this->faker->sentence($nbWords =7, $variableNbWords = true),
             'user_id' => rand(1,10),

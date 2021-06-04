@@ -193,7 +193,6 @@ class PostController extends Controller
         ], 200);
     }
 
-
     public function datatable(Request $request)
     {
         $skip = $request->page;
@@ -210,8 +209,9 @@ class PostController extends Controller
             $posts = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image', 'posts.created_at')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -220,6 +220,7 @@ class PostController extends Controller
             $posts_count = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
                 ->get();
         } else {
@@ -236,8 +237,9 @@ class PostController extends Controller
             $posts = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image', 'posts.created_at')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -247,6 +249,7 @@ class PostController extends Controller
             $posts_count = Post::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
                 ->get();
         }
@@ -258,6 +261,7 @@ class PostController extends Controller
         if ($postsCs > 0 && $postsCount == 0) {
             $postsCount =   $postsCs;
         }
+
         return response()->json([
             'data' => $posts,
             'total' =>  $postsCount,
@@ -283,7 +287,6 @@ class PostController extends Controller
         // var_dump($postcheck );
 
         if ($postcheck->image === $request->image) {
-
         } else {
 
             if ($request->image) {
@@ -307,29 +310,18 @@ class PostController extends Controller
                  *
                  */
             }
-
         }
-        // return response()->json([
-        //     'image' => $postcheck->image,
-        //     'check' =>  $check
-        // ], 200);
-
-        // die();
-
-        // if ($postcheck->image === $request->image) {
-
-        // } else {
-
-
-        // }
-
-
 
 
         $post = Post::findOrFail($request->post_id);
         $post->title = $request->title;
         $post->content = $request->content;
         $post->publish = $request->publish;
+        if ($request->publish == 1) {
+            $post->publish_text = 'draft';
+        } else {
+            $post->publish_text = 'publish';
+        }
 
         if ($postcheck->image === $request->image) {
             $image = '';
@@ -341,16 +333,7 @@ class PostController extends Controller
             } else {
                 $image = '';
             }
-
         }
-
-
-
-        // if ($postcheck->image == $request->image) {
-
-        // } else {
-
-        // }
 
         $post->update();
         return response()->json([
@@ -363,11 +346,8 @@ class PostController extends Controller
 
     public function show(Request $request)
     {
-        // if($request->page){
+
         $page = $request->page;
-        // }else{
-        //     $page=0;
-        // }
 
         $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
             ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
@@ -389,18 +369,21 @@ class PostController extends Controller
     }
 
 
-    public function show_by_slug(Request $request){
+    public function show_by_slug(Request $request)
+    {
 
         $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
-        ->where('posts.slug', $request->slug)
-        ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
-        ->get();
+            ->where('posts.slug', $request->slug)
+            ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
+            ->get();
+
+        foreach ($posts as $key => $value) {
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+        }
+
         return response()->json([
             'data' => $posts,
             'success' => 1,
         ], 200);
-
     }
-
-
 }

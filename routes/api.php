@@ -22,41 +22,30 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login', LoginController::class);
+Route::group(['middleware' => 'auth:sanctum', 'throttle:1000,1'], function () {
 
-Route::post('/logout', function (Request $request) {
-    $time_start = microtime(true);
+    Route::post('/login', LoginController::class);
+    Route::post('/logout', function (Request $request) {
+        $time_start = microtime(true);
+        auth()->guard('web')->logout();
+        $request->session()->invalidate();
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
 
-    auth()->guard('web')->logout();
+        return response()->json([
+            'success' => true,
+            '_elapsed_time' => $timeend,
+        ], 200);
+    });
 
-    $request->session()->invalidate();
+    Route::post('/register', [RegisterController::class, 'register']);
 
-    // $request->session()->regenerateToken();
-    $time_end = microtime(true);
-    $timeend = $time_end - $time_start;
-
-    // return response()->json(null, 200);
-
-
-    return response()->json([
-        'success' => true,
-        '_elapsed_time' => $timeend,
-        // 'errors' => $validator->errors(),
-    ], 200);
+    Route::post('/create-post', [PostController::class, 'create']);
+    Route::post('/post/get', [PostController::class, 'index']);
+    Route::post('/ckeditor', [PostController::class, 'ckeditor']);
+    Route::post('/post/datatable', [PostController::class, 'datatable']);
+    Route::post('/post/delete', [PostController::class, 'datatable_delete']);
+    Route::post('/post/update', [PostController::class, 'datatable_update']);
+    Route::post('/post/list', [PostController::class, 'show']);
+    Route::post('/post/getbyslug', [PostController::class, 'show_by_slug']);
 });
-
-Route::post('/register', [RegisterController::class, 'register']);
-
-Route::post('/post/get', [PostController::class, 'index']);
-
-
-Route::post('/create-post', [PostController::class, 'create']);
-Route::post('/ckeditor', [PostController::class, 'ckeditor']);
-
-
-Route::post('/post/datatable', [PostController::class, 'datatable']);
-Route::post('/post/delete', [PostController::class, 'datatable_delete']);
-Route::post('/post/update', [PostController::class, 'datatable_update']);
-Route::post('/post/list', [PostController::class, 'show']);
-
-Route::post('/post/getbyslug', [PostController::class, 'show_by_slug']);

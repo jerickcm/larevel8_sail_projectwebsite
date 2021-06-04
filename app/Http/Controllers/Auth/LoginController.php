@@ -8,16 +8,18 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    public function __invoke(Request $request){
+    public function __invoke(Request $request)
+    {
+        // public function login(Request $request)
 
         $time_start = microtime(true);
 
 
-        if(!auth()->attempt($request->only('email','password'))){
-                throw new AuthenticationException();
-                // throw ValidationException::withMessages([
-                //     'email' => 'Invalid credentials'
-                // ]);
+        if (!auth()->attempt($request->only('email', 'password'))) {
+            throw new AuthenticationException();
+            // throw ValidationException::withMessages([
+            //     'email' => 'Invalid credentials'
+            // ]);
         }
 
         $request->session()->regenerate();
@@ -33,18 +35,25 @@ class LoginController extends Controller
 
     }
 
-    // Route::post('login', function(Request $request){
-    //     $credentials = $request->only('email', 'password');
+    // public function logout(Request $request)
+    // {
+    //     $time_start = microtime(true);
 
-    //     if(! auth()->attempt($credentials)){
-    //         throw ValidationException::withMessages([
-    //             'email' => 'Invalid credentials'
-    //         ]);
-    //     }
+    //     auth()->guard('web')->logout();
 
-    //     $request->session()->regenerate();
+    //     $request->session()->invalidate();
 
-    //     return response()->json(null, 201);
-    // });
+    //     // $request->session()->regenerateToken();
+    //     $time_end = microtime(true);
+    //     $timeend = $time_end - $time_start;
 
+    //     // return response()->json(null, 200);
+
+
+    //     return response()->json([
+    //         'success' => true,
+    //         '_elapsed_time' => $timeend,
+    //         // 'errors' => $validator->errors(),
+    //     ], 200);
+    // }
 }

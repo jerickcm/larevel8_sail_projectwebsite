@@ -22,8 +22,8 @@ class UsersTableSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => bcrypt('secret'),
             'remember_token' => Str::random(10),
+            'is_admin' => 1,
         ]);
-
 
         \App\Models\UserDetails::factory(1)->create([
             'user_id' =>  DB::getPdo()->lastInsertId()
@@ -35,6 +35,5 @@ class UsersTableSeeder extends Seeder
                 'user_id' => $faker_users[0]->id,
             ]);
         }
-
     }
 }

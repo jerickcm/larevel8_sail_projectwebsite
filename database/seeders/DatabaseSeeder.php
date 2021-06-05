@@ -25,8 +25,8 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
             VideoSeeder::class,
             TaggableTableSeeder::class,
+            MessageoftheDayTableSeeder::class,
         ]);
-
     }
 }
 

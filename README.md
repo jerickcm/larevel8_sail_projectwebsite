@@ -48,3 +48,11 @@ DB_CONNECTION=mysql
 DB_HOST=mariadb
     
 ```
+
+
+## implement faster sail
+
+```bash
+run docker and move repo code of laravel to linux engine like below
+\\wsl$\Ubuntu-20.04\home\{user}\laravelfolder
+```

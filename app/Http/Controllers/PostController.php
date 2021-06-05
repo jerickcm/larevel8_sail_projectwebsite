@@ -346,7 +346,7 @@ class PostController extends Controller
 
     public function show(Request $request)
     {
-
+        $time_start = microtime(true);
         $page = $request->page;
 
         $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
@@ -362,9 +362,14 @@ class PostController extends Controller
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
         }
 
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
         return response()->json([
             'data' => $posts,
             'success' => 1,
+            'benchmark' =>  $timeend
         ], 200);
     }
 

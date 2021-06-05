@@ -40,3 +40,11 @@
     php artisan storage:link
     
 ```
+## add image storage 
+
+```bash
+#use mariadb
+DB_CONNECTION=mysql
+DB_HOST=mariadb
+    
+```

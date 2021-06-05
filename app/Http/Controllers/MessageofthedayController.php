@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Messageoftheday;
 
-class messageoftheday extends Controller
+class MessageofthedayController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +14,21 @@ class messageoftheday extends Controller
      */
     public function index()
     {
-        //
+        $time_start = microtime(true);
+        $Messageoftheday = Messageoftheday::inRandomOrder()
+            ->select('message', 'author','id')
+            ->limit(1)
+            ->get();
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'data' => $Messageoftheday,
+            'success' => 1,
+            'benchmark' =>  $timeend
+        ], 200);
+
     }
 
     /**

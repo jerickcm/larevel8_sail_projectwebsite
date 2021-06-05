@@ -62,6 +62,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function messageoftheday(){
+
+        return $this->hasMany(Post::class);
+    }
 
 
 }

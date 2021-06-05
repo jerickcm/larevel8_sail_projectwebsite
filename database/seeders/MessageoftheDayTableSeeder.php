@@ -24,7 +24,7 @@ class MessageoftheDayTableSeeder extends Seeder
             {"message": "If you\'re changing the world, you\'re working on important things. You\'re excited to get up in the morning.", "author": "Larry Page"},
             {"message": "Innovation distinguishes between a leader and a follower.", "author": "Steve Jobs"},
             {"message": "Too many rules stifle innovation.", "author": "Sergey Brin"},
-            {"message": "Talk is cheap. Show me the code..", "author": "Linus Torvalds"}
+            {"message": "Talk is cheap. Show me the code.", "author": "Linus Torvalds"}
         ]';
 
         $array = json_decode($json, true);

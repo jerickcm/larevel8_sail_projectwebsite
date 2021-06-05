@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\PostController;
-
+// use App\Http\Controllers\MessageofthedayController
 
 /*
 |--------------------------------------------------------------------------
@@ -48,4 +48,6 @@ Route::post('/post/delete', [PostController::class, 'datatable_delete']);
 Route::post('/post/update', [PostController::class, 'datatable_update']);
 Route::post('/post/list', [PostController::class, 'show']);
 Route::post('/post/getbyslug', [PostController::class, 'show_by_slug']);
+
+Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::class, 'index']);
 // });

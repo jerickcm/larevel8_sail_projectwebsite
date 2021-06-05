@@ -5,6 +5,14 @@ x86_64
 
 #install docker
 
+
+## alternative install 
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic test"
+sudo apt update
+sudo apt install docker-ce
+
 ## check docker installation in https://docs.docker.com/engine/install/ubuntu/
 
 
@@ -57,7 +65,7 @@ apt-cache madison docker-ce
 
 sudo apt-get install docker-ce=5:20.10.7~3-0~ubuntu-focal docker-ce-cli=5:20.10.7~3-0~ubuntu-focal containerd.io
 
-#test
+# test
 
 sudo docker run hello-world
 
@@ -139,6 +147,8 @@ git --version
 
 git clone git@github.com:whatever folder-name
 
+git clone https://github.com/Jerick-CM/larevel8_sail_projectwebsite.git backend
+
 # use docker command without without sudo 
 
 # set up root password 
@@ -154,3 +164,31 @@ sudo usermod -aG docker username
 # change user 
 
 su "username"
+
+# add backend repo
+
+
+cd ~
+git clone https://github.com/Jerick-CM/larevel8_sail_projectwebsite.git backend
+
+# sail dependency fix 
+
+docker run --rm \
+    -v $(pwd):/opt \
+    -w /opt \
+    laravelsail/php80-composer:latest \
+    composer install
+
+# missing dependencies needed in sail 
+
+sudo apt install openssl php-common php-curl php-json php-mbstring php-mysql php-xml php-zip
+
+# copy .env 
+
+cp .env.dev .env
+
+
+# add user in linux 
+adduser username
+
+su -username 

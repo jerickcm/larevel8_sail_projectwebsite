@@ -34,8 +34,32 @@ sudo apt install build-essential
 
 # install nvm 
 
+curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh -o install_nvm.sh
 
-git pull gitrepo frontend
+nano install_nvm.sh
+
+bash install_nvm.sh
+source ~/.profile
+nvm ls-remote
+
+note: nvm install 12.18.3 choose version
+nvm install v16.3.0
+npm install -g npm@7.16.0
+
+cd var
+
+mkdir www
+cd www
+
+git clone https://github.com/Jerick-CM/nuxt_projectwebsite.git frontend 
+
+cp .env.example .env 
+
+npm install
+
+npm audit fix
+
+npm run dev
 
 
 # install docker
@@ -45,16 +69,22 @@ https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04
 
 
 sudo apt-get update
+
 sudo apt-get remove docker docker-engine docker.io
+
 sudo apt install docker.io
+
 sudo systemctl start docker
 
 # install docker compose
 https://phoenixnap.com/kb/install-docker-compose-ubuntu
 
 sudo apt-get update
+
 sudo apt-get upgrade
+
 sudo apt install curl
+
 sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 
@@ -70,6 +100,8 @@ su - ${USER}
 id -nG
 
 sudo usermod -aG docker username
+
+sudo usermod -aG docker root
 
 ## install backend 
 
@@ -130,13 +162,16 @@ curl -sS https://getcomposer.org/installer |php
 
 git clone https://github.com/Jerick-CM/larevel8_sail_projectwebsite.git backend
 
-
+cd backend
+composer install 
 #add needed php extenstion 
 
 sudo apt install openssl php-common php-curl php-json php-mbstring php-mysql php-xml php-zip
 
 composer install
 # impement sail install
+
+
 ./vendor/bin/sail up 
 
 

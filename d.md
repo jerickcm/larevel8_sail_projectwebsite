@@ -128,3 +128,16 @@ curl -sS https://getcomposer.org/installer |php
 
 # install backend git repo
 
+git clone https://github.com/Jerick-CM/larevel8_sail_projectwebsite.git backend
+
+
+#add needed php extenstion 
+
+sudo apt install openssl php-common php-curl php-json php-mbstring php-mysql php-xml php-zip
+
+composer install
+# impement sail install
+./vendor/bin/sail up 
+
+
+./vendor/bin/sail up -d -build

@@ -141,3 +141,18 @@ composer install
 
 
 ./vendor/bin/sail up -d -build
+
+
+#fix laravel storage
+chmod -R 777 storage 
+chmod -R 777 storage
+
+
+# on login
+
+ "message": "Session store not set on request.",
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+php artisan key:generate 
+
+test@test.com
+secret

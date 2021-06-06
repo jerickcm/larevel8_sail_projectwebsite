@@ -56,3 +56,14 @@ DB_HOST=mariadb
 run docker and move repo code of laravel to linux engine like below
 \\wsl$\Ubuntu-20.04\home\{user}\laravelfolder
 ```
+
+
+## fix laravel storage 
+
+sudo chown -R $USER:www-data storage
+sudo chown -R $USER:www-data bootstrap/cache
+
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
+
+sudo chmod -R 777 storage :

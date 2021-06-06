@@ -68,7 +68,7 @@ npm run dev
 https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04
 
 
-sudo apt-get update
+sudo apt install git
 
 sudo apt-get remove docker docker-engine docker.io
 
@@ -163,10 +163,15 @@ curl -sS https://getcomposer.org/installer |php
 git clone https://github.com/Jerick-CM/larevel8_sail_projectwebsite.git backend
 
 cd backend
-composer install 
+
 #add needed php extenstion 
 
 sudo apt install openssl php-common php-curl php-json php-mbstring php-mysql php-xml php-zip
+
+
+composer install 
+composer update
+
 
 composer install
 # impement sail install

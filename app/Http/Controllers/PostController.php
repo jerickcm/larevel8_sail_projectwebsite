@@ -68,7 +68,7 @@ class PostController extends Controller
                 'publish' => $request->input('publish'),
                 'content' => $request->input('content'),
                 'slug' => Str::slug($request->input('title') . "-" . time(), '-'),
-                'image' =>  url($FileNameToStore)
+                'image' =>  $path
             ]
         );
 
@@ -257,6 +257,10 @@ class PostController extends Controller
         $postsCs =   $posts->count();
         $postsCount =  $posts_count->count();
 
+        foreach ($posts as $key => $value) {
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['image'] = url($value['image']);
+        }
 
         if ($postsCs > 0 && $postsCount == 0) {
             $postsCount =   $postsCs;
@@ -328,7 +332,7 @@ class PostController extends Controller
         } else {
 
             if ($request->image) {
-                $post->image = url($FileNameToStore);
+                $post->image = $FileNameToStore;
                 $image  = $post->image;
             } else {
                 $image = '';
@@ -358,10 +362,11 @@ class PostController extends Controller
             ->take(10)
             ->get();
 
+
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['image'] = url($value['image']);
         }
-
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
@@ -389,6 +394,7 @@ class PostController extends Controller
 
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['image'] = url($value['image']);
         }
 
 
@@ -413,6 +419,7 @@ class PostController extends Controller
 
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['image'] = url($value['image']);
         }
 
         return response()->json([

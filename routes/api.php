@@ -47,6 +47,10 @@ Route::post('/post/datatable', [PostController::class, 'datatable']);
 Route::post('/post/delete', [PostController::class, 'datatable_delete']);
 Route::post('/post/update', [PostController::class, 'datatable_update']);
 Route::post('/post/list', [PostController::class, 'show']);
+
+Route::get('/post/list/{page}', [PostController::class, 'show_by_get']);
+
+
 Route::post('/post/getbyslug', [PostController::class, 'show_by_slug']);
 
 Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::class, 'index']);

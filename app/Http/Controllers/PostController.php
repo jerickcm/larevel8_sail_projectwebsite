@@ -344,6 +344,35 @@ class PostController extends Controller
         ], 200);
     }
 
+    public function show_by_get(Request $request, $page)
+    {
+        $time_start = microtime(true);
+        $page = $page;
+
+        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
+            ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
+            ->orderBy('posts.created_at', 'desc')
+            ->where('posts.publish', 2)
+            ->limit(10)
+            ->offset(($page - 1) * 10)
+            ->take(10)
+            ->get();
+
+        foreach ($posts as $key => $value) {
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+        }
+
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'data' => $posts,
+            'success' => 1,
+            'benchmark' =>  $timeend
+        ], 200);
+    }
+
     public function show(Request $request)
     {
         $time_start = microtime(true);

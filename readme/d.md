@@ -185,7 +185,7 @@ composer install
 
 #fix laravel storage
 chmod -R 777 storage 
-chmod -R 777 storage
+chmod -R 775 storage
 
 
 # on login

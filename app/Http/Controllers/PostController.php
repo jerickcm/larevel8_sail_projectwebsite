@@ -189,7 +189,8 @@ class PostController extends Controller
             'user' => $request->user(),
             'success' => 1,
             'path' => $path,
-            'url' =>  $mydata["url"] =  url($FileNameToStore)
+            'url' =>  $mydata["url"] =  url($FileNameToStore),
+            'public' =>  $mydata["url"] =  url($path),
         ], 200);
     }
 

@@ -67,3 +67,8 @@ chmod -R 775 storage
 chmod -R 775 bootstrap/cache
 
 sudo chmod -R 777 storage :
+
+http://35.223.238.193:3001/storage/upload_ckeditor/nuxt_1623175284.jpg
+
+
+php artisan storage:link 

@@ -46,16 +46,21 @@ class PostController extends Controller
          * Image upload
          *
          */
-        $filenameWithExt = $request->file('image')->getClientOriginalName();
+        if ($request->file('image')) {
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
 
-        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
 
-        $extension = $request->file('image')->getClientOriginalExtension();
+            $extension = $request->file('image')->getClientOriginalExtension();
 
-        $FileNameToStore = $filename . '_' . time() . "." . $extension;
+            $FileNameToStore = $filename . '_' . time() . "." . $extension;
 
-        $path = $request->file('image')->storeAs('public/upload_post', $FileNameToStore);
-        $FileNameToStore = 'storage/upload_post/' . $FileNameToStore;
+            $path = $request->file('image')->storeAs('public/upload_post', $FileNameToStore);
+            $FileNameToStore = 'storage/upload_post/' . $FileNameToStore;
+        } else {
+            $FileNameToStore = null;
+        }
+
 
         /**
          * Image upload
@@ -84,8 +89,8 @@ class PostController extends Controller
             'user' => $request->user(),
             'user_id' => $request->user()->id,
             'data' => $request->input('name'),
-            'path' =>  url($FileNameToStore),
-            'path_pub' =>  url($path),
+            'path' =>  $FileNameToStore ? url($FileNameToStore) : "",
+            'path_pub' =>  $FileNameToStore ? url($path) : "",
 
         ], 200);
     }

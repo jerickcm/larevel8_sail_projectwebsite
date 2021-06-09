@@ -68,7 +68,7 @@ class PostController extends Controller
                 'publish' => $request->input('publish'),
                 'content' => $request->input('content'),
                 'slug' => Str::slug($request->input('title') . "-" . time(), '-'),
-                'image' =>  $path
+                'image' => $FileNameToStore
             ]
         );
 
@@ -84,7 +84,8 @@ class PostController extends Controller
             'user' => $request->user(),
             'user_id' => $request->user()->id,
             'data' => $request->input('name'),
-            'path' =>  url($FileNameToStore)
+            'path' =>  url($FileNameToStore),
+            'path_pub' =>  url($path),
 
         ], 200);
     }
@@ -135,12 +136,12 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $user_id, $post_id)
-    {
-        $user = User::findOrFail($user_id);
+    // public function update(Request $request, $user_id, $post_id)
+    // {
+    //     $user = User::findOrFail($user_id);
 
-        $user->posts()->whereId($post_id)->update(['title' => 'my title', 'content' => 'my content']);
-    }
+    //     $user->posts()->whereId($post_id)->update(['title' => 'my title', 'content' => 'my content']);
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -267,7 +268,7 @@ class PostController extends Controller
         if ($postsCs > 0 && $postsCount == 0) {
             $postsCount =   $postsCs;
         }
-
+        // $posts = array_reverse($posts);
         return response()->json([
             'data' => $posts,
             'total' =>  $postsCount,
@@ -287,13 +288,14 @@ class PostController extends Controller
         ], 200);
     }
 
-    public function datatable_update(Request $request)
+    public function update(Request $request)
     {
+
         $postcheck = Post::findOrFail($request->post_id);
         // var_dump($postcheck );
 
-        if ($postcheck->image === $request->image) {
-
+        if (url($postcheck->image) === $request->image) {
+        } else if ($request->image === "") {
         } else {
 
             if ($request->image) {
@@ -330,8 +332,12 @@ class PostController extends Controller
             $post->publish_text = 'publish';
         }
 
-        if ($postcheck->image === $request->image) {
+        if (url($postcheck->image) === $request->image) {
             $image = '';
+            $post->image;
+        } else if ($request->image == "") {
+
+            $post->image   = '';
         } else {
 
             if ($request->image) {
@@ -343,6 +349,15 @@ class PostController extends Controller
         }
 
         $post->update();
+
+        $postagain = Post::findOrFail($request->post_id);
+
+        if ($request->image == "") {
+            $image =  '';
+        } else {
+            $image =  url($postagain->image);
+        }
+
         return response()->json([
             'image' => $image,
             'data' =>  $post,

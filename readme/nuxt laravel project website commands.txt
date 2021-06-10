@@ -157,3 +157,6 @@ php sail  artisan make:factory BlogFactory
 php sail artisan make:seeder BlogTableSeeder
 php sail artisan make:model Blog -m
 php sail artisan make:controller --resource BlogController
+
+
+sail php  artisan db:seed --class=BlogTableSeeder

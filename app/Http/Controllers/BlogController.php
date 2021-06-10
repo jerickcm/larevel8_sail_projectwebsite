@@ -404,8 +404,8 @@ class BlogController extends Controller
 
         foreach ($Blogs as $key => $value) {
             $Blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $Blogs[$key]['image'] = url($value['image']);
-            $Blogs[$key]['path'] = url($value['path']);
+            $Blogs[$key]['image'] = $value['image'] ? url($value['image']) : '';
+            $Blogs[$key]['path'] = $value['path'] ? url($value['path']) : '';
         }
 
         if ($BlogsCs > 0 && $BlogsCount == 0) {

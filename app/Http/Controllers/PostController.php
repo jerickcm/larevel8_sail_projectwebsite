@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Ckeditorupload;
+
 use App\Models\User;
 use App\Models\Post;
-use App\Models\Ckeditorupload;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class PostController extends Controller

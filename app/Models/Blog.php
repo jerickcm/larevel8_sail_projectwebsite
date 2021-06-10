@@ -7,14 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Tag;
 
-class Post extends Model
+class Blog extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "posts";
-
+    protected $table = "blogs";
     public $timestamps = true;
-
     protected $fillable = [
         'title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
     ];

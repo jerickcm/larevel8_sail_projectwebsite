@@ -12,9 +12,10 @@ use App\Models\UserDetails;
 use App\Models\Posts;
 use App\Models\Role;
 
+
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -46,26 +47,34 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function userdetails(){
+    public function userdetails()
+    {
 
         return $this->hasOne(UserDetails::class);
     }
 
-    public function posts(){
+    public function posts()
+    {
         // return $this->hasOne('App\Models\UserDetails');
 
         return $this->hasMany(Post::class);
     }
 
-    public function roles(){
+    public function blogs()
+    {
+
+        return $this->hasMany(Blog::class);
+    }
+
+    public function roles()
+    {
 
         return $this->belongsToMany(Role::class);
     }
 
-    public function messageoftheday(){
+    public function messageoftheday()
+    {
 
         return $this->hasMany(Post::class);
     }
-
-
 }

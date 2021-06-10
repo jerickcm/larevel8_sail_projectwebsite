@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             VideoSeeder::class,
             TaggableTableSeeder::class,
             MessageoftheDayTableSeeder::class,
+            BlogTableSeeder::class,
         ]);
     }
 }

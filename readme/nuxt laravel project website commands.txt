@@ -9,7 +9,7 @@ php artisan migrate:rollback
 
 
 php artisan make:seeder UsersTableSeeder
-sail artisan make:seeder UsersTableSeeder 
+sail artisan make:seeder UsersTableSeeder
 
 php artisan db:seed
 
@@ -35,7 +35,7 @@ sail composer require laravel/socialite
 
 https://console.cloud.google.com/apis/credentials?project=project-website-314807
 
-http://localhost:3000/login? 
+http://localhost:3000/login?
 state=AIyxj7zl7k&
 code=4%2F0AY0e-g7mdONlT4iIiNrJswU4aUgn8V-67g9ojOVm1HisK1nycUkFZ7s7h67kmRbiloV7Eg&
 scope=email%20profile%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&
@@ -54,9 +54,9 @@ https://nuxt-auth.herokuapp.com/
 
 
 create seed for posts
-create factory for posts 
+create factory for posts
 
-sail artisan make:seeder PostTableSeeder 
+sail artisan make:seeder PostTableSeeder
 
 php sail  artisan make:factory PostFactory --model=Posts
 
@@ -76,14 +76,14 @@ php sail artisan migrate:rollback --step=1
 php sail  artisan make:factory RolesFactory
 php sail  artisan make:factory Roles_UsersFactory
 
-sail artisan make:seeder RolesTableSeeder 
-sail artisan make:seeder Roles_UsersTableSeeder 
+sail artisan make:seeder RolesTableSeeder
+sail artisan make:seeder Roles_UsersTableSeeder
 
 php sail artisan make:model Roles_Users
 
 
 php sail artisan db:seed --class=RolesTableSeeder
-php sail artisan db:seed --class=Roles_UsersTableSeeder 
+php sail artisan db:seed --class=Roles_UsersTableSeeder
 
 php sail artisan make:controller --resource RoleController
 
@@ -101,11 +101,11 @@ php sail  artisan make:factory StaffFactory
 php sail  artisan make:factory ProductFactory
 
 
-sail artisan make:seeder StaffTableSeeder 
-sail artisan make:seeder ProductTableSeeder 
+sail artisan make:seeder StaffTableSeeder
+sail artisan make:seeder ProductTableSeeder
 
 php sail artisan db:seed --class=StaffTableSeeder
-php sail artisan db:seed --class=ProductTableSeeder 
+php sail artisan db:seed --class=ProductTableSeeder
 
 
 php sail artisan make:model Post -m
@@ -113,7 +113,7 @@ php sail artisan make:model Video -m
 php sail artisan make:model Tag -m
 php sail artisan make:model Taggable -m
 
-php sail artisan make:controller --resource TagVideoPostController 
+php sail artisan make:controller --resource TagVideoPostController
 
 php sail  artisan make:factory VideoFactory
 php sail  artisan make:factory TagFactory
@@ -121,17 +121,17 @@ php sail artisan migrate:refresh --seed
 
 
 php sail artisan make:seeder TagSeeder
-php sail artisan make:seeder VideoSeeder 
+php sail artisan make:seeder VideoSeeder
 
 php sail artisan db:seed --class=TagSeeder
-php sail artisan db:seed --class=VideoSeeder 
+php sail artisan db:seed --class=VideoSeeder
 
 php sail artisan make:factory TaggableFactory
-php sail artisan make:seeder TaggableTableSeeder 
+php sail artisan make:seeder TaggableTableSeeder
 
 php sail artisan make:model Taggable
 
-php sail artisan db:seed --class=TaggableTableSeeder 
+php sail artisan db:seed --class=TaggableTableSeeder
 
 docker exec -it nuxt_client_nuxt-app
 
@@ -145,6 +145,15 @@ php sail artisan make:migration create_messageoftheday_table --create=messageoft
 sail artisan make:controller --resource messageoftheday
 php sail artisan make:model messageoftheday
 
-php sail artisan make:seeder MessageoftheDayTableSeeder 
-php sail artisan db:seed --class=MessageoftheDayTableSeeder 
+php sail artisan make:seeder MessageoftheDayTableSeeder
+php sail artisan db:seed --class=MessageoftheDayTableSeeder
 
+
+php sail artisan make:migration create_messageoftheday_table --create=messageoftheday
+
+
+php sail artisan make:migration create_blog_table --create=blog
+php sail  artisan make:factory BlogFactory
+php sail artisan make:seeder BlogTableSeeder
+php sail artisan make:model Blog -m
+php sail artisan make:controller --resource BlogController

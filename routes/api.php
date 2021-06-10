@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\BlogController;
 // use App\Http\Controllers\MessageofthedayController
 
 /*
@@ -22,9 +23,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::group(['middleware' => 'auth:sanctum', 'throttle:1000,1'], function () {
+
 
 Route::post('/login', LoginController::class);
+
 Route::post('/logout', function (Request $request) {
     $time_start = microtime(true);
     auth()->guard('web')->logout();
@@ -38,7 +40,13 @@ Route::post('/logout', function (Request $request) {
     ], 200);
 });
 
+
 Route::post('/register', [RegisterController::class, 'register']);
+
+// Route::group(['middleware' => 'auth:sanctum', 'throttle:1000,1'], function () {
+
+
+Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::class, 'index']);
 
 Route::post('/create-post', [PostController::class, 'create']);
 Route::post('/post/get', [PostController::class, 'index']);
@@ -47,11 +55,48 @@ Route::post('/post/datatable', [PostController::class, 'datatable']);
 Route::post('/post/delete', [PostController::class, 'datatable_delete']);
 Route::post('/post/update', [PostController::class, 'update']);
 Route::post('/post/list', [PostController::class, 'show']);
-
 Route::get('/post/list/{page}', [PostController::class, 'show_by_get']);
-
-
 Route::post('/post/getbyslug', [PostController::class, 'show_by_slug']);
 
-Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::class, 'index']);
+
+Route::get('/blog/page/{page}/item/{perpage}', [BlogController::class, 'show']);
+Route::post('/blog/create', [BlogController::class, 'create']);
+Route::post('/blog/datatable', [BlogController::class, 'datatable']);
+Route::delete('/blog/delete/{id}', [BlogController::class, 'delete']);
+Route::post('/blog/update/{id}', [BlogController::class, 'update']);
+
+
+//test pass
+
+// Route::put('/blog/update/{id}', function (Request $request) {
+//     return response()->json([
+//         'success' => true,
+//     ], 200);
 // });
+
+
+
+
+
+// });
+
+
+ /*
+
+    Method Calls
+    Route::get
+    Route::post
+    Route::put
+    Route::delete
+
+    controller resource reference
+
+    index
+    create
+    store
+    show
+    edit
+    update
+    destroy
+
+*/

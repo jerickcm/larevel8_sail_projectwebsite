@@ -72,3 +72,9 @@ http://35.223.238.193:3001/storage/upload_ckeditor/nuxt_1623175284.jpg
 
 
 php artisan storage:link 
+
+which http-server
+$ pm2 start /usr/bin/http-server --name my-file-server -- -p 8080 -d false
+
+
+pm2 start '/root/.nvm/versions/node/v14.17.0/bin/http-server -p 3000'  --name front-server

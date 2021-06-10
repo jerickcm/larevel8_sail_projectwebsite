@@ -16,9 +16,36 @@ class BlogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        $time_start = microtime(true);
+
+        if($request->slug){
+
+            $table = 'blogs';
+
+            $query = Blog::join('users', 'users.id', '=', $table.'.user_id')
+            ->where($table.'.slug', $request->slug)
+            ->select('users.name', 'users.email', $table.'.id', $table.'.title', $table.'.content', $table.'.slug', $table.'.id', $table.'.publish', $table.'.created_at', $table.'.image')
+            ->get();
+
+            foreach ($query as $key => $value) {
+                $query[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+                $query[$key]['image'] = url($value['image']);
+            }
+
+        }
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'data' => $query,
+            'success' => 1,
+            '_benchmark' => $timeend,
+        ], 200);
+
     }
 
     /**

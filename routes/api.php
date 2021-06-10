@@ -64,3 +64,5 @@ Route::post('/blog/create', [BlogController::class, 'create']);
 Route::post('/blog/datatable', [BlogController::class, 'datatable']);
 Route::delete('/blog/delete/{id}', [BlogController::class, 'delete']);
 Route::post('/blog/update/{id}', [BlogController::class, 'update']);
+
+Route::get('/blog/{slug}', [BlogController::class, 'index']);

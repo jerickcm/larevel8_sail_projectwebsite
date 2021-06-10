@@ -133,11 +133,7 @@ class BlogController extends Controller
             $page = $page ? $page : 1;
             $limit = $itemsperpage ? $itemsperpage : 10;
 
-            $blogs = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->where('blogs.publish', 2)
+            $blogs = Blog::where('blogs.publish', 2)
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->limit($limit)
@@ -145,10 +141,7 @@ class BlogController extends Controller
                 ->take($itemsperpage)
                 ->get();
 
-            $blogs_count = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                ->where('blogs.publish', 2)
+            $blogs_count = Blog::where('blogs.publish', 2)
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->get();
@@ -163,11 +156,7 @@ class BlogController extends Controller
             $page = $page  ? $page  : 1;
             $limit = $itemsperpage ? $itemsperpage : 10;
 
-            $blogs = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->where('blogs.publish', 2)
+            $blogs = Blog::where('blogs.publish', 2)
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->orderBy($request->sortBy, $order)
@@ -176,10 +165,7 @@ class BlogController extends Controller
                 ->take($itemsperpage)
                 ->get();
 
-            $blogs_count = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                ->where('blogs.publish', 2)
+            $blogs_count = Blog::where('blogs.publish', 2)
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->get();
@@ -404,8 +390,8 @@ class BlogController extends Controller
 
         foreach ($Blogs as $key => $value) {
             $Blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $Blogs[$key]['image'] = $value['image'] ? url($value['image']) : '';
-            $Blogs[$key]['path'] = $value['path'] ? url($value['path']) : '';
+            $Blogs[$key]['image'] = url($value['image']);
+            $Blogs[$key]['path'] = url($value['path']);
         }
 
         if ($BlogsCs > 0 && $BlogsCount == 0) {

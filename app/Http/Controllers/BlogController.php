@@ -137,6 +137,7 @@ class BlogController extends Controller
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                ->where('blogs.publish', 2)
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->limit($limit)
@@ -147,6 +148,7 @@ class BlogController extends Controller
             $blogs_count = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                ->where('blogs.publish', 2)
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->get();
@@ -165,6 +167,7 @@ class BlogController extends Controller
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                ->where('blogs.publish', 2)
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->orderBy($request->sortBy, $order)
@@ -176,6 +179,7 @@ class BlogController extends Controller
             $blogs_count = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                ->where('blogs.publish', 2)
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->get();

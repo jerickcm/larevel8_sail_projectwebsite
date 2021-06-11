@@ -157,6 +157,18 @@ php sail  artisan make:factory BlogFactory
 php sail artisan make:seeder BlogTableSeeder
 php sail artisan make:model Blog -m
 php sail artisan make:controller --resource BlogController
-
-
 sail php  artisan db:seed --class=BlogTableSeeder
+
+
+php artisan make:migration create_news_table --create=news
+php artisan make:factory NewsFactory
+php artisan make:seeder NewsTableSeeder
+php artisan make:model News -m
+sail artisan make:controller --resource NewsController
+php  artisan db:seed --class=NewsTableSeeder
+
+alias sail='bash vendor/bin/sail'
+
+sail artisan migrate
+
+

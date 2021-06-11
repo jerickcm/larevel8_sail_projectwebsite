@@ -55,15 +55,17 @@ class User extends Authenticatable
 
     public function posts()
     {
-        // return $this->hasOne('App\Models\UserDetails');
-
         return $this->hasMany(Post::class);
     }
 
     public function blogs()
     {
-
         return $this->hasMany(Blog::class);
+    }
+
+    public function news()
+    {
+        return $this->hasMany(News::class);
     }
 
     public function roles()

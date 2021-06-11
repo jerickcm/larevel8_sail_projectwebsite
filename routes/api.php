@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\NewsController;
 // use App\Http\Controllers\MessageofthedayController
 
 /*
@@ -22,8 +23,6 @@ use App\Http\Controllers\BlogController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-
 
 Route::post('/login', LoginController::class);
 
@@ -58,11 +57,16 @@ Route::post('/post/list', [PostController::class, 'show']);
 Route::get('/post/list/{page}', [PostController::class, 'show_by_get']);
 Route::post('/post/getbyslug', [PostController::class, 'show_by_slug']);
 
-
 Route::get('/blog/page/{page}/item/{perpage}', [BlogController::class, 'show']);
 Route::post('/blog/create', [BlogController::class, 'create']);
 Route::post('/blog/datatable', [BlogController::class, 'datatable']);
 Route::delete('/blog/delete/{id}', [BlogController::class, 'delete']);
 Route::post('/blog/update/{id}', [BlogController::class, 'update']);
-
 Route::get('/blog/{slug}', [BlogController::class, 'index']);
+
+Route::get('/news/page/{page}/item/{perpage}', [NewsController::class, 'show']);
+Route::post('/news/create', [NewsController::class, 'create']);
+Route::post('/news/datatable', [NewsController::class, 'datatable']);
+Route::delete('/news/delete/{id}', [NewsController::class, 'delete']);
+Route::post('/news/update/{id}', [NewsController::class, 'update']);
+Route::get('/news/{slug}', [NewsController::class, 'index']);

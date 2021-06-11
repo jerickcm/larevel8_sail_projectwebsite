@@ -154,11 +154,14 @@ class BlogController extends Controller
             $skip = $page * $page;
         }
 
+        $table = 'blogs';
+
         if ($request->sortBy == ""  && $request->sortDesc == "") {
             $page = $page ? $page : 1;
             $limit = $itemsperpage ? $itemsperpage : 10;
 
             $blogs = Blog::where('blogs.publish', 2)
+                ->orderBy($table.'.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->limit($limit)

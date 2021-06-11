@@ -266,9 +266,10 @@ class PostController extends Controller
 
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $posts[$key]['image'] = url($value['image']);
-            $posts[$key]['path'] = url($value['path']);
+            $posts[$key]['image'] = $value['image'] ? url($value['image']) : '';
+            $posts[$key]['path'] = $value['path'] ? url($value['path']) : '';
         }
+
 
         if ($postsCs > 0 && $postsCount == 0) {
             $postsCount =   $postsCs;

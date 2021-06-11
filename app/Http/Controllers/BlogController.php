@@ -21,20 +21,19 @@ class BlogController extends Controller
 
         $time_start = microtime(true);
 
-        if($request->slug){
+        if ($request->slug) {
 
             $table = 'blogs';
 
-            $query = Blog::join('users', 'users.id', '=', $table.'.user_id')
-            ->where($table.'.slug', $request->slug)
-            ->select('users.name', 'users.email', $table.'.id', $table.'.title', $table.'.content', $table.'.slug', $table.'.id', $table.'.publish', $table.'.created_at', $table.'.image')
-            ->get();
+            $query = Blog::join('users', 'users.id', '=', $table . '.user_id')
+                ->where($table . '.slug', $request->slug)
+                ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish', $table . '.created_at', $table . '.image')
+                ->get();
 
             foreach ($query as $key => $value) {
                 $query[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
                 $query[$key]['image'] = url($value['image']);
             }
-
         }
 
         $time_end = microtime(true);
@@ -45,7 +44,6 @@ class BlogController extends Controller
             'success' => 1,
             '_benchmark' => $timeend,
         ], 200);
-
     }
 
     /**
@@ -417,8 +415,8 @@ class BlogController extends Controller
 
         foreach ($Blogs as $key => $value) {
             $Blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $Blogs[$key]['image'] = url($value['image']);
-            $Blogs[$key]['path'] = url($value['path']);
+            $Blogs[$key]['image'] = $value['image'] ? url($value['image']) : '';
+            $Blogs[$key]['path'] = $value['path'] ? url($value['path']) : '';
         }
 
         if ($BlogsCs > 0 && $BlogsCount == 0) {

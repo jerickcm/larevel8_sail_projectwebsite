@@ -17,7 +17,40 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+
+    public function index($slug)
+    {
+
+        // $time_start = microtime(true);
+        // $time_end = microtime(true);
+        // $timeend = $time_end - $time_start;
+
+        // return response()->json([
+        //     'success' => true,
+        //     '_elapsed_time' => $timeend,
+        //     // $request->user()
+        //     // 'errors' => $validator->errors(),
+        // ], 200);
+
+
+        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
+        ->where('posts.slug', $slug)
+        ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
+        ->get();
+
+        foreach ($posts as $key => $value) {
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['image'] = url($value['image']);
+        }
+
+        return response()->json([
+            'data' => $posts,
+            'success' => 1,
+        ], 200);
+    }
+
+
+    public function index_(Request $request)
     {
         $time_start = microtime(true);
         $time_end = microtime(true);

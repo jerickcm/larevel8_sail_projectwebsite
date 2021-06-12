@@ -59,6 +59,9 @@ Route::post('/post/update', [PostController::class, 'update']);
 Route::post('/post/list', [PostController::class, 'show']);
 Route::get('/post/list/{page}', [PostController::class, 'show_by_get']);
 Route::post('/post/getbyslug', [PostController::class, 'show_by_slug']);
+Route::get('/post/slug/{slug}', [PostController::class, 'index']);
+
+
 
 Route::get('/blog/page/{page}/item/{perpage}', [BlogController::class, 'show']);
 Route::post('/blog/create', [BlogController::class, 'create']);

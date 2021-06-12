@@ -172,3 +172,6 @@ alias sail='bash vendor/bin/sail'
 sail artisan migrate
 
 
+php sail artisan make:migration add_ckeditorlog_in_repective_tables
+
+

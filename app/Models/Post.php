@@ -16,7 +16,7 @@ class Post extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
+        'ckeditor_log','title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
     ];
 
     public function tags()

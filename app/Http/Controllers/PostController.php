@@ -47,6 +47,7 @@ class PostController extends Controller
          *
          */
         if ($request->file('image')) {
+
             $filenameWithExt = $request->file('image')->getClientOriginalName();
 
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -57,8 +58,11 @@ class PostController extends Controller
 
             $path = $request->file('image')->storeAs('public/upload_post', $FileNameToStore);
             $FileNameToStore = 'storage/upload_post/' . $FileNameToStore;
+
         } else {
+
             $FileNameToStore = null;
+
         }
 
 
@@ -73,7 +77,8 @@ class PostController extends Controller
                 'publish' => $request->input('publish'),
                 'content' => $request->input('content'),
                 'slug' => Str::slug($request->input('title') . "-" . time(), '-'),
-                'image' => $FileNameToStore
+                'image' => $FileNameToStore,
+                'ckeditor_log' =>$request->input('ckeditor_log')
             ]
         );
 
@@ -169,6 +174,11 @@ class PostController extends Controller
     public function ckeditor(Request $request)
     {
 
+
+        // $access_token = $request->header('identifier');
+
+
+
         $filenameWithExt = $request->file('upload')->getClientOriginalName();
 
         $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -180,13 +190,15 @@ class PostController extends Controller
         $path = $request->file('upload')->storeAs('public/upload_ckeditor', $FileNameToStore);
 
         $data["domain"] = $_SERVER['SERVER_NAME'];
+
         $FileNameToStore = 'storage/upload_ckeditor/' . $FileNameToStore;
 
         $mydata["ret"] =  $filenameWithExt;
 
         $image_log = new Ckeditorupload;
         $image_log->user_id = $request->user()->id;
-        $image_log->image_name = $path;
+        $image_log->image_name = $FileNameToStore;
+        $image_log->instance_identifier = $request->header('identifier');
         $image_log->save();
 
 
@@ -218,7 +230,7 @@ class PostController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image', 'posts.created_at')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image', 'posts.created_at', 'posts.ckeditor_log')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -246,7 +258,7 @@ class PostController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'posts.user_id')
-                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image', 'posts.created_at')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image', 'posts.created_at', 'posts.ckeditor_log')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)

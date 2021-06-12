@@ -108,6 +108,7 @@ class BlogController extends Controller
                 'image' => $FileNameToStore,
                 'publish' =>  $blog->publish,
                 'publish_test' =>  $blog->publish_text,
+                'ckeditor_log' =>$request->input('ckeditor_log')
             ]
         );
 
@@ -370,7 +371,7 @@ class BlogController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at','blogs.ckeditor_log')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -398,7 +399,7 @@ class BlogController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at','blogs.ckeditor_log')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)

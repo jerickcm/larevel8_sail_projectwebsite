@@ -106,6 +106,7 @@ class NewsController extends Controller
                 'image' => $FileNameToStore,
                 'publish' =>  $News->publish,
                 'publish_test' =>  $News->publish_text,
+                'ckeditor_log' =>$request->input('ckeditor_log')
             ]
         );
 
@@ -368,7 +369,7 @@ class NewsController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'news.user_id')
-                ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at')
+                ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at','news.ckeditor_log')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -396,7 +397,7 @@ class NewsController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'news.user_id')
-                ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at')
+                ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at','news.ckeditor_log')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)

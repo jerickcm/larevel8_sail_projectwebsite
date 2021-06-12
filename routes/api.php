@@ -47,9 +47,12 @@ Route::post('/register', [RegisterController::class, 'register']);
 
 Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::class, 'index']);
 
-Route::post('/create-post', [PostController::class, 'create']);
+Route::post('/post/create', [PostController::class, 'create']);
+
 Route::post('/post/get', [PostController::class, 'index']);
+
 Route::post('/ckeditor', [PostController::class, 'ckeditor']);
+
 Route::post('/post/datatable', [PostController::class, 'datatable']);
 Route::post('/post/delete', [PostController::class, 'datatable_delete']);
 Route::post('/post/update', [PostController::class, 'update']);

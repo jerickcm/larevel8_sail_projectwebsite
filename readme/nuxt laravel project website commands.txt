@@ -175,3 +175,13 @@ sail artisan migrate
 php sail artisan make:migration add_ckeditorlog_in_repective_tables
 
 
+# create quotes table
+
+php sail artisan make:migration create_quotes_table --create=quotes
+php sail artisan make:factory QuotesFactory
+php sail artisan make:seeder QuotesTableSeeder
+php sail artisan make:model Quotes -m
+php sail artisan make:controller --resource QuotesController
+php sail artisan db:seed --class=QuotesTableSeeder
+
+php sail artisan db:seed --class=QuotesTableSeeder

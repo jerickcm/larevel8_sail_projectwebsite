@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\UserDetails;
 use App\Models\Posts;
 use App\Models\Role;
-
+use App\Models\Quotes;
 
 class User extends Authenticatable
 {
@@ -66,6 +66,10 @@ class User extends Authenticatable
     public function news()
     {
         return $this->hasMany(News::class);
+    }
+    public function quotes()
+    {
+        return $this->hasMany(Quotes::class);
     }
 
     public function roles()

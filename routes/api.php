@@ -76,3 +76,13 @@ Route::post('/news/datatable', [NewsController::class, 'datatable']);
 Route::delete('/news/delete/{id}', [NewsController::class, 'delete']);
 Route::post('/news/update/{id}', [NewsController::class, 'update']);
 Route::get('/news/{slug}', [NewsController::class, 'index']);
+
+
+Route::get('/quotes/page/{page}/item/{perpage}', [QuotesController::class, 'show']);
+Route::post('/quotes/create', [QuotesController::class, 'create']);
+Route::post('/quotes/datatable', [QuotesController::class, 'datatable']);
+Route::delete('/quotes/delete/{id}', [QuotesController::class, 'delete']);
+Route::post('/quotes/update/{id}', [QuotesController::class, 'update']);
+Route::get('/quotes/{slug}', [QuotesController::class, 'index']);
+
+

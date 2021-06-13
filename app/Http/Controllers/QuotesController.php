@@ -59,35 +59,6 @@ class QuotesController extends Controller
 
         $user = User::findOrFail($request->user()->id);
 
-        /**
-         * Image upload
-         *
-         */
-
-        if ($request->file('image')) {
-
-            $filenameWithExt = $request->file('image')->getClientOriginalName();
-
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-
-            $extension = $request->file('image')->getClientOriginalExtension();
-
-            $FileNameToStore = $filename . '_' . time() . "." . $extension;
-
-            $path = $request->file('image')->storeAs('public/upload_quotes', $FileNameToStore);
-
-            $FileNameToStore = 'storage/upload_quotes/' . $FileNameToStore;
-        } else {
-
-            $FileNameToStore = null;
-        }
-
-
-        /**
-         * Image upload
-         *
-         */
-
         $Quotes =  new Quotes();
         if ($request->input('publish') == 1) {
 
@@ -101,29 +72,21 @@ class QuotesController extends Controller
 
         $newQuotes = new Quotes(
             [
-                'title' => $request->input('title'),
-
-                'content' => $request->input('content'),
-                'slug' => Str::slug($request->input('title') . "-" . time(), '-'),
-                'image' => $FileNameToStore,
+                'author' => $request->input('author'),
+                'message' => $request->input('message'),
                 'publish' =>  $Quotes->publish,
                 'publish_test' =>  $Quotes->publish_text,
-                'ckeditor_log' =>$request->input('ckeditor_log')
             ]
         );
 
-        $user->Quotes()->save($newQuotes);
+        $user->quotes()->save($newQuotes);
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'save' =>  $newQuotes,
             'success' => true,
-            'publish' => $Quotes->publish,
             'user' => $request->user(),
-            'path' =>  $FileNameToStore ? url($FileNameToStore) : "",
-            'path_pub' =>  $FileNameToStore ? url($path) : "",
             '_benchmark' => $timeend,
         ], 200);
     }
@@ -155,7 +118,7 @@ class QuotesController extends Controller
             $skip = $page * $page;
         }
 
-        $table = 'Quotes';
+        $table = 'quotes';
 
         if ($request->sortBy == ""  && $request->sortDesc == "") {
             $page = $page ? $page : 1;
@@ -164,7 +127,7 @@ class QuotesController extends Controller
             $Quotes = Quotes::where('quotes.publish', 2)
                 ->orderBy($table.'.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'quotes.user_id')
-                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at')
+                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at', 'quotes.author', 'quotes.message')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($itemsperpage)
@@ -187,7 +150,7 @@ class QuotesController extends Controller
 
             $Quotes = Quotes::where('quotes.publish', 2)
                 ->join('users', 'users.id', '=', 'quotes.user_id')
-                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at')
+                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at', 'quotes.author', 'quotes.message')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -205,8 +168,6 @@ class QuotesController extends Controller
 
         foreach ($Quotes as $key => $value) {
             $Quotes[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $Quotes[$key]['image'] = url($value['image']);
-            $Quotes[$key]['path'] = url($value['path']);
         }
 
         if ($QuotesCs > 0 && $QuotesCount == 0) {
@@ -371,7 +332,7 @@ class QuotesController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'quotes.user_id')
-                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at','quotes.ckeditor_log')
+                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at','quotes.ckeditor_log','quotes.message','quotes.author')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -399,7 +360,7 @@ class QuotesController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'quotes.user_id')
-                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at','quotes.ckeditor_log')
+                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at','quotes.ckeditor_log','quotes.message','quotes.author')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)

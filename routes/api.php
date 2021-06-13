@@ -7,6 +7,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\QuotesController;
 // use App\Http\Controllers\MessageofthedayController
 
 /*

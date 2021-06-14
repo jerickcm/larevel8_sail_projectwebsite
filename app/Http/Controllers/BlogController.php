@@ -32,7 +32,7 @@ class BlogController extends Controller
 
             foreach ($query as $key => $value) {
                 $query[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-                $query[$key]['image'] = $request->getSchemeAndHttpHost($value['image']);
+                $query[$key]['image'] = url($value['image']);
             }
         }
 
@@ -122,8 +122,8 @@ class BlogController extends Controller
             'success' => true,
             'publish' => $blog->publish,
             'user' => $request->user(),
-            'path' =>  $FileNameToStore ? $request->getSchemeAndHttpHost($FileNameToStore) : "",
-            'path_pub' =>  $FileNameToStore ? $request->getSchemeAndHttpHost($path) : "",
+            'path' =>  $FileNameToStore ? url($FileNameToStore) : "",
+            'path_pub' =>  $FileNameToStore ? url($path) : "",
             '_benchmark' => $timeend,
         ], 200);
     }
@@ -202,10 +202,11 @@ class BlogController extends Controller
 
         $blogsCs =   $blogs->count();
         $blogsCount =  $blogs_count->count();
+
         foreach ($blogs as $key => $value) {
             $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $blogs[$key]['image'] = $request->getSchemeAndHttpHost($value['image']);
-            $blogs[$key]['path'] = $request->getSchemeAndHttpHost($value['path']);
+            $blogs[$key]['image'] = url($value['image']);
+            $blogs[$key]['path'] = url($value['path']);
         }
 
         if ($blogsCs > 0 && $blogsCount == 0) {
@@ -245,12 +246,8 @@ class BlogController extends Controller
 
         $Blogcheck = Blog::findOrFail($id);
 
-        $data["domain"] = $_SERVER['SERVER_NAME'];
-
-        if ($request->getSchemeAndHttpHost($Blogcheck->image) === $request->image) {
-
+        if (url($Blogcheck->image) === $request->image) {
         } else if ($request->image === "") {
-
         } else {
 
             if ($request->image) {
@@ -289,7 +286,7 @@ class BlogController extends Controller
             $Blog->publish_text = 'publish';
         }
 
-        if ($request->getSchemeAndHttpHost($Blogcheck->image) === $request->image) {
+        if (url($Blogcheck->image) === $request->image) {
 
             $Blog->image   = '';
         } else if ($request->image == "") {
@@ -311,7 +308,7 @@ class BlogController extends Controller
         if ($request->image == "") {
             $image =  '';
         } else {
-            $image =  $request->getSchemeAndHttpHost($Blogagain->image);
+            $image =  url($Blogagain->image);
         }
 
         $time_end = microtime(true);
@@ -422,8 +419,8 @@ class BlogController extends Controller
 
         foreach ($Blogs as $key => $value) {
             $Blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $Blogs[$key]['image'] = $value['image'] ? $request->getSchemeAndHttpHost($value['image']) : '';
-            $Blogs[$key]['path'] = $value['path'] ? $request->getSchemeAndHttpHost($value['path']) : '';
+            $Blogs[$key]['image'] = $value['image'] ? url($value['image']) : '';
+            $Blogs[$key]['path'] = $value['path'] ? url($value['path']) : '';
         }
 
         if ($BlogsCs > 0 && $BlogsCount == 0) {

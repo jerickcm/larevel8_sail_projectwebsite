@@ -245,6 +245,9 @@ class NewsController extends Controller
         $Newscheck = News::findOrFail($id);
 
         if (url($Newscheck->image) === $request->image) {
+
+        } else if (secure_url($Newscheck->image) === $request->image) {
+
         } else if ($request->image === "") {
         } else {
 
@@ -286,7 +289,9 @@ class NewsController extends Controller
 
         if (url($Newscheck->image) === $request->image) {
 
-            $News->image   = '';
+
+        } else if (secure_url($Newscheck->image) === $request->image) {
+
         } else if ($request->image == "") {
 
             $News->image   = '';
@@ -305,7 +310,13 @@ class NewsController extends Controller
 
         if ($request->image == "") {
             $image =  '';
+
+        } else if (secure_url($Newscheck->image) === $request->image) {
+
+            $image =  secure_url($Newsagain->image);
+
         } else {
+
             $image =  url($Newsagain->image);
         }
 

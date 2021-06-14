@@ -247,7 +247,11 @@ class BlogController extends Controller
         $Blogcheck = Blog::findOrFail($id);
 
         if (url($Blogcheck->image) === $request->image) {
+
+        } else if (secure_url($Blogcheck->image) === $request->image) {
+
         } else if ($request->image === "") {
+
         } else {
 
             if ($request->image) {
@@ -288,17 +292,24 @@ class BlogController extends Controller
 
         if (url($Blogcheck->image) === $request->image) {
 
-            $Blog->image   = '';
+
+        } else if (secure_url($Blogcheck->image) === $request->image) {
+
+
         } else if ($request->image == "") {
 
             $Blog->image   = '';
+
         } else {
 
             if ($request->image) {
 
                 $Blog->image = $FileNameToStore;
+
             } else {
+
             }
+
         }
 
         $Blog->update();
@@ -306,9 +317,17 @@ class BlogController extends Controller
         $Blogagain = Blog::findOrFail($id);
 
         if ($request->image == "") {
+
             $image =  '';
+
+        } else if (secure_url($Blogcheck->image) === $request->image) {
+
+            $image =  secure_url($Blogagain->image);
+
         } else {
+
             $image =  url($Blogagain->image);
+
         }
 
         $time_end = microtime(true);

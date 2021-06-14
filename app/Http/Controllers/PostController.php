@@ -343,9 +343,11 @@ class PostController extends Controller
     {
 
         $postcheck = Post::findOrFail($request->post_id);
-        // var_dump($postcheck );
 
         if (url($postcheck->image) === $request->image) {
+
+        } else if (secure_url($postcheck->image) === $request->image) {
+
         } else if ($request->image === "") {
         } else {
 
@@ -384,11 +386,13 @@ class PostController extends Controller
         }
 
         if (url($postcheck->image) === $request->image) {
-            $image = '';
-            $post->image;
+
+        } else if (secure_url($postcheck->image) === $request->image) {
+
         } else if ($request->image == "") {
 
             $post->image   = '';
+
         } else {
 
             if ($request->image) {
@@ -405,6 +409,9 @@ class PostController extends Controller
 
         if ($request->image == "") {
             $image =  '';
+
+        } else if (secure_url($postcheck->image) === $request->image) {
+            $image =  secure_url($postagain->image);
         } else {
             $image =  url($postagain->image);
         }

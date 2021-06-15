@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class NewsController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -106,7 +106,7 @@ class NewsController extends Controller
                 'image' => $FileNameToStore,
                 'publish' =>  $News->publish,
                 'publish_test' =>  $News->publish_text,
-                'ckeditor_log' =>$request->input('ckeditor_log')
+                'ckeditor_log' => $request->input('ckeditor_log')
             ]
         );
 
@@ -146,6 +146,8 @@ class NewsController extends Controller
      */
     public function show(Request $request, $page, $itemsperpage)
     {
+
+        $time_start = microtime(true);
         $skip = $request->page;
         if ($page == 1) {
             $skip = 0;
@@ -160,7 +162,7 @@ class NewsController extends Controller
             $limit = $itemsperpage ? $itemsperpage : 10;
 
             $news = News::where('news.publish', 2)
-                ->orderBy($table.'.created_at', 'desc')
+                ->orderBy($table . '.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'news.user_id')
                 ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at')
                 ->limit($limit)
@@ -210,12 +212,14 @@ class NewsController extends Controller
         if ($newsCs > 0 && $newsCount == 0) {
             $newsCount =   $newsCs;
         }
-        // $news = array_reverse($news);
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
         return response()->json([
             'data' => $news,
             'total' =>  $newsCount,
             'skip' => $skip,
-            'take' => $itemsperpage
+            'take' => $itemsperpage,
+            '_benchmark' => $timeend
         ], 200);
     }
 
@@ -245,9 +249,7 @@ class NewsController extends Controller
         $Newscheck = News::findOrFail($id);
 
         if (url($Newscheck->image) === $request->image) {
-
         } else if (secure_url($Newscheck->image) === $request->image) {
-
         } else if ($request->image === "") {
         } else {
 
@@ -288,10 +290,7 @@ class NewsController extends Controller
         }
 
         if (url($Newscheck->image) === $request->image) {
-
-
         } else if (secure_url($Newscheck->image) === $request->image) {
-
         } else if ($request->image == "") {
 
             $News->image   = '';
@@ -310,11 +309,9 @@ class NewsController extends Controller
 
         if ($request->image == "") {
             $image =  '';
-
         } else if (secure_url($Newscheck->image) === $request->image) {
 
             $image =  secure_url($Newsagain->image);
-
         } else {
 
             $image =  url($Newsagain->image);
@@ -380,7 +377,7 @@ class NewsController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'news.user_id')
-                ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at','news.ckeditor_log')
+                ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at', 'news.ckeditor_log')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -408,7 +405,7 @@ class NewsController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'news.user_id')
-                ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at','news.ckeditor_log')
+                ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at', 'news.ckeditor_log')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)

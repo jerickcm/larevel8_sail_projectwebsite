@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class QuotesController extends Controller
 {
-  /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -111,6 +111,7 @@ class QuotesController extends Controller
      */
     public function show(Request $request, $page, $itemsperpage)
     {
+        $time_start = microtime(true);
         $skip = $request->page;
         if ($page == 1) {
             $skip = 0;
@@ -125,7 +126,7 @@ class QuotesController extends Controller
             $limit = $itemsperpage ? $itemsperpage : 10;
 
             $Quotes = Quotes::where('quotes.publish', 2)
-                ->orderBy($table.'.created_at', 'desc')
+                ->orderBy($table . '.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'quotes.user_id')
                 ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at', 'quotes.author', 'quotes.message')
                 ->limit($limit)
@@ -173,12 +174,16 @@ class QuotesController extends Controller
         if ($QuotesCs > 0 && $QuotesCount == 0) {
             $QuotesCount =   $QuotesCs;
         }
-        // $Quotes = array_reverse($Quotes);
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
         return response()->json([
             'data' => $Quotes,
             'total' =>  $QuotesCount,
             'skip' => $skip,
-            'take' => $itemsperpage
+            'take' => $itemsperpage,
+            '_benchmark' => $timeend,
         ], 200);
     }
 
@@ -332,7 +337,7 @@ class QuotesController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'quotes.user_id')
-                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at','quotes.ckeditor_log','quotes.message','quotes.author')
+                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at', 'quotes.ckeditor_log', 'quotes.message', 'quotes.author')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -360,7 +365,7 @@ class QuotesController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'quotes.user_id')
-                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at','quotes.ckeditor_log','quotes.message','quotes.author')
+                ->select('users.name', 'users.email', 'quotes.id', 'quotes.title', 'quotes.content', 'quotes.slug', 'quotes.id', 'quotes.publish', 'quotes.image', 'quotes.created_at', 'quotes.ckeditor_log', 'quotes.message', 'quotes.author')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)

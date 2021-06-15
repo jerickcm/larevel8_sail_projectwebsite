@@ -108,7 +108,7 @@ class BlogController extends Controller
                 'image' => $FileNameToStore,
                 'publish' =>  $blog->publish,
                 'publish_test' =>  $blog->publish_text,
-                'ckeditor_log' =>$request->input('ckeditor_log')
+                'ckeditor_log' => $request->input('ckeditor_log')
             ]
         );
 
@@ -148,6 +148,10 @@ class BlogController extends Controller
      */
     public function show(Request $request, $page, $itemsperpage)
     {
+
+        $time_start = microtime(true);
+
+
         $skip = $request->page;
         if ($page == 1) {
             $skip = 0;
@@ -162,7 +166,7 @@ class BlogController extends Controller
             $limit = $itemsperpage ? $itemsperpage : 10;
 
             $blogs = Blog::where('blogs.publish', 2)
-                ->orderBy($table.'.created_at', 'desc')
+                ->orderBy($table . '.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->limit($limit)
@@ -213,11 +217,19 @@ class BlogController extends Controller
             $blogsCount =   $blogsCs;
         }
         // $blogs = array_reverse($blogs);
+
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+
+
         return response()->json([
             'data' => $blogs,
             'total' =>  $blogsCount,
             'skip' => $skip,
-            'take' => $itemsperpage
+            'take' => $itemsperpage,
+            '_benchmark' => $timeend,
         ], 200);
     }
 
@@ -247,11 +259,8 @@ class BlogController extends Controller
         $Blogcheck = Blog::findOrFail($id);
 
         if (url($Blogcheck->image) === $request->image) {
-
         } else if (secure_url($Blogcheck->image) === $request->image) {
-
         } else if ($request->image === "") {
-
         } else {
 
             if ($request->image) {
@@ -291,25 +300,17 @@ class BlogController extends Controller
         }
 
         if (url($Blogcheck->image) === $request->image) {
-
-
         } else if (secure_url($Blogcheck->image) === $request->image) {
-
-
         } else if ($request->image == "") {
 
             $Blog->image   = '';
-
         } else {
 
             if ($request->image) {
 
                 $Blog->image = $FileNameToStore;
-
             } else {
-
             }
-
         }
 
         $Blog->update();
@@ -319,15 +320,12 @@ class BlogController extends Controller
         if ($request->image == "") {
 
             $image =  '';
-
         } else if (secure_url($Blogcheck->image) === $request->image) {
 
             $image =  secure_url($Blogagain->image);
-
         } else {
 
             $image =  url($Blogagain->image);
-
         }
 
         $time_end = microtime(true);
@@ -390,7 +388,7 @@ class BlogController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at','blogs.ckeditor_log')
+                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -418,7 +416,7 @@ class BlogController extends Controller
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at','blogs.ckeditor_log')
+                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)

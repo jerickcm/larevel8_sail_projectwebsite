@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             TaggableTableSeeder::class,
             MessageoftheDayTableSeeder::class,
             BlogTableSeeder::class,
+            EarthRemindersTableSeeder::class,
         ]);
     }
 }

@@ -8,7 +8,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\QuotesController;
-// use App\Http\Controllers\MessageofthedayController
+use App\Http\Controllers\EarthRemindersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,4 +86,12 @@ Route::delete('/quotes/delete/{id}', [QuotesController::class, 'delete']);
 Route::post('/quotes/update/{id}', [QuotesController::class, 'update']);
 Route::get('/quotes/{slug}', [QuotesController::class, 'index']);
 
+
+
+Route::get('/er/page/{page}/item/{perpage}', [EarthRemindersController::class, 'show']);
+Route::post('/er/create', [EarthRemindersController::class, 'create']);
+Route::post('/er/datatable', [EarthRemindersController::class, 'datatable']);
+Route::delete('/er/delete/{id}', [EarthRemindersController::class, 'delete']);
+Route::post('/er/update/{id}', [EarthRemindersController::class, 'update']);
+Route::get('/er/{slug}', [EarthRemindersController::class, 'index']);
 

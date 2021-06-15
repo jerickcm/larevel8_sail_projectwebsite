@@ -13,7 +13,7 @@ sail artisan make:seeder UsersTableSeeder
 
 php artisan db:seed
 
-php artisan migrate:rollback --step=1
+
 2
 3
 
@@ -185,3 +185,21 @@ php sail artisan make:controller --resource QuotesController
 php sail artisan db:seed --class=QuotesTableSeeder
 
 php sail artisan db:seed --class=QuotesTableSeeder
+
+
+# create worldreminders
+
+php sail artisan make:migration create_earthreminders_table --create=earthreminders
+php sail artisan make:factory EarthRemindersFactory
+php sail artisan make:seeder EarthRemindersTableSeeder
+
+php sail artisan make:controller --resource EarthRemindersController
+
+php sail artisan db:seed --class=EarthRemindersTableSeeder
+
+php sail artisan migrate
+
+php artisan migrate:rollback --step=1
+
+
+sail artisan db:seed --class=EarthRemindersTableSeeder

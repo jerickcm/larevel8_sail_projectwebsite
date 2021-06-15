@@ -81,3 +81,6 @@ pm2 start '/root/.nvm/versions/node/v14.17.0/bin/http-server dist -p 3000'  --na
 
 
 http://localhost:3000/login?state=wSne0kJH0g&code=4%2F0AY0e-g5LXu0PEaqT8ggC7EfitpOMVdjZe5JBucWv7RYI16Zy7-y4tAVv5imNrjnj5xamaw&scope=email%20profile%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.metadata&authuser=0&prompt=consent
+
+
+    alias sail='bash vendor/bin/sail'

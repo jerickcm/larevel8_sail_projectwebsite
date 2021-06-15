@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class EarthRemindersController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -23,9 +23,9 @@ class EarthRemindersController extends Controller
 
         if ($request->slug) {
 
-            $table = 'EarthReminders';
+            $table = 'earthreminders';
 
-            $query = EarthReminders::join('users', 'users.id', '=', $table . '.user_id')
+            $query = earthreminders::join('users', 'users.id', '=', $table . '.user_id')
                 ->where($table . '.slug', $request->slug)
                 ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish', $table . '.created_at', $table . '.image')
                 ->get();
@@ -59,27 +59,63 @@ class EarthRemindersController extends Controller
 
         $user = User::findOrFail($request->user()->id);
 
-        $EarthReminders =  new EarthReminders();
-        if ($request->input('publish') == 1) {
 
-            $EarthReminders->publish = 1;
-            $EarthReminders->publish_text  = 'draft';
+        /**
+         * Image upload
+         *
+         */
+
+        if ($request->file('image')) {
+
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+
+            $extension = $request->file('image')->getClientOriginalExtension();
+
+            $FileNameToStore = $filename . '_' . time() . "." . $extension;
+
+            $path = $request->file('image')->storeAs('public/upload_worldreminders', $FileNameToStore);
+
+            $FileNameToStore = 'storage/upload_worldreminders/' . $FileNameToStore;
         } else {
 
-            $EarthReminders->publish = 2;
-            $EarthReminders->publish_text  = 'publish';
+            $FileNameToStore = null;
         }
 
-        $newEarthReminders = new EarthReminders(
+
+        /**
+         * Image upload
+         *
+         */
+
+
+        $earthreminders =  new EarthReminders();
+        if ($request->input('publish') == 1) {
+
+            $earthreminders->publish = 1;
+            $earthreminders->publish_text  = 'draft';
+        } else {
+
+            $earthreminders->publish = 2;
+            $earthreminders->publish_text  = 'publish';
+        }
+
+        $newearthreminders = new EarthReminders(
             [
+                'image' => $FileNameToStore,
+                'title' => $request->input('title'),
+                'slug' => Str::slug($request->input('title') . "-" . time(), '-'),
+                'subtitle' => $request->input('subtitle'),
                 'author' => $request->input('author'),
-                'message' => $request->input('message'),
-                'publish' =>  $EarthReminders->publish,
-                'publish_test' =>  $EarthReminders->publish_text,
+                'event_date' => $request->input('event_date'),
+                'country' => $request->input('country'),
+                'publish' =>  $earthreminders->publish,
+                'publish_test' =>  $earthreminders->publish_text,
             ]
         );
 
-        $user->EarthReminders()->save($newEarthReminders);
+        $user->earthreminders()->save($newearthreminders);
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
@@ -109,8 +145,9 @@ class EarthRemindersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $page, $itemsperpage)
+    public function show(Request $request, $page, $itemsperpage, $date)
     {
+        $date_parts = explode("-", $date); //' YYYY-MM-DD
         $time_start = microtime(true);
         $skip = $request->page;
         if ($page == 1) {
@@ -119,24 +156,30 @@ class EarthRemindersController extends Controller
             $skip = $page * $page;
         }
 
-        $table = 'EarthReminders';
+        $table = 'earthreminders';
 
         if ($request->sortBy == ""  && $request->sortDesc == "") {
             $page = $page ? $page : 1;
             $limit = $itemsperpage ? $itemsperpage : 10;
 
-            $EarthReminders = EarthReminders::where('earthreminderspublish', 2)
+
+            $date_parts = explode("-", $date); //' YYYY-MM-DD
+            $earthreminders = EarthReminders::where('earthreminders.publish', 2)
+                ->whereMonth('earthreminders.event_date',  $date_parts[1])
+                // ->whereDay('earthreminders.event_date',  $date_parts[2])
                 ->orderBy($table . '.created_at', 'desc')
-                ->join('users', 'users.id', '=', 'earthremindersuser_id')
-                ->select('users.name', 'users.email', 'earthremindersid', 'earthreminderstitle', 'earthreminderscontent', 'earthremindersslug', 'earthremindersid', 'earthreminderspublish', 'earthremindersimage', 'earthreminderscreated_at', 'earthremindersauthor', 'earthremindersmessage')
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
+                ->select('users.name', 'users.email', 'earthreminders.id', 'earthreminders.title', 'earthreminders.content', 'earthreminders.slug',  'earthreminders.publish', 'earthreminders.image', 'earthreminders.created_at', 'earthreminders.author', 'earthreminders.subtitle', 'earthreminders.event_date', 'earthreminders.country')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($itemsperpage)
                 ->get();
 
-            $EarthReminders_count = EarthReminders::where('earthreminderspublish', 2)
+            $earthreminders_count = EarthReminders::where('earthreminders.publish', 2)
+                ->whereMonth('earthreminders.event_date',  $date_parts[1])
+                // ->whereDay('earthreminders.event_date',  $date_parts[2])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->join('users', 'users.id', '=', 'earthremindersuser_id')
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
                 ->get();
         } else {
 
@@ -149,30 +192,34 @@ class EarthRemindersController extends Controller
             $page = $page  ? $page  : 1;
             $limit = $itemsperpage ? $itemsperpage : 10;
 
-            $EarthReminders = EarthReminders::where('earthreminderspublish', 2)
-                ->join('users', 'users.id', '=', 'earthremindersuser_id')
-                ->select('users.name', 'users.email', 'earthremindersid', 'earthreminderstitle', 'earthreminderscontent', 'earthremindersslug', 'earthremindersid', 'earthreminderspublish', 'earthremindersimage', 'earthreminderscreated_at', 'earthremindersauthor', 'earthremindersmessage')
+            $earthreminders = EarthReminders::where('earthreminders.publish', 2)
+                ->whereMonth('earthreminders.event_date',  $date_parts[1])
+                // ->whereDay('earthreminders.event_date',  $date_parts[2])
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
+                ->select('users.name', 'users.email', 'earthreminders.id', 'earthreminders.title', 'earthreminders.content', 'earthreminders.slug',  'earthreminders.publish', 'earthreminders.image', 'earthreminders.created_at', 'earthreminders.author', 'earthreminders.subtitle', 'earthreminders.event_date', 'earthreminders.country')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($itemsperpage)
                 ->get();
 
-            $EarthReminders_count = EarthReminders::where('earthreminderspublish', 2)
+            $earthreminders_count = EarthReminders::where('earthreminders.publish', 2)
+                ->whereMonth('earthreminders.event_date',  $date_parts[1])
+                // ->whereDay('earthreminders.event_date',  $date_parts[2])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->join('users', 'users.id', '=', 'earthremindersuser_id')
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
                 ->get();
         }
 
-        $EarthRemindersCs =   $EarthReminders->count();
-        $EarthRemindersCount =  $EarthReminders_count->count();
+        $earthremindersCs =   $earthreminders->count();
+        $earthremindersCount =  $earthreminders_count->count();
 
-        foreach ($EarthReminders as $key => $value) {
-            $EarthReminders[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+        foreach ($earthreminders as $key => $value) {
+            $earthreminders[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
         }
 
-        if ($EarthRemindersCs > 0 && $EarthRemindersCount == 0) {
-            $EarthRemindersCount =   $EarthRemindersCs;
+        if ($earthremindersCs > 0 && $earthremindersCount == 0) {
+            $earthremindersCount =   $earthremindersCs;
         }
 
         $time_end = microtime(true);
@@ -180,8 +227,8 @@ class EarthRemindersController extends Controller
 
 
         return response()->json([
-            'data' => $EarthReminders,
-            'total' =>  $EarthRemindersCount,
+            'data' => $earthreminders,
+            'total' =>  $earthremindersCount,
             'skip' => $skip,
             'take' => $itemsperpage,
             '_benchmark' => $timeend,
@@ -211,9 +258,9 @@ class EarthRemindersController extends Controller
 
         $time_start = microtime(true);
 
-        $EarthReminderscheck = EarthReminders::findOrFail($id);
+        $earthreminderscheck = EarthReminders::findOrFail($id);
 
-        if (url($EarthReminderscheck->image) === $request->image) {
+        if (url($earthreminderscheck->image) === $request->image) {
         } else if ($request->image === "") {
         } else {
 
@@ -230,8 +277,8 @@ class EarthRemindersController extends Controller
 
                 $FileNameToStore = $filename . '_' . time() . "." . $extension;
 
-                $path = $request->file('image')->storeAs('public/upload_EarthReminders', $FileNameToStore);
-                $FileNameToStore = 'storage/upload_EarthReminders/' . $FileNameToStore;
+                $path = $request->file('image')->storeAs('public/upload_earthreminders', $FileNameToStore);
+                $FileNameToStore = 'storage/upload_earthreminders/' . $FileNameToStore;
 
                 /**
                  * Image upload End
@@ -241,52 +288,55 @@ class EarthRemindersController extends Controller
         }
 
 
-        $EarthReminders = EarthReminders::findOrFail($id);
+        $earthreminders = EarthReminders::findOrFail($id);
 
-        $EarthReminders->title = $request->title;
-        $EarthReminders->content = $request->content;
-        $EarthReminders->publish = $request->publish;
+        $earthreminders->title = $request->title;
+        $earthreminders->subtitle = $request->subtitle;
+        $earthreminders->event_date = $request->event_date;
+        $earthreminders->country = $request->country;
+        $earthreminders->author = $request->author;
+        $earthreminders->content = $request->content;
+        $earthreminders->publish = $request->publish;
 
         if ($request->publish == 1) {
-            $EarthReminders->publish_text = 'draft';
+            $earthreminders->publish_text = 'draft';
         } else {
-            $EarthReminders->publish_text = 'publish';
+            $earthreminders->publish_text = 'publish';
         }
 
-        if (url($EarthReminderscheck->image) === $request->image) {
+        if (url($earthreminderscheck->image) === $request->image) {
 
-            $EarthReminders->image   = '';
+            $earthreminders->image   = '';
         } else if ($request->image == "") {
 
-            $EarthReminders->image   = '';
+            $earthreminders->image   = '';
         } else {
 
             if ($request->image) {
 
-                $EarthReminders->image = $FileNameToStore;
+                $earthreminders->image = $FileNameToStore;
             } else {
             }
         }
 
-        $EarthReminders->update();
+        $earthreminders->update();
 
-        $EarthRemindersagain = EarthReminders::findOrFail($id);
+        $earthremindersagain = EarthReminders::findOrFail($id);
 
         if ($request->image == "") {
             $image =  '';
         } else {
-            $image =  url($EarthRemindersagain->image);
+            $image =  url($earthremindersagain->image);
         }
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'save' => $EarthReminders,
+            'save' => $earthreminders,
             'success' => 1,
             'image' =>  $image,
             'user' => $request->user(),
-            'EarthReminders' =>  $EarthReminderscheck,
             '_benchmark' => $timeend,
         ], 200);
     }
@@ -303,7 +353,7 @@ class EarthRemindersController extends Controller
     {
         $time_start = microtime(true);
 
-        $table = EarthReminders::findOrFail($table_id);
+        $table = earthreminders::findOrFail($table_id);
         $table->delete();
 
         $time_end = microtime(true);
@@ -333,22 +383,22 @@ class EarthRemindersController extends Controller
 
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
-            $EarthReminders = EarthReminders::where([['title', 'LIKE', "%" . $request->search . "%"]])
+            $earthreminders = earthreminders::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->join('users', 'users.id', '=', 'earthremindersuser_id')
-                ->select('users.name', 'users.email', 'earthremindersid', 'earthreminderstitle', 'earthreminderscontent', 'earthremindersslug', 'earthremindersid', 'earthreminderspublish', 'earthremindersimage', 'earthreminderscreated_at', 'earthremindersckeditor_log', 'earthremindersmessage', 'earthremindersauthor')
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
+                ->select('users.name', 'users.email', 'earthreminders.*')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
                 ->get();
 
-            $EarthReminders_count = EarthReminders::where([['title', 'LIKE', "%" . $request->search . "%"]])
+            $earthreminders_count = earthreminders::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->join('users', 'users.id', '=', 'earthremindersuser_id')
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
                 ->get();
         } else {
 
@@ -361,42 +411,42 @@ class EarthRemindersController extends Controller
             $page = $request->has('page') ? $request->get('page') : 1;
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
-            $EarthReminders = EarthReminders::where([['title', 'LIKE', "%" . $request->search . "%"]])
+            $earthreminders = earthreminders::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->join('users', 'users.id', '=', 'earthremindersuser_id')
-                ->select('users.name', 'users.email', 'earthremindersid', 'earthreminderstitle', 'earthreminderscontent', 'earthremindersslug', 'earthremindersid', 'earthreminderspublish', 'earthremindersimage', 'earthreminderscreated_at', 'earthremindersckeditor_log', 'earthremindersmessage', 'earthremindersauthor')
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
+                ->select('users.name', 'users.email', 'earthreminders.*')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
                 ->get();
 
-            $EarthReminders_count = EarthReminders::where([['title', 'LIKE', "%" . $request->search . "%"]])
+            $earthreminders_count = earthreminders::where([['title', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
                 ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->join('users', 'users.id', '=', 'earthremindersuser_id')
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
                 ->get();
         }
 
-        $EarthRemindersCs =   $EarthReminders->count();
-        $EarthRemindersCount =  $EarthReminders_count->count();
+        $earthremindersCs =   $earthreminders->count();
+        $earthremindersCount =  $earthreminders_count->count();
 
-        foreach ($EarthReminders as $key => $value) {
-            $EarthReminders[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $EarthReminders[$key]['image'] = $value['image'] ? url($value['image']) : '';
-            $EarthReminders[$key]['path'] = $value['path'] ? url($value['path']) : '';
+        foreach ($earthreminders as $key => $value) {
+            $earthreminders[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $earthreminders[$key]['image'] = $value['image'] ? url($value['image']) : '';
+            $earthreminders[$key]['path'] = $value['path'] ? url($value['path']) : '';
         }
 
-        if ($EarthRemindersCs > 0 && $EarthRemindersCount == 0) {
-            $EarthRemindersCount =   $EarthRemindersCs;
+        if ($earthremindersCs > 0 && $earthremindersCount == 0) {
+            $earthremindersCount =   $earthremindersCs;
         }
-        // $EarthReminders = array_reverse($EarthReminders);
+        // $earthreminders = array_reverse($earthreminders);
         return response()->json([
-            'data' => $EarthReminders,
-            'total' =>  $EarthRemindersCount,
+            'data' => $earthreminders,
+            'total' =>  $earthremindersCount,
             'skip' => $skip,
             'take' => $request->itemsPerPage
         ], 200);

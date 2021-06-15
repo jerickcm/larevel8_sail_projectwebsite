@@ -88,7 +88,7 @@ Route::get('/quotes/{slug}', [QuotesController::class, 'index']);
 
 
 
-Route::get('/er/page/{page}/item/{perpage}', [EarthRemindersController::class, 'show']);
+Route::get('/er/page/{page}/item/{perpage}/date/{date}', [EarthRemindersController::class, 'show']);
 Route::post('/er/create', [EarthRemindersController::class, 'create']);
 Route::post('/er/datatable', [EarthRemindersController::class, 'datatable']);
 Route::delete('/er/delete/{id}', [EarthRemindersController::class, 'delete']);

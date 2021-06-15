@@ -12,7 +12,7 @@ use App\Models\UserDetails;
 use App\Models\Posts;
 use App\Models\Role;
 use App\Models\Quotes;
-
+use App\Models\EarthReminders;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
@@ -70,6 +70,11 @@ class User extends Authenticatable
     public function quotes()
     {
         return $this->hasMany(Quotes::class);
+    }
+
+    public function earthreminders()
+    {
+        return $this->hasMany(EarthReminders::class);
     }
 
     public function roles()

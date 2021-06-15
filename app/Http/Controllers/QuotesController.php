@@ -178,6 +178,7 @@ class QuotesController extends Controller
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
 
+
         return response()->json([
             'data' => $Quotes,
             'total' =>  $QuotesCount,

@@ -226,6 +226,7 @@ class EarthRemindersController extends Controller
             $date = Carbon::parse($value['event_date']);
             // $earthreminders[$key]['anniversary'] = $date->diffInDays($now);
             $earthreminders[$key]['anniversary'] = $date->diffInYears($now);
+            $earthreminders[$key]['image'] = $value['image'] ? url($value['image']) : '';
         }
 
         if ($earthremindersCs > 0 && $earthremindersCount == 0) {
@@ -540,7 +541,11 @@ class EarthRemindersController extends Controller
             $date = Carbon::parse($value['event_date']);
             // $earthreminders[$key]['anniversary'] = $date->diffInDays($now);
             $earthreminders[$key]['anniversary'] = $date->diffInYears($now);
+            $earthreminders[$key]['image'] = $value['image'] ? url($value['image']) : '';
         }
+
+
+
 
         if ($earthremindersCs > 0 && $earthremindersCount == 0) {
             $earthremindersCount =   $earthremindersCs;

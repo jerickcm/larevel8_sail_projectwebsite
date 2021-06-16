@@ -216,9 +216,15 @@ class EarthRemindersController extends Controller
         $earthremindersCs =   $earthreminders->count();
         $earthremindersCount =  $earthreminders_count->count();
 
+
+
+
+        $now = Carbon::now();
         foreach ($earthreminders as $key => $value) {
             $earthreminders[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $earthreminders[$key]['date'] = Carbon::parse($value['event_date'])->format('F d, Y');
+            $date = Carbon::parse($value['event_date']);
+            $earthreminders[$key]['anniversary'] = $date->diffInDays($now);
         }
 
         if ($earthremindersCs > 0 && $earthremindersCount == 0) {

@@ -14,8 +14,6 @@ class EarthReminders extends Model
     protected $table = "earthreminders";
     public $timestamps = true;
     protected $fillable = [
-        'event_date','country','subtitle','ckeditor_log','title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
+        'event_date', 'author', 'country', 'subtitle', 'ckeditor_log', 'title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
     ];
-
-
 }

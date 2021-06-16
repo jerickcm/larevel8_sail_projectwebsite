@@ -105,6 +105,7 @@ class EarthRemindersController extends Controller
             [
                 'image' => $FileNameToStore,
                 'title' => $request->input('title'),
+                'subtitle' => $request->input('subtitle'),
                 'slug' => Str::slug($request->input('title') . "-" . time(), '-'),
                 'subtitle' => $request->input('subtitle'),
                 'author' => $request->input('author'),
@@ -112,6 +113,7 @@ class EarthRemindersController extends Controller
                 'country' => $request->input('country'),
                 'publish' =>  $earthreminders->publish,
                 'publish_test' =>  $earthreminders->publish_text,
+                'content' =>  $request->input('content'),
             ]
         );
 
@@ -216,6 +218,7 @@ class EarthRemindersController extends Controller
 
         foreach ($earthreminders as $key => $value) {
             $earthreminders[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $earthreminders[$key]['date'] = Carbon::parse($value['event_date'])->format('F d, Y');
         }
 
         if ($earthremindersCs > 0 && $earthremindersCount == 0) {

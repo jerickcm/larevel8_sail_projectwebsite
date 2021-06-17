@@ -41,8 +41,10 @@ Route::post('/logout', function (Request $request) {
     ], 200);
 });
 
-
 Route::post('/register', [RegisterController::class, 'register']);
+
+Route::post('/validate/account', [RegisterController::class, 'create']);
+
 
 // Route::group(['middleware' => 'auth:sanctum', 'throttle:1000,1'], function () {
 
@@ -103,6 +105,7 @@ Route::get('/er/{slug}', [EarthRemindersController::class, 'index']);
 
 
 Route::get('/user_details', [UserDetailsController::class, 'show']);
+Route::get('/user_details/{email}', [UserDetailsController::class, 'show']);
 
 Route::get('/user_details/username/{username}', [UserDetailsController::class, 'show_username']);
 

@@ -70,6 +70,23 @@ class UserDetailsController extends Controller
         ], 200);
     }
 
+    public function show_username($username)
+    {
+        $time_start = microtime(true);
+
+        $user_details = UserDetails::where('username', $username)->first();
+
+        // $request->user()->details = $user_details;
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'user' =>  $user_details,
+            '_benchmark' => $timeend,
+        ], 200);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

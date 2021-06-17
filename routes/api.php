@@ -104,6 +104,9 @@ Route::get('/er/{slug}', [EarthRemindersController::class, 'index']);
 
 Route::get('/user_details', [UserDetailsController::class, 'show']);
 
+Route::get('/user_details/username/{username}', [UserDetailsController::class, 'show_username']);
+
+
 Route::post('/user_details/create', [UserDetailsController::class, 'create']);
 Route::post('/user_details/datatable', [UserDetailsController::class, 'datatable']);
 Route::delete('/user_details/delete/{id}', [UserDetailsController::class, 'delete']);

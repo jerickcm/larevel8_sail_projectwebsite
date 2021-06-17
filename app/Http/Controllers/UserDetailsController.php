@@ -53,18 +53,19 @@ class UserDetailsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request)
     {
         $time_start = microtime(true);
 
-        $UserDetails = UserDetails::whereUserId($request->user()->id)->first();
-        $request->user()->dettails =  $UserDetails;
+        $user_details = UserDetails::where('user_id', $request->user()->id)->first();
+
+        $request->user()->details = $user_details;
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'data' => $request->user(),
+            'user' => $request->user(),
             '_benchmark' => $timeend,
         ], 200);
     }
@@ -89,15 +90,25 @@ class UserDetailsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // $UserDetails = UserDetails::whereUserId(1)->first();
 
-        // $UserDetails->street = 'test';
+        $time_start = microtime(true);
 
-        // $UserDetails->save();
+        // $user_details = UserDetails::where('user_id', $request->user()->id)->first();
+        $UserDetails = UserDetails::whereUserId(1)->first();
+        $UserDetails->username =  $request->username;
+        $UserDetails->save();
 
-        // $UserDetails = UserDetails::whereUserId(1)->first();
 
-        // dd($UserDetails);
+        $user_details = UserDetails::where('user_id', $request->user()->id)->first();
+        $request->user()->details = $user_details;
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'user' => $request->user(),
+            '_benchmark' => $timeend,
+        ], 200);
     }
 
     /**

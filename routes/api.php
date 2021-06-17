@@ -9,7 +9,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\QuotesController;
 use App\Http\Controllers\EarthRemindersController;
-use App\Http\Controllers\UserDetails;
+use App\Http\Controllers\UserDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,9 +102,10 @@ Route::get('/er/{slug}', [EarthRemindersController::class, 'index']);
 
 
 
-Route::get('/user_details/page/{page}/item/{perpage}/date/{date}', [UserDetails::class, 'show']);
-Route::post('/user_details/create', [UserDetails::class, 'create']);
-Route::post('/user_details/datatable', [UserDetails::class, 'datatable']);
-Route::delete('/user_details/delete/{id}', [UserDetails::class, 'delete']);
-Route::post('/user_details/update/{id}', [UserDetails::class, 'update']);
-Route::get('/user_details/{slug}', [UserDetails::class, 'index']);
+Route::get('/user_details', [UserDetailsController::class, 'show']);
+
+Route::post('/user_details/create', [UserDetailsController::class, 'create']);
+Route::post('/user_details/datatable', [UserDetailsController::class, 'datatable']);
+Route::delete('/user_details/delete/{id}', [UserDetailsController::class, 'delete']);
+Route::post('/user_details/update/{id}', [UserDetailsController::class, 'update']);
+Route::get('/user_details/{slug}', [UserDetailsController::class, 'index']);

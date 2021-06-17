@@ -25,15 +25,15 @@ class UserDetailsController extends Controller
      */
     public function create()
     {
-        $user = User::findorFail(1);
+        // $user = User::findorFail(1);
 
-        $address = new UserDetails(['street'=>'test']);
+        // $address = new UserDetails(['street' => 'test']);
 
-        $user->userdetails()->save($address);
+        // $user->userdetails()->save($address);
 
-        $UserDetails = UserDetails::findorFail(1);
+        // $UserDetails = UserDetails::findorFail(1);
 
-        dd($UserDetails->street);
+        // dd($UserDetails->street);
     }
 
     /**
@@ -53,9 +53,20 @@ class UserDetailsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        $time_start = microtime(true);
+
+        $UserDetails = UserDetails::whereUserId($request->user()->id)->first();
+        $request->user()->dettails =  $UserDetails;
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+        return response()->json([
+            'data' => $request->user(),
+            '_benchmark' => $timeend,
+        ], 200);
     }
 
     /**
@@ -78,15 +89,15 @@ class UserDetailsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $UserDetails = UserDetails::whereUserId(1)->first();
+        // $UserDetails = UserDetails::whereUserId(1)->first();
 
-        $UserDetails->street = 'test';
+        // $UserDetails->street = 'test';
 
-        $UserDetails->save();
+        // $UserDetails->save();
 
-        $UserDetails = UserDetails::whereUserId(1)->first();
+        // $UserDetails = UserDetails::whereUserId(1)->first();
 
-        dd($UserDetails);
+        // dd($UserDetails);
     }
 
     /**
@@ -98,16 +109,17 @@ class UserDetailsController extends Controller
     public function destroy($id)
     {
 
-        echo $id;
-        $user = User::findOrFail($id);
-        $user->userdetails()->delete();
-        // $user =  \App\Models\User::findorFail($id);
-        // $user->delete();
-        dd($user);
+        // echo $id;
+        // $user = User::findOrFail($id);
+        // $user->userdetails()->delete();
+        // // $user =  \App\Models\User::findorFail($id);
+        // // $user->delete();
+        // dd($user);
 
 
         // $user->userdetails()->delete();
         // $user = User::findOrFail($id);
         // dd($user);
+
     }
 }

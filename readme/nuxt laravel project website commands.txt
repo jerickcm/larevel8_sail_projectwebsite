@@ -203,3 +203,8 @@ php artisan migrate:rollback --step=1
 
 
 sail artisan db:seed --class=EarthRemindersTableSeeder
+
+
+
+
+php sail artisan make:migration add_userrname_pimg_to_userdetails_table --create=user_details

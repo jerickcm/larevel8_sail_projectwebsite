@@ -9,6 +9,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\QuotesController;
 use App\Http\Controllers\EarthRemindersController;
+use App\Http\Controllers\UserDetails;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,3 +96,12 @@ Route::delete('/er/delete/{id}', [EarthRemindersController::class, 'delete']);
 Route::post('/er/update/{id}', [EarthRemindersController::class, 'update']);
 Route::get('/er/{slug}', [EarthRemindersController::class, 'index']);
 
+
+
+
+Route::get('/user_details/page/{page}/item/{perpage}/date/{date}', [UserDetails::class, 'show']);
+Route::post('/user_details/create', [UserDetails::class, 'create']);
+Route::post('/user_details/datatable', [UserDetails::class, 'datatable']);
+Route::delete('/user_details/delete/{id}', [UserDetails::class, 'delete']);
+Route::post('/user_details/update/{id}', [UserDetails::class, 'update']);
+Route::get('/user_details/{slug}', [UserDetails::class, 'index']);

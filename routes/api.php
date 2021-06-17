@@ -90,6 +90,9 @@ Route::get('/quotes/{slug}', [QuotesController::class, 'index']);
 
 
 Route::get('/er/page/{page}/item/{perpage}/date/{date}', [EarthRemindersController::class, 'show']);
+
+Route::get('/er/page/{page}/item/{perpage}/month/{month}', [EarthRemindersController::class, 'show_month']);
+
 Route::post('/er/create', [EarthRemindersController::class, 'create']);
 Route::post('/er/datatable', [EarthRemindersController::class, 'datatable']);
 Route::delete('/er/delete/{id}', [EarthRemindersController::class, 'delete']);

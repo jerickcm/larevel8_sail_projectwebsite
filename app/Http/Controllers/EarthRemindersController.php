@@ -226,6 +226,7 @@ class EarthRemindersController extends Controller
             $date = Carbon::parse($value['event_date']);
             // $earthreminders[$key]['anniversary'] = $date->diffInDays($now);
             $earthreminders[$key]['anniversary'] = $date->diffInYears($now);
+            $earthreminders[$key]['image'] = $value['image'] ? url($value['image']) : '';
         }
 
         if ($earthremindersCs > 0 && $earthremindersCount == 0) {
@@ -459,6 +460,108 @@ class EarthRemindersController extends Controller
             'total' =>  $earthremindersCount,
             'skip' => $skip,
             'take' => $request->itemsPerPage
+        ], 200);
+    }
+
+    public function show_month(Request $request, $page, $itemsperpage, $month)
+    {
+        $month = Carbon::parse($month)->format('m');
+
+        $time_start = microtime(true);
+        $skip = $request->page;
+        if ($page == 1) {
+            $skip = 0;
+        } else {
+            $skip = $page * $page;
+        }
+
+        $table = 'earthreminders';
+
+        if ($request->sortBy == ""  && $request->sortDesc == "") {
+            $page = $page ? $page : 1;
+            $limit = $itemsperpage ? $itemsperpage : 10;
+
+
+            $earthreminders = EarthReminders::where('earthreminders.publish', 2)
+                ->whereMonth('earthreminders.event_date', $month)
+                ->orderBy($table . '.created_at', 'desc')
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
+                ->select('users.name', 'users.email', 'earthreminders.id', 'earthreminders.title', 'earthreminders.content', 'earthreminders.slug',  'earthreminders.publish', 'earthreminders.image', 'earthreminders.created_at', 'earthreminders.author', 'earthreminders.subtitle', 'earthreminders.event_date', 'earthreminders.country')
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->take($itemsperpage)
+                ->get();
+
+            $earthreminders_count = EarthReminders::where('earthreminders.publish', 2)
+                ->whereMonth('earthreminders.event_date',   $month)
+
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
+                ->get();
+        } else {
+
+            if ($request->sortDesc) {
+                $order = 'desc';
+            } else {
+                $order = 'asc';
+            }
+
+            $page = $page  ? $page  : 1;
+            $limit = $itemsperpage ? $itemsperpage : 10;
+
+            $earthreminders = EarthReminders::where('earthreminders.publish', 2)
+                ->whereMonth('earthreminders.event_date',  $month)
+
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
+                ->select('users.name', 'users.email', 'earthreminders.id', 'earthreminders.title', 'earthreminders.content', 'earthreminders.slug',  'earthreminders.publish', 'earthreminders.image', 'earthreminders.created_at', 'earthreminders.author', 'earthreminders.subtitle', 'earthreminders.event_date', 'earthreminders.country')
+                ->orderBy($request->sortBy, $order)
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->take($itemsperpage)
+                ->get();
+
+            $earthreminders_count = EarthReminders::where('earthreminders.publish', 2)
+                ->whereMonth('earthreminders.event_date',   $month)
+
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'earthreminders.user_id')
+                ->get();
+        }
+
+        $earthremindersCs =   $earthreminders->count();
+        $earthremindersCount =  $earthreminders_count->count();
+
+
+
+
+        $now = Carbon::now();
+        foreach ($earthreminders as $key => $value) {
+            $earthreminders[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $earthreminders[$key]['date'] = Carbon::parse($value['event_date'])->format('F d, Y');
+            $date = Carbon::parse($value['event_date']);
+            // $earthreminders[$key]['anniversary'] = $date->diffInDays($now);
+            $earthreminders[$key]['anniversary'] = $date->diffInYears($now);
+            $earthreminders[$key]['image'] = $value['image'] ? url($value['image']) : '';
+        }
+
+
+
+
+        if ($earthremindersCs > 0 && $earthremindersCount == 0) {
+            $earthremindersCount =   $earthremindersCs;
+        }
+
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
+
+
+        return response()->json([
+            'month' => $month,
+            'data' => $earthreminders,
+            'total' =>  $earthremindersCount,
+            'skip' => $skip,
+            'take' => $itemsperpage,
+            '_benchmark' => $timeend,
         ], 200);
     }
 }

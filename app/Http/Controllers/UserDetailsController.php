@@ -53,7 +53,7 @@ class UserDetailsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request,$email)
+    public function show(Request $request, $email)
     {
         $time_start = microtime(true);
 
@@ -76,6 +76,7 @@ class UserDetailsController extends Controller
         $user_details = UserDetails::where('username', $username)->first();
         $user = User::where('id', $user_details->user_id)->first();
         $user->details =  $user_details;
+
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;

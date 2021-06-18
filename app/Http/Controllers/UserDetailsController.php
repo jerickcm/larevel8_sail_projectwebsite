@@ -53,19 +53,18 @@ class UserDetailsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show(Request $request,$email)
     {
         $time_start = microtime(true);
 
-        $user_details = UserDetails::where('user_id', $request->user()->id)->first();
-
-        $request->user()->details = $user_details;
+        $user = User::where('email', $email)->first();
+        $user->details = $user->userdetails;
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'user' => $request->user(),
+            'user' =>  $user,
             '_benchmark' => $timeend,
         ], 200);
     }

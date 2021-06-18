@@ -18,8 +18,8 @@ class RegisterController extends Controller
 
         // $user = User::where('email',$email);
         // dd($user);
-        $user = User::where('email',$request->email)->first();
-        if(!$user){
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
 
             DB::table('users')->insert([
                 'name' => $request->name,
@@ -31,11 +31,11 @@ class RegisterController extends Controller
             DB::table('user_details')->insert([
                 'user_id' => DB::getPdo()->lastInsertId()
             ]);
-
-
         }
 
-        $user = User::where('email',$request->email)->first();
+        $user = User::where('email', $request->email)->first();
+
+        // $request->session()->regenerate();
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
@@ -45,7 +45,6 @@ class RegisterController extends Controller
             'data' => $user,
             '_elapsed_time' => $timeend,
         ], 200);
-
     }
     public function register(Request $request)
     {
@@ -67,7 +66,7 @@ class RegisterController extends Controller
 
         $userdata = User::findorFail($user->id);
 
-        $address = new UserDetails(['user_id'=>$user->id]);
+        $address = new UserDetails(['user_id' => $user->id]);
 
         $userdata->address()->save($address);
 
@@ -123,6 +122,4 @@ class RegisterController extends Controller
             // 'errors' => $validator->errors(),
         ], 200);
     }
-
-
 }

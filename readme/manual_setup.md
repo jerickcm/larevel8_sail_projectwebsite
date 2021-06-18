@@ -215,3 +215,7 @@ npm install -g npm@7.16.0
 
 nvm install v14.17.0
 npm install -g npm@6.14.13
+
+
+#install pm2 
+npm install pm2@latest -g

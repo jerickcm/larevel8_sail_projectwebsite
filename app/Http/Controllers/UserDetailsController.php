@@ -75,14 +75,14 @@ class UserDetailsController extends Controller
         $time_start = microtime(true);
 
         $user_details = UserDetails::where('username', $username)->first();
-
-        // $request->user()->details = $user_details;
+        $user = User::where('id', $user_details->user_id)->first();
+        $user->details =  $user_details;
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'user' =>  $user_details,
+            'user' =>   $user,
             '_benchmark' => $timeend,
         ], 200);
     }

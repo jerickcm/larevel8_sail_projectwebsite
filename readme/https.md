@@ -57,3 +57,19 @@ server {
 sudo ln -s /etc/nginx/sites-available/nuxt.conf /etc/nginx/sites-enabled/nuxt.conf
 
 service nginx restart
+
+
+#steps
+
+
+sudo apt-get update
+sudo apt-get install software-properties-common
+sudo add-apt-repository universe
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install certbot python-certbot-nginx
+
+sudo certbot --nginx
+
+
+

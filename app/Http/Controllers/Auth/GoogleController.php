@@ -33,7 +33,7 @@ class GoogleController extends Controller
             $user = Socialite::driver('google')->stateless()->user();
             // $user = Socialite::driver('google')->user();
             var_dump($user);
-
+            var_dump($request->user());
             // $user = Socialite::driver('github')->user();
             // // $user->getId();
             // var_dump( $user->getId());

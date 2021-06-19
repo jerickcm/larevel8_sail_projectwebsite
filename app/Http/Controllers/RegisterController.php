@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 
 use App\Models\User;
 use App\Models\UserDetails;
+use App\Models\Socials;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -21,25 +22,40 @@ class RegisterController extends Controller
         // $user = User::where('email',$email);
         // dd($user);
         $user = User::where('email', $request->email)->first();
+
         if (!$user) {
 
-            DB::table('users')->insert([
+
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' =>  bcrypt('!Password08'),
-
+                'password' => bcrypt('!Password08'),
             ]);
 
-            DB::table('user_details')->insert([
-                'user_id' => DB::getPdo()->lastInsertId()
+            UserDetails::create([
+                'user_id' => $user->id
+            ]);
+
+            Socials::create([
+                'user_id' => $user->id,
+                'name' => $request->social,
+                'social_id' => $request->id
+            ]);
+
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if(!Socials::where('name', $request->social)->first()){
+            Socials::create([
+                'user_id' => $user->id,
+                'name' => $request->social,
+                'social_id' => $request->id
             ]);
         }
 
-        // $guser = Socialite::driver('google')->user();
-
-        $user = User::where('email', $request->email)->first();
-        // Auth::login($user);
-        // $request->session()->regenerate();
+        Auth::login($user);
+        $request->session()->regenerate();
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;

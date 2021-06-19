@@ -13,6 +13,8 @@ use App\Models\Posts;
 use App\Models\Role;
 use App\Models\Quotes;
 use App\Models\EarthReminders;
+use App\Models\Socials;
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
@@ -47,6 +49,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function social()
+    {
+
+        return $this->hasMany(Socials::class);
+    }
+
 
     public function userdetails()
     {

@@ -219,3 +219,11 @@ npm install -g npm@6.14.13
 
 #install pm2 
 npm install pm2@latest -g
+
+
+object(Laravel\Socialite\Two\User)#569 (10) { ["token"]=> string(170) "ya29.a0AfH6SMAMX9FRgfzP9fe_JRBnCzQfcSaGRDGMHS1gb8uaklAJLkPn6SYWtyZwF7Br4aylY94K5Gg213fOo8Fniu54yW79lgqsPN5Xt5y4JZH00ijhaBdctp6zlD90EOnTIU9UUXM3jg2vs-wX5a3CAnleIgphwwParDs" ["refreshToken"]=> NULL ["expiresIn"]=> int(3599) ["id"]=> string(21) "102461156521413676658" ["nickname"]=> NULL ["name"]=> NULL ["email"]=> string(19) "jmangaluz@gmail.com" ["avatar"]=> string(89) "https://lh3.googleusercontent.com/a-/AOh14GjXLXeSjQd5gUhng1EoiOFkkRqPFtNByh_lFsTPkg=s96-c" ["user"]=> array(7) { ["sub"]=> string(21) "102461156521413676658" ["picture"]=> string(89) "https://lh3.googleusercontent.com/a-/AOh14GjXLXeSjQd5gUhng1EoiOFkkRqPFtNByh_lFsTPkg=s96-c" ["email"]=> string(19) "jmangaluz@gmail.com" ["email_verified"]=> bool(true) ["id"]=> string(21) "102461156521413676658" ["verified_email"]=> bool(true) ["link"]=> NULL } ["avatar_original"]=> string(89) "https://lh3.googleusercontent.com/a-/AOh14GjXLXeSjQd5gUhng1EoiOFkkRqPFtNByh_lFsTPkg=s96-c" }
+
+
+102461156521413676658
+
+102461156521413676658

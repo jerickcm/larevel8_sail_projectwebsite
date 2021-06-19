@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class RegisterController extends Controller
 {
@@ -33,14 +35,17 @@ class RegisterController extends Controller
             ]);
         }
 
-        $user = User::where('email', $request->email)->first();
+        // $guser = Socialite::driver('google')->user();
 
+        $user = User::where('email', $request->email)->first();
+        // Auth::login($user);
         // $request->session()->regenerate();
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
 
         return response()->json([
+            'req' =>$request->user(),
             'success' => true,
             'data' => $user,
             '_elapsed_time' => $timeend,

@@ -6,6 +6,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ImageStaffProductsController;
 use App\Http\Controllers\TagVideoPostController;
+
+use App\Http\Controllers\Auth\GoogleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,6 +21,12 @@ use App\Http\Controllers\TagVideoPostController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+
+Route::get('auth/google', [GoogleController::class,'redirectToGoogle']);
+Route::get('auth/google/callback/', [GoogleController::class,'handleGoogleCallback']);
+
 
 Route::get('/userdetails/{user_id}/insert',[UserDetailsController::class, 'create']);
 Route::get('/userdetails/{user_id}/update', [UserDetailsController::class, 'update']);

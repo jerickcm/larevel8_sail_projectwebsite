@@ -59,7 +59,15 @@ sudo ln -s /etc/nginx/sites-available/nuxt.conf /etc/nginx/sites-enabled/nuxt.co
 service nginx restart
 
 
-#steps
+ nano  /etc/letsencrypt/live/www.inhinyeru.com/fullchain.pem; # managed by Certbot
+ 
+    ssl_certificate_key /etc/letsencrypt/live/www.inhinyeru.com/privkey.pem; # managed by Certbot
+
+ nano  /etc/letsencrypt/live/www.inhinyeru.com/fullchain.pem; # managed by Certbot
+ 
+    ssl_certificate_key /etc/letsencrypt/live/www.inhinyeru.com/privkey.pem; # managed by Certbot
+
+    #steps
 
 
 sudo apt-get update
@@ -70,6 +78,4 @@ sudo apt-get update
 sudo apt-get install certbot python-certbot-nginx
 
 sudo certbot --nginx
-
-
 

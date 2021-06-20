@@ -212,7 +212,7 @@ php sail artisan make:migration add_userrname_pimg_to_userdetails_table --create
 
 
 php sail artisan make:controller --resource Auth/GoogleController
-
+php sail artisan make:controller --resource Auth/GoogleController
 
 http://localhost:3001/auth/google/
 callback#
@@ -229,3 +229,6 @@ php sail artisan make:migration add_userrname_pimg_to_userdetails_table --create
 
 php sail artisan make:migration create_socials_table --create=socials
 php sail artisan make:model Socials -m
+
+
+php sail artisan make:controller --resource UsersController

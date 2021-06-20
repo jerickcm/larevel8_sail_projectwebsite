@@ -199,8 +199,8 @@ class PostController extends Controller
         // $datum->delete();
 
         $user = User::findOrFail($user_id);
-
         $user->posts()->whereId($post_id)->delete();
+        
     }
 
 

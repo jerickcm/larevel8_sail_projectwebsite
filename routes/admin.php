@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\QuotesController;
 use App\Http\Controllers\Admin\EarthRemindersController;
 use App\Http\Controllers\Admin\UserDetailsController;
+use App\Http\Controllers\Admin\UsersController;
 
 Route::group(['prefix' => 'post'], function () {
     Route::post('/datatable', [PostController::class, 'datatable']);
@@ -70,4 +71,20 @@ Route::group(['prefix' => 'user_details'], function () {
     Route::delete('/delete/{id}', [UserDetailsController::class, 'delete']);
     Route::post('/update/{id}', [UserDetailsController::class, 'update']);
     Route::get('/{slug}', [UserDetailsController::class, 'index']);
+});
+
+
+Route::group(['prefix' => 'users'], function () {
+
+    Route::get('/', [UsersController::class, 'show']);
+    Route::get('/{email}', [UsersController::class, 'show']);
+    Route::get('/username/{username}', [UsersController::class, 'show_username']);
+    Route::post('/create', [UsersController::class, 'create']);
+    Route::post('/datatable', [UsersController::class, 'datatable']);
+
+    Route::post('/delete', [UsersController::class, 'destroy']);
+
+    Route::post('/update/', [UsersController::class, 'update']);
+    Route::get('/{slug}', [UsersController::class, 'index']);
+
 });

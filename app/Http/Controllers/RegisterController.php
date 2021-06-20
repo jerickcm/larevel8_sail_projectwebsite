@@ -59,7 +59,7 @@ class RegisterController extends Controller
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'req' => $request->user(),
+            'user' => $request->user(),
             'success' => true,
             'data' => $user,
             '_elapsed_time' => $timeend,

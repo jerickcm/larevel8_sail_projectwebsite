@@ -110,11 +110,9 @@ class UserDetailsController extends Controller
 
         $time_start = microtime(true);
 
-        // $user_details = UserDetails::where('user_id', $request->user()->id)->first();
-        $UserDetails = UserDetails::whereUserId(1)->first();
+        $UserDetails = UserDetails::whereUserId($id)->first();
         $UserDetails->username =  $request->username;
         $UserDetails->save();
-
 
         $user_details = UserDetails::where('user_id', $request->user()->id)->first();
         $request->user()->details = $user_details;

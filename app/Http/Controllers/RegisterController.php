@@ -40,12 +40,11 @@ class RegisterController extends Controller
                 'name' => $request->social,
                 'social_id' => $request->id
             ]);
-
         }
 
         $user = User::where('email', $request->email)->first();
 
-        if(!Socials::where('name', $request->social)->first()){
+        if (!Socials::where('name', $request->social)->first()) {
             Socials::create([
                 'user_id' => $user->id,
                 'name' => $request->social,
@@ -60,7 +59,7 @@ class RegisterController extends Controller
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'req' =>$request->user(),
+            'req' => $request->user(),
             'success' => true,
             'data' => $user,
             '_elapsed_time' => $timeend,

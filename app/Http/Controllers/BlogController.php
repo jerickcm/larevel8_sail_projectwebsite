@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use App\Models\Tagsblogs;
 use App\Models\Blog;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -211,7 +212,14 @@ class BlogController extends Controller
             $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $blogs[$key]['image'] = url($value['image']);
             $blogs[$key]['path'] = url($value['path']);
+
+            // $blog = Blog::find($value['id']);
+            // foreach ($blog->tagsblogs as  $tags) {
+            // $blogs[$key]['tags']  = $blog->tagsblogs;
+            // }
         }
+
+
 
         if ($blogsCs > 0 && $blogsCount == 0) {
             $blogsCount =   $blogsCs;
@@ -450,5 +458,41 @@ class BlogController extends Controller
             'skip' => $skip,
             'take' => $request->itemsPerPage
         ], 200);
+    }
+
+    public function testtest()
+    {
+
+        $Blogs = Blog::join('users', 'users.id', '=', 'blogs.user_id')
+            ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
+            ->limit(10)
+            ->offset((1 - 1) * 10)
+            ->take(10)
+            ->get();
+
+        foreach ($Blogs as $key => $value) {
+            $Blogs[$key]['tags'][0] = null;
+            $blog = Blog::find($value['id']);
+            foreach ($blog->tagsblogs as $keys =>  $tags) {
+                $Blogs[$key]['tags'][$keys]  = $tags->name;
+            }
+        }
+
+        return response()->json([
+            'data' => $Blogs,
+
+        ], 200);
+    }
+    public function testpivot()
+    {
+        $Tagblogs = Tagsblogs::find(1);
+        // dd($Tagblogs);
+        dd($Tagblogs->blogs);
+    }
+
+    public function testpivot1()
+    {
+        $blogs = Blog::find(1);
+        dd($blogs->tagsblogs);
     }
 }

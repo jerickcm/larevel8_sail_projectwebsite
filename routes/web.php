@@ -8,6 +8,8 @@ use App\Http\Controllers\ImageStaffProductsController;
 use App\Http\Controllers\TagVideoPostController;
 
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\BlogController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,22 +25,28 @@ Route::get('/', function () {
 });
 
 
+Route::get('checkpivot', [BlogController::class, 'testpivot']);
+Route::get('checkpivot1', [BlogController::class, 'testpivot1']);
 
-Route::get('auth/google', [GoogleController::class,'redirectToGoogle']);
-Route::get('auth/google/callback/', [GoogleController::class,'handleGoogleCallback']);
+Route::get('qre', [BlogController::class, 'qre']);
 
 
-Route::get('/userdetails/{user_id}/insert',[UserDetailsController::class, 'create']);
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback/', [GoogleController::class, 'handleGoogleCallback']);
+
+
+Route::get('/userdetails/{user_id}/insert', [UserDetailsController::class, 'create']);
 Route::get('/userdetails/{user_id}/update', [UserDetailsController::class, 'update']);
 Route::get('/userdetails/{user_id}/delete', [UserDetailsController::class, 'destroy']);
 
-Route::get('/posts/{user_id}/read',[PostController::class, 'show']);
-Route::get('/posts/{user_id}/insert',[PostController::class, 'create']);
+Route::get('/posts/{user_id}/read', [PostController::class, 'show']);
+Route::get('/posts/{user_id}/insert', [PostController::class, 'create']);
 Route::get('/posts/{user_id}/update/{post_id}', [PostController::class, 'update']);
 Route::get('/posts/{user_id}/delete/{post_id}', [PostController::class, 'destroy']);
 
-Route::get('/user/{user_id}/role/read',[RoleController::class, 'show']);
-Route::get('/user/{user_id}/role/insert',[RoleController::class, 'create']);
+Route::get('/user/{user_id}/role/read', [RoleController::class, 'show']);
+Route::get('/user/{user_id}/role/insert', [RoleController::class, 'create']);
 Route::get('/user/{user_id}/role/name/update/', [RoleController::class, 'update']);
 Route::get('/user/{user_id}/role/{role_id}/delete/', [RoleController::class, 'destroy']);
 Route::get('/user/{user_id}/role/detachall/', [RoleController::class, 'detachall']);

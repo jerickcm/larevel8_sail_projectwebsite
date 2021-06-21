@@ -495,4 +495,15 @@ class BlogController extends Controller
         $blogs = Blog::find(1);
         dd($blogs->tagsblogs);
     }
+
+    public function qre()
+    {
+        $blogs = Blog::join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
+            ->join('tagsblogs', 'tagsblogs.id', '=', 'tagsblogs_blogs.tagsblogs_id')
+            ->where('tagsblogs.id', 4)
+            ->select('tagsblogs.name', 'blogs.id')
+            // ->limit(2)
+            ->get();
+        dd($blogs);
+    }
 }

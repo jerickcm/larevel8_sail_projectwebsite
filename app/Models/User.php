@@ -96,7 +96,6 @@ class User extends Authenticatable
 
     public function messageoftheday()
     {
-
         return $this->hasMany(Post::class);
     }
 }

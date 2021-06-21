@@ -9,7 +9,8 @@ use App\Models\Tagsblogs;
 use App\Models\Blog;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-
+use Database\Factories\UserFactory;
+use App\Models\Tagsblogs_blogs;
 class BlogController extends Controller
 {
     /**
@@ -213,12 +214,19 @@ class BlogController extends Controller
             $blogs[$key]['image'] = url($value['image']);
             $blogs[$key]['path'] = url($value['path']);
 
-            // $blog = Blog::find($value['id']);
-            // foreach ($blog->tagsblogs as  $tags) {
-            // $blogs[$key]['tags']  = $blog->tagsblogs;
+            // $b = Blog::find($value['id']);
+            // foreach ($b->tagsblogs as $keys =>  $tags) {
+            //     $blogs[$key]['tags'][$keys]  = $tags->name;
             // }
-        }
 
+            $b = Blog::find($value['id']);
+            $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
+            foreach ($r  as $keys =>  $tags) {
+                $blogs[$key]['tags'][$keys]  = $tags->name;
+            }
+
+
+        }
 
 
         if ($blogsCs > 0 && $blogsCount == 0) {
@@ -378,6 +386,7 @@ class BlogController extends Controller
 
     public function datatable(Request $request)
     {
+        $time_start = microtime(true);
         $skip = $request->page;
         if ($request->page == 1) {
             $skip = 0;
@@ -451,12 +460,14 @@ class BlogController extends Controller
         if ($BlogsCs > 0 && $BlogsCount == 0) {
             $BlogsCount =   $BlogsCs;
         }
-        // $Blogs = array_reverse($Blogs);
+        $time_end = microtime(true);
+        $timeend = $time_end - $time_start;
         return response()->json([
             'data' => $Blogs,
             'total' =>  $BlogsCount,
             'skip' => $skip,
-            'take' => $request->itemsPerPage
+            'take' => $request->itemsPerPage,
+            '_benchmark' => $timeend
         ], 200);
     }
 
@@ -485,16 +496,28 @@ class BlogController extends Controller
     }
     public function testpivot()
     {
-        $Tagblogs = Tagsblogs::find(1);
+        $Tagblogs = Tagsblogs::find(3);
         // dd($Tagblogs);
         dd($Tagblogs->blogs);
     }
 
     public function testpivot1()
     {
-        $blogs = Blog::find(1);
+        $blogs = Blog::find(51);
         dd($blogs->tagsblogs);
     }
+    public function testpivot2()
+    {
+        $blogs = Blog::find(53);
+        $request = $blogs->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
+
+        foreach ($request as $keys =>  $tags) {
+           echo $tags->name;
+        }
+
+    }
+
+
 
     public function qre()
     {
@@ -506,4 +529,8 @@ class BlogController extends Controller
             ->get();
         dd($blogs);
     }
+
+
+
+
 }

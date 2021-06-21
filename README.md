@@ -84,3 +84,9 @@ http://localhost:3000/login?state=wSne0kJH0g&code=4%2F0AY0e-g5LXu0PEaqT8ggC7Efit
 
 
     alias sail='bash vendor/bin/sail'
+
+
+nano ~/.bash_aliases
+add to file alias sail='bash vendor/bin/sail'
+exit
+source ~/.bash_aliases

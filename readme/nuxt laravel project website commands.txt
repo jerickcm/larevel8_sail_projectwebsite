@@ -232,3 +232,8 @@ php sail artisan make:model Socials -m
 
 
 php sail artisan make:controller --resource UsersController
+
+
+
+php sail artisan db:seed --class=Tagsblogs_blogsTableSeeder
+php sail artisan db:seed --class=TagsblogsTableSeeder

@@ -68,6 +68,7 @@ Route::group(['prefix' => 'blog'], function () {
     Route::delete('/delete/{id}', [BlogController::class, 'delete']);
     Route::post('/update/{id}', [BlogController::class, 'update']);
     Route::get('/{slug}', [BlogController::class, 'index']);
+
 });
 
 Route::group(['prefix' => 'news'], function () {
@@ -115,3 +116,12 @@ Route::group(['prefix' => 'user_details'], function () {
     Route::post('/update/{id}', [UserDetailsController::class, 'update']);
     Route::get('/{slug}', [UserDetailsController::class, 'index']);
 });
+
+// Route::post('/blog/tags', function () {
+//     return response()->json([
+//         'success' => true,
+//         'test' =>'hello'
+//     ], 200);
+// });
+
+//  Route::get('/blog/tags', [BlogController::class, 'tagsme']);

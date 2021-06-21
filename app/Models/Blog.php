@@ -11,7 +11,7 @@ use App\Models\Tagsblogs;
 class Blog extends Model
 {
     use HasFactory, SoftDeletes;
-
+    protected $softDelete = true;
     protected $table = "blogs";
     public $timestamps = true;
     protected $fillable = [
@@ -25,6 +25,6 @@ class Blog extends Model
 
     public function tagsblogs()
     {
-        return $this->belongsToMany(Tagsblogs::class, 'tagsblogs_blogs', 'tagsblogs_id', 'blog_id');
+        return $this->belongsToMany(Tagsblogs::class, 'tagsblogs_blogs','blog_id', 'tagsblogs_id' )->withoutTrashed();
     }
 }

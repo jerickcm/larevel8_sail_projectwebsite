@@ -27,7 +27,11 @@ Route::group(['prefix' => 'blog'], function () {
     Route::post('/datatable', [BlogController::class, 'datatable']);
     Route::delete('/delete/{id}', [BlogController::class, 'delete']);
     Route::post('/update/{id}', [BlogController::class, 'update']);
+
+    Route::get('/tags/data', [BlogController::class, 'get_tags']);
+
     Route::get('/{slug}', [BlogController::class, 'index']);
+
 });
 
 Route::group(['prefix' => 'news'], function () {

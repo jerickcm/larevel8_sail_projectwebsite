@@ -27,10 +27,10 @@ Route::get('/', function () {
 
 Route::get('checkpivot', [BlogController::class, 'testpivot']);
 Route::get('checkpivot1', [BlogController::class, 'testpivot1']);
+Route::get('checkpivot2', [BlogController::class, 'testpivot2']);
+
 
 Route::get('qre', [BlogController::class, 'qre']);
-
-
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback/', [GoogleController::class, 'handleGoogleCallback']);

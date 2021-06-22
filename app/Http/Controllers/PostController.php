@@ -21,9 +21,9 @@ class PostController extends Controller
     public function index($slug)
     {
 
-        // $time_start = microtime(true);
-        // $time_end = microtime(true);
-        // $timeend = $time_end - $time_start;
+        //
+        //
+        //
 
         // return response()->json([
         //     'success' => true,
@@ -34,9 +34,9 @@ class PostController extends Controller
 
 
         $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
-        ->where('posts.slug', $slug)
-        ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
-        ->get();
+            ->where('posts.slug', $slug)
+            ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
+            ->get();
 
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
@@ -52,9 +52,9 @@ class PostController extends Controller
 
     public function index_(Request $request)
     {
-        $time_start = microtime(true);
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
+
 
         return response()->json([
             'success' => true,
@@ -91,11 +91,9 @@ class PostController extends Controller
 
             $path = $request->file('image')->storeAs('public/upload_post', $FileNameToStore);
             $FileNameToStore = 'storage/upload_post/' . $FileNameToStore;
-
         } else {
 
             $FileNameToStore = null;
-
         }
 
 
@@ -111,15 +109,15 @@ class PostController extends Controller
                 'content' => $request->input('content'),
                 'slug' => Str::slug($request->input('title') . "-" . time(), '-'),
                 'image' => $FileNameToStore,
-                'ckeditor_log' =>$request->input('ckeditor_log')
+                'ckeditor_log' => $request->input('ckeditor_log')
             ]
         );
 
         $user->posts()->save($newpost);
 
-        $time_start = microtime(true);
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
+
 
         return response()->json([
             'success' => true,
@@ -345,9 +343,7 @@ class PostController extends Controller
         $postcheck = Post::findOrFail($request->post_id);
 
         if (url($postcheck->image) === $request->image) {
-
         } else if (secure_url($postcheck->image) === $request->image) {
-
         } else if ($request->image === "") {
         } else {
 
@@ -386,13 +382,10 @@ class PostController extends Controller
         }
 
         if (url($postcheck->image) === $request->image) {
-
         } else if (secure_url($postcheck->image) === $request->image) {
-
         } else if ($request->image == "") {
 
             $post->image   = '';
-
         } else {
 
             if ($request->image) {
@@ -409,7 +402,6 @@ class PostController extends Controller
 
         if ($request->image == "") {
             $image =  '';
-
         } else if (secure_url($postcheck->image) === $request->image) {
             $image =  secure_url($postagain->image);
         } else {
@@ -426,7 +418,7 @@ class PostController extends Controller
 
     public function show_by_get(Request $request, $page)
     {
-        $time_start = microtime(true);
+
         $page = $page;
 
         $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
@@ -444,19 +436,19 @@ class PostController extends Controller
             $posts[$key]['image'] = url($value['image']);
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'data' => $posts,
             'success' => 1,
-            'benchmark' =>  $timeend
+            '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
     }
 
     public function show(Request $request)
     {
-        $time_start = microtime(true);
+
         $page = $request->page;
 
         $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
@@ -474,13 +466,13 @@ class PostController extends Controller
         }
 
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'data' => $posts,
             'success' => 1,
-            'benchmark' =>  $timeend
+            '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
     }
 

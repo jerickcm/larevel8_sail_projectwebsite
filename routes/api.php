@@ -41,6 +41,7 @@ Route::post('/logout', function (Request $request) {
     ], 200);
 });
 
+
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/validate/account', [RegisterController::class, 'create']);
 Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::class, 'index']);
@@ -68,7 +69,6 @@ Route::group(['prefix' => 'blog'], function () {
     Route::delete('/delete/{id}', [BlogController::class, 'delete']);
     Route::post('/update/{id}', [BlogController::class, 'update']);
     Route::get('/{slug}', [BlogController::class, 'index']);
-
 });
 
 Route::group(['prefix' => 'news'], function () {

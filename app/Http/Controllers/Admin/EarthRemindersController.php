@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class EarthRemindersController extends Controller
     public function index(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         if ($request->slug) {
 
@@ -36,13 +37,13 @@ class EarthRemindersController extends Controller
             }
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'data' => $query,
             'success' => 1,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -55,7 +56,7 @@ class EarthRemindersController extends Controller
     public function create(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         $user = User::findOrFail($request->user()->id);
 
@@ -119,13 +120,13 @@ class EarthRemindersController extends Controller
 
         $user->earthreminders()->save($newearthreminders);
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'success' => true,
             'user' => $request->user(),
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -150,7 +151,7 @@ class EarthRemindersController extends Controller
     public function show(Request $request, $page, $itemsperpage, $date)
     {
         $date_parts = explode("-", $date); //' YYYY-MM-DD
-        $time_start = microtime(true);
+
         $skip = $request->page;
         if ($page == 1) {
             $skip = 0;
@@ -233,8 +234,8 @@ class EarthRemindersController extends Controller
             $earthremindersCount =   $earthremindersCs;
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
 
         return response()->json([
@@ -242,7 +243,7 @@ class EarthRemindersController extends Controller
             'total' =>  $earthremindersCount,
             'skip' => $skip,
             'take' => $itemsperpage,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -267,7 +268,7 @@ class EarthRemindersController extends Controller
     public function update(Request $request, $id)
     {
 
-        $time_start = microtime(true);
+
 
         $earthreminderscheck = EarthReminders::findOrFail($id);
 
@@ -340,15 +341,15 @@ class EarthRemindersController extends Controller
             $image =  url($earthremindersagain->image);
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'save' => $earthreminders,
             'success' => 1,
             'image' =>  $image,
             'user' => $request->user(),
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -362,17 +363,17 @@ class EarthRemindersController extends Controller
 
     public function delete(Request $request, $table_id)
     {
-        $time_start = microtime(true);
+
 
         $table = earthreminders::findOrFail($table_id);
         $table->delete();
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
         return response()->json([
             'success' => 1,
             'user' => $request->user(),
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -467,7 +468,7 @@ class EarthRemindersController extends Controller
     {
         $month = Carbon::parse($month)->format('m');
 
-        $time_start = microtime(true);
+
         $skip = $request->page;
         if ($page == 1) {
             $skip = 0;
@@ -551,8 +552,8 @@ class EarthRemindersController extends Controller
             $earthremindersCount =   $earthremindersCs;
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
 
         return response()->json([
@@ -561,7 +562,7 @@ class EarthRemindersController extends Controller
             'total' =>  $earthremindersCount,
             'skip' => $skip,
             'take' => $itemsperpage,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 }

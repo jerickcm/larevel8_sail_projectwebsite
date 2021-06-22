@@ -18,7 +18,7 @@ class NewsController extends Controller
     public function index(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         if ($request->slug) {
 
@@ -35,13 +35,13 @@ class NewsController extends Controller
             }
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'data' => $query,
             'success' => 1,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -54,7 +54,7 @@ class NewsController extends Controller
     public function create(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         $user = User::findOrFail($request->user()->id);
 
@@ -112,8 +112,8 @@ class NewsController extends Controller
 
         $user->News()->save($newNews);
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'save' =>  $newNews,
@@ -122,7 +122,7 @@ class NewsController extends Controller
             'user' => $request->user(),
             'path' =>  $FileNameToStore ? url($FileNameToStore) : "",
             'path_pub' =>  $FileNameToStore ? url($path) : "",
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -147,7 +147,7 @@ class NewsController extends Controller
     public function show(Request $request, $page, $itemsperpage)
     {
 
-        $time_start = microtime(true);
+
         $skip = $request->page;
         if ($page == 1) {
             $skip = 0;
@@ -212,14 +212,14 @@ class NewsController extends Controller
         if ($newsCs > 0 && $newsCount == 0) {
             $newsCount =   $newsCs;
         }
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
         return response()->json([
             'data' => $news,
             'total' =>  $newsCount,
             'skip' => $skip,
             'take' => $itemsperpage,
-            '_benchmark' => $timeend
+            '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
     }
 
@@ -244,7 +244,7 @@ class NewsController extends Controller
     public function update(Request $request, $id)
     {
 
-        $time_start = microtime(true);
+
 
         $Newscheck = News::findOrFail($id);
 
@@ -317,8 +317,8 @@ class NewsController extends Controller
             $image =  url($Newsagain->image);
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'save' => $News,
@@ -326,7 +326,7 @@ class NewsController extends Controller
             'image' =>  $image,
             'user' => $request->user(),
             'News' =>  $Newscheck,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -340,17 +340,17 @@ class NewsController extends Controller
 
     public function delete(Request $request, $table_id)
     {
-        $time_start = microtime(true);
+
 
         $table = News::findOrFail($table_id);
         $table->delete();
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
         return response()->json([
             'success' => 1,
             'user' => $request->user(),
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 

@@ -23,7 +23,7 @@ class BlogController extends Controller
     public function index(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         if ($request->slug) {
 
@@ -40,13 +40,13 @@ class BlogController extends Controller
             }
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'data' => $query,
             'success' => 1,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -59,7 +59,7 @@ class BlogController extends Controller
     public function create(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         $user = User::findOrFail($request->user()->id);
 
@@ -157,8 +157,8 @@ class BlogController extends Controller
             }
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'save' =>  $newBlog,
@@ -166,7 +166,7 @@ class BlogController extends Controller
             'user' => $request->user(),
             'path' =>  $FileNameToStore ? url($FileNameToStore) : "",
             'path_pub' =>  $FileNameToStore ? url($path) : "",
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -191,7 +191,7 @@ class BlogController extends Controller
     public function show(Request $request, $page, $itemsperpage)
     {
 
-        $time_start = microtime(true);
+
 
 
         $skip = $request->page;
@@ -261,8 +261,8 @@ class BlogController extends Controller
         // $blogs = array_reverse($blogs);
 
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
 
 
@@ -271,7 +271,7 @@ class BlogController extends Controller
             'total' =>  $blogsCount,
             'skip' => $skip,
             'take' => $itemsperpage,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -296,7 +296,7 @@ class BlogController extends Controller
     public function update(Request $request, $id)
     {
 
-        $time_start = microtime(true);
+
 
         $Blogcheck = Blog::findOrFail($id);
 
@@ -424,8 +424,8 @@ class BlogController extends Controller
             $image =  url($Blogagain->image);
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'save' => $Blog,
@@ -433,7 +433,7 @@ class BlogController extends Controller
             'image' =>  $image,
             'user' => $request->user(),
             'blog' =>  $Blogcheck,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -447,17 +447,17 @@ class BlogController extends Controller
 
     public function delete(Request $request, $table_id)
     {
-        $time_start = microtime(true);
+
 
         $table = Blog::findOrFail($table_id);
         $table->delete();
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
         return response()->json([
             'success' => 1,
             'user' => $request->user(),
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -557,13 +557,13 @@ class BlogController extends Controller
 
     public function get_tags(Request $request)
     {
-        $time_start = microtime(true);
+
         $blogs = Tagsblogs::select('id', 'name')->get();
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
         return response()->json([
             'data' => $blogs,
-            '_benchmark' => $timeend
+            '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
     }
 }

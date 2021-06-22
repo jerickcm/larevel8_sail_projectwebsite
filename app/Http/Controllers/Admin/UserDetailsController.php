@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -55,35 +56,35 @@ class UserDetailsController extends Controller
      */
     public function show(Request $request, $email)
     {
-        $time_start = microtime(true);
+
 
         $user = User::where('email', $email)->first();
         $user->details = $user->userdetails;
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'user' =>  $user,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
     public function show_username($username)
     {
-        $time_start = microtime(true);
+
 
         $user_details = UserDetails::where('username', $username)->first();
         $user = User::where('id', $user_details->user_id)->first();
         $user->details =  $user_details;
 
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'user' =>   $user,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -108,7 +109,7 @@ class UserDetailsController extends Controller
     public function update(Request $request, $id)
     {
 
-        $time_start = microtime(true);
+
 
         // $user_details = UserDetails::where('user_id', $request->user()->id)->first();
         $UserDetails = UserDetails::whereUserId(1)->first();
@@ -119,12 +120,12 @@ class UserDetailsController extends Controller
         $user_details = UserDetails::where('user_id', $request->user()->id)->first();
         $request->user()->details = $user_details;
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'user' => $request->user(),
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 

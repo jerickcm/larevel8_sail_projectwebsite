@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class QuotesController extends Controller
     public function index(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         if ($request->slug) {
 
@@ -36,13 +37,13 @@ class QuotesController extends Controller
             }
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'data' => $query,
             'success' => 1,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -55,7 +56,7 @@ class QuotesController extends Controller
     public function create(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         $user = User::findOrFail($request->user()->id);
 
@@ -81,13 +82,13 @@ class QuotesController extends Controller
 
         $user->quotes()->save($newQuotes);
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'success' => true,
             'user' => $request->user(),
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -111,7 +112,7 @@ class QuotesController extends Controller
      */
     public function show(Request $request, $page, $itemsperpage)
     {
-        $time_start = microtime(true);
+
         $skip = $request->page;
         if ($page == 1) {
             $skip = 0;
@@ -175,8 +176,8 @@ class QuotesController extends Controller
             $QuotesCount =   $QuotesCs;
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
 
         return response()->json([
@@ -184,7 +185,7 @@ class QuotesController extends Controller
             'total' =>  $QuotesCount,
             'skip' => $skip,
             'take' => $itemsperpage,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -209,7 +210,7 @@ class QuotesController extends Controller
     public function update(Request $request, $id)
     {
 
-        $time_start = microtime(true);
+
 
         $Quotescheck = Quotes::findOrFail($id);
 
@@ -278,8 +279,8 @@ class QuotesController extends Controller
             $image =  url($Quotesagain->image);
         }
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'save' => $Quotes,
@@ -287,7 +288,7 @@ class QuotesController extends Controller
             'image' =>  $image,
             'user' => $request->user(),
             'Quotes' =>  $Quotescheck,
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 
@@ -301,17 +302,17 @@ class QuotesController extends Controller
 
     public function delete(Request $request, $table_id)
     {
-        $time_start = microtime(true);
+
 
         $table = Quotes::findOrFail($table_id);
         $table->delete();
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
         return response()->json([
             'success' => 1,
             'user' => $request->user(),
-            '_benchmark' => $timeend,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 

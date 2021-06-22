@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Messageoftheday;
@@ -14,21 +15,20 @@ class MessageofthedayController extends Controller
      */
     public function index()
     {
-        $time_start = microtime(true);
+
         $Messageoftheday = Messageoftheday::inRandomOrder()
-            ->select('message', 'author','id')
+            ->select('message', 'author', 'id')
             ->limit(1)
             ->get();
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'data' => $Messageoftheday,
             'success' => 1,
-            'benchmark' =>  $timeend
+            '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
-
     }
 
     /**

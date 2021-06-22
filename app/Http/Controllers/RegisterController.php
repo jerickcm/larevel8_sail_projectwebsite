@@ -17,7 +17,7 @@ class RegisterController extends Controller
 {
     public function create(Request $request)
     {
-        $time_start = microtime(true);
+
 
         // $user = User::where('email',$email);
         // dd($user);
@@ -55,8 +55,8 @@ class RegisterController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'user' => $request->user(),
@@ -68,7 +68,7 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
 
-        $time_start = microtime(true);
+
 
         $request->validate([
             'name' => ['required'],
@@ -90,8 +90,8 @@ class RegisterController extends Controller
         $userdata->address()->save($address);
 
 
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
 
         return response()->json([
             'success' => true,
@@ -99,15 +99,15 @@ class RegisterController extends Controller
             '_elapsed_time' => $timeend,
         ], 200);
 
-        // $time_start = microtime(true);
+        //
 
         // $validator = $this->validator($request->all());
 
         // if (!$validator->fails()) {
 
         //     $user = $this->create($request->all());
-        //     $time_end = microtime(true);
-        //     $timeend = $time_end - $time_start;
+        //
+        //
         //     return response()->json([
         //         'success' => true,
         //         'data' => $user,
@@ -115,8 +115,8 @@ class RegisterController extends Controller
 
         //     ], 200);
         // }
-        // $time_end = microtime(true);
-        // $timeend = $time_end - $time_start;
+        //
+        //
         // return response()->json([
         //     'success' => false,
         //     'errors' => $validator->errors(),
@@ -131,9 +131,9 @@ class RegisterController extends Controller
     public function test(Request $request)
     {
         die();
-        $time_start = microtime(true);
-        $time_end = microtime(true);
-        $timeend = $time_end - $time_start;
+
+
+
         // $request->session()->regenerate();
         return response()->json([
             'success' => true,

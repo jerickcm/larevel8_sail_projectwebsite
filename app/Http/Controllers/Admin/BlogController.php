@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -47,7 +48,6 @@ class BlogController extends Controller
             'success' => 1,
             '_benchmark' => $timeend,
         ], 200);
-
     }
 
     /**
@@ -119,25 +119,26 @@ class BlogController extends Controller
 
         $pieces = explode(",", $request->input('tags'));
 
-        $code= '';
+        $code = '';
 
-        foreach($pieces as $key => $value){
-            $code= $value;
+        foreach ($pieces as $key => $value) {
+            $code = $value;
 
             // dd($value);
-            $tagblogs = Tagsblogs::select('id','name')
-                    ->where('name',$value)
-                    ->first();
+            $tagblogs = Tagsblogs::select('id', 'name')
+                ->where('name', $value)
+                ->first();
 
             $now = Carbon::now();
 
-            if(!$tagblogs){
+            if (!$tagblogs) {
 
-                $createtag = Tagsblogs::insert([
+                $createtag = Tagsblogs::create([
                     'name' => $value,
                     'created_at' =>  $now,
                     'updated_at' =>  $now,
                 ]);
+
 
                 DB::table('tagsblogs_blogs')->insert([
                     'blog_id' => $newblog->id,
@@ -145,30 +146,23 @@ class BlogController extends Controller
                     'created_at' =>  $now,
                     'updated_at' =>  $now,
                 ]);
+            } else {
 
-            }else{
-
-                 DB::table('tagsblogs_blogs')->insert([
+                DB::table('tagsblogs_blogs')->insert([
                     'blog_id' => $newblog->id,
                     'tagsblogs_id' =>  $tagblogs->id,
                     'created_at' =>  $now,
                     'updated_at' =>  $now,
                 ]);
             }
-
         }
 
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'val'=>$code,
-            'newblog'=> $newblog->id,
-            'taggableid'=>$tagblogs->id,
-            'p'=> $pieces,
             'save' =>  $newBlog,
             'success' => true,
-            'publish' => $blog->publish,
             'user' => $request->user(),
             'path' =>  $FileNameToStore ? url($FileNameToStore) : "",
             'path_pub' =>  $FileNameToStore ? url($path) : "",
@@ -363,23 +357,23 @@ class BlogController extends Controller
 
         $updateblog = $Blog->update();
 
-        Tagsblogs_blogs::where('blog_id',$id)->delete();
+        Tagsblogs_blogs::where('blog_id', $id)->delete();
 
         $pieces = explode(",", $request->input('tags'));
 
-        if( $pieces){
+        if ($pieces) {
 
-            foreach($pieces as $key => $value){
+            foreach ($pieces as $key => $value) {
 
-                $tagblogs = Tagsblogs::select('id','name')
-                        ->where('name',$value)
-                        ->first();
+                $tagblogs = Tagsblogs::select('id', 'name')
+                    ->where('name', $value)
+                    ->first();
 
                 $now = Carbon::now();
 
-                if(!$tagblogs){
+                if (!$tagblogs) {
 
-                    $createtag = Tagsblogs::insert([
+                    $createtag = Tagsblogs::create([
                         'name' => $value,
                         'created_at' =>  $now,
                         'updated_at' =>  $now,
@@ -391,19 +385,17 @@ class BlogController extends Controller
                         'created_at' =>  $now,
                         'updated_at' =>  $now,
                     ]);
+                } else {
 
-                }else{
+                    $tagstable = Tagsblogs_blogs::where('blog_id', $id)
+                        ->where('tagsblogs_id', $tagblogs->id)
+                        ->withTrashed()
+                        ->first();
 
-                    $tagstable = Tagsblogs_blogs::where('blog_id',$id)
-                                                ->where('tagsblogs_id',$tagblogs->id)
-                                                ->withTrashed()
-                                                ->first();
-
-                    if( $tagstable){
+                    if ($tagstable) {
 
                         $tagstable->restore();
-
-                    }else{
+                    } else {
 
                         DB::table('tagsblogs_blogs')->insert([
                             'blog_id' => $id,
@@ -412,10 +404,7 @@ class BlogController extends Controller
                             'updated_at' =>  $now,
                         ]);
                     }
-
                 }
-
-
             }
         }
 
@@ -439,7 +428,6 @@ class BlogController extends Controller
         $timeend = $time_end - $time_start;
 
         return response()->json([
-            'p'=>$pieces,
             'save' => $Blog,
             'success' => 1,
             'image' =>  $image,
@@ -553,7 +541,6 @@ class BlogController extends Controller
             foreach ($r  as $keys =>  $tags) {
                 $Blogs[$key]['tags'][$keys]  = $tags->name;
             }
-
         }
 
         if ($BlogsCs > 0 && $BlogsCount == 0) {
@@ -571,7 +558,7 @@ class BlogController extends Controller
     public function get_tags(Request $request)
     {
         $time_start = microtime(true);
-        $blogs = Tagsblogs::select('id','name')->get();
+        $blogs = Tagsblogs::select('id', 'name')->get();
         $time_end = microtime(true);
         $timeend = $time_end - $time_start;
         return response()->json([
@@ -579,5 +566,4 @@ class BlogController extends Controller
             '_benchmark' => $timeend
         ], 200);
     }
-
 }

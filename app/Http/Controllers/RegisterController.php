@@ -62,7 +62,7 @@ class RegisterController extends Controller
             'user' => $request->user(),
             'success' => true,
             'data' => $user,
-            '_elapsed_time' => $timeend,
+              '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
     public function register(Request $request)
@@ -96,7 +96,7 @@ class RegisterController extends Controller
         return response()->json([
             'success' => true,
             'data' => $user,
-            '_elapsed_time' => $timeend,
+              '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
 
         //
@@ -111,7 +111,7 @@ class RegisterController extends Controller
         //     return response()->json([
         //         'success' => true,
         //         'data' => $user,
-        //         '_elapsed_time' => $timeend,
+        //           '_benchmark' => microtime(true) -  $this->time_start,
 
         //     ], 200);
         // }
@@ -137,7 +137,7 @@ class RegisterController extends Controller
         // $request->session()->regenerate();
         return response()->json([
             'success' => true,
-            '_elapsed_time' => $timeend,
+              '_benchmark' => microtime(true) -  $this->time_start,
             // 'errors' => $validator->errors(),
         ], 200);
     }

@@ -28,7 +28,7 @@ class PostController extends Controller
 
         // return response()->json([
         //     'success' => true,
-        //     '_elapsed_time' => $timeend,
+        //       '_benchmark' => microtime(true) -  $this->time_start,
         //     // $request->user()
         //     // 'errors' => $validator->errors(),
         // ], 200);
@@ -59,7 +59,7 @@ class PostController extends Controller
 
         return response()->json([
             'success' => true,
-            '_elapsed_time' => $timeend,
+              '_benchmark' => microtime(true) -  $this->time_start,
             $request->user()
             // 'errors' => $validator->errors(),
         ], 200);
@@ -122,7 +122,7 @@ class PostController extends Controller
 
         return response()->json([
             'success' => true,
-            '_elapsed_time' => $timeend,
+              '_benchmark' => microtime(true) -  $this->time_start,
             'user' => $request->user(),
             'user_id' => $request->user()->id,
             'data' => $request->input('name'),

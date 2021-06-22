@@ -9,7 +9,7 @@ use App\Http\Controllers\TagVideoPostController;
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BlogController;
-
+use App\Http\Controllers\UsersController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,9 +20,11 @@ use App\Http\Controllers\BlogController;
 | contains the "web" middleware group. Now create something great!
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('export1', [UsersController::class, 'export']);
+Route::get('export2', [UsersController::class, 'export2']);
+Route::get('/', function () {
+    return view('welcome');
+});
 
 
 // Route::get('checkpivot', [BlogController::class, 'testpivot']);

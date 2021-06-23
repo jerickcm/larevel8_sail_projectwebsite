@@ -9,3 +9,11 @@ composer require maatwebsite/excel
 
 php artisan make:export UsersExport --model=User
 
+##
+
+php artisan event:generate
+
+php artisan make:event UserLogsEvent
+php artisan make:listener UserLogsListener --event=UserLogsEvent
+
+php sail artisan make:model AdminUsersLogs

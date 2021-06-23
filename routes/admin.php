@@ -31,7 +31,6 @@ Route::group(['prefix' => 'blog'], function () {
     Route::get('/tags/data', [BlogController::class, 'get_tags']);
 
     Route::get('/{slug}', [BlogController::class, 'index']);
-
 });
 
 Route::group(['prefix' => 'news'], function () {
@@ -61,7 +60,6 @@ Route::group(['prefix' => 'er'], function () {
     Route::delete('/delete/{id}', [EarthRemindersController::class, 'delete']);
     Route::post('/update/{id}', [EarthRemindersController::class, 'update']);
     Route::get('/{slug}', [EarthRemindersController::class, 'index']);
-
 });
 
 
@@ -91,4 +89,5 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('/update/', [UsersController::class, 'update']);
     Route::get('/{slug}', [UsersController::class, 'index']);
 
+    Route::post('/datatable_logs', [UsersController::class, 'datatable_logs']);
 });

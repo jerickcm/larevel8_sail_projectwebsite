@@ -17,7 +17,7 @@ class UsersController extends Controller
 
 
 
-    public function export2() 
+    public function export2()
     {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -32,16 +32,14 @@ class UsersController extends Controller
         );
         $response->headers->set('Content-Type', 'application/vnd.ms-excel');
         $response->headers->set('Content-Disposition', 'attachment;filename="ExportScan.xls"');
-        $response->headers->set('Cache-Control','max-age=0');
+        $response->headers->set('Cache-Control', 'max-age=0');
         return $response;
-
-        
     }
 
 
-    public function export() 
+    public function export()
     {
-        ob_end_clean(); 
+        ob_end_clean();
         ob_start();
         return Excel::download(new UsersExport, 'users.xls');
     }

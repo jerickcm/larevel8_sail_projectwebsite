@@ -4,10 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\UserDetails;
+
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+// events
+use App\Events\UserLogsEvent;
+
+//models
+use App\Models\AdminUsersLogs;
+use App\Models\User;
+use App\Models\UserDetails;
 
 class UsersController extends Controller
 {
@@ -18,7 +24,13 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+
+        $logs = AdminUsersLogs::where('id', 1)->get();
+        foreach ($logs as $key => $value) {
+            echo $value;
+        }
+        // var_dump($logs->description);
+        // var_dump($logs);
     }
 
     /**
@@ -54,8 +66,6 @@ class UsersController extends Controller
         $user->details = $user->userdetails;
 
 
-
-
         return response()->json([
             'user' =>  $user,
             '_benchmark' => microtime(true) -  $this->time_start,
@@ -69,9 +79,6 @@ class UsersController extends Controller
         $user_details = UserDetails::where('username', $username)->first();
         $user = User::where('id', $user_details->user_id)->first();
         $user->details =  $user_details;
-
-
-
 
 
         return response()->json([
@@ -101,8 +108,6 @@ class UsersController extends Controller
     public function update(Request $request)
     {
 
-
-
         $UserDetails = UserDetails::where('user_id', $request->user_id)->first();
         $UserDetails->username =  $request->username;
         $UserDetails->save();
@@ -112,8 +117,12 @@ class UsersController extends Controller
         $user->name  = $request->name;
         $user->save();
 
-
-
+        event(new UserLogsEvent($request->user()->id, AdminUsersLogs::TYPE_USERS_UPDATE, [
+            'admin'  => $request->user()->name,
+            'admin_id'  => $request->user()->id,
+            'user_id'  => $request->user_id,
+            'user_name'  => $request->name,
+        ]));
 
         return response()->json([
             'user' => $request->user(),
@@ -143,6 +152,7 @@ class UsersController extends Controller
         }
 
         if ($request->sortBy == ""  && $request->sortDesc == "") {
+
             $page = $request->has('page') ? $request->get('page') : 1;
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
@@ -201,12 +211,89 @@ class UsersController extends Controller
         if ($usersCs > 0 && $usersCount == 0) {
             $usersCount =   $usersCs;
         }
-        // $users = array_reverse($users);
+
         return response()->json([
             'data' => $users,
             'total' =>  $usersCount,
             'skip' => $skip,
-            'take' => $request->itemsPerPage
+            'take' => $request->itemsPerPage,
+            '_benchmark' => microtime(true) -  $this->time_start,
+        ], 200);
+    }
+
+
+    public function datatable_logs(Request $request)
+    {
+        $skip = $request->page;
+        if ($request->page == 1) {
+            $skip = 0;
+        } else {
+            $skip = $request->page * $request->page;
+        }
+
+        if ($request->sortBy == ""  && $request->sortDesc == "") {
+            $page = $request->has('page') ? $request->get('page') : 1;
+            $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
+
+            $users = AdminUsersLogs::where([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['users.email', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'admin_users_logs.user_id')
+                ->select('users.id', 'users.is_admin', 'users.name', 'users.email', 'admin_users_logs.*')
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->take($request->itemsPerPage)
+                ->get();
+
+            $users_count = AdminUsersLogs::where([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['users.email', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'admin_users_logs.user_id')
+                ->get();
+        } else {
+
+            if ($request->sortDesc) {
+                $order = 'desc';
+            } else {
+                $order = 'asc';
+            }
+
+            $page = $request->has('page') ? $request->get('page') : 1;
+            $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
+
+            $users = AdminUsersLogs::where([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['users.email', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'admin_users_logs.user_id')
+                ->select('users.id', 'users.is_admin', 'users.name', 'users.email', 'users.created_at', 'admin_users_logs.*')
+                ->orderBy('admin_users_logs.' . $request->sortBy, $order)
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->take($request->itemsPerPage)
+                ->get();
+
+
+            $users_count = AdminUsersLogs::where([['users.email', 'LIKE', "%" . $request->search . "%"]])
+                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'admin_users_logs.user_id')
+                ->get();
+        }
+
+        $usersCs =   $users->count();
+        $usersCount =  $users_count->count();
+
+        foreach ($users as $key => $value) {
+            $users[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+        }
+
+
+        if ($usersCs > 0 && $usersCount == 0) {
+            $usersCount =   $usersCs;
+        }
+
+        return response()->json([
+            'data' => $users,
+            'total' =>  $usersCount,
+            'skip' => $skip,
+            'take' => $request->itemsPerPage,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
 }

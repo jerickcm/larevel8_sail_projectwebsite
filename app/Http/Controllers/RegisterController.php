@@ -21,48 +21,50 @@ class RegisterController extends Controller
 
         // $user = User::where('email',$email);
         // dd($user);
-        $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if ($request->email) {
 
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt('!Password08'),
-            ]);
+            $user = User::where('email', $request->email)->first();
 
-            UserDetails::create([
-                'user_id' => $user->id
-            ]);
+            if (!$user) {
 
-            Socials::create([
-                'user_id' => $user->id,
-                'name' => $request->social,
-                'social_id' => $request->id
-            ]);
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => bcrypt('!Password08'),
+                ]);
+
+                UserDetails::create([
+                    'user_id' => $user->id
+                ]);
+
+                Socials::create([
+                    'user_id' => $user->id,
+                    'name' => $request->social,
+                    'social_id' => $request->id
+                ]);
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!Socials::where('name', $request->social)->first()) {
+                Socials::create([
+                    'user_id' => $user->id,
+                    'name' => $request->social,
+                    'social_id' => $request->id
+                ]);
+            }
+
+            Auth::login($user);
+            $request->session()->regenerate();
         }
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!Socials::where('name', $request->social)->first()) {
-            Socials::create([
-                'user_id' => $user->id,
-                'name' => $request->social,
-                'social_id' => $request->id
-            ]);
-        }
-
-        Auth::login($user);
-        $request->session()->regenerate();
-
-
 
 
         return response()->json([
             'user' => $request->user(),
             'success' => true,
             'data' => $user,
-              '_benchmark' => microtime(true) -  $this->time_start,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
     public function register(Request $request)
@@ -96,7 +98,7 @@ class RegisterController extends Controller
         return response()->json([
             'success' => true,
             'data' => $user,
-              '_benchmark' => microtime(true) -  $this->time_start,
+            '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
 
         //
@@ -137,7 +139,7 @@ class RegisterController extends Controller
         // $request->session()->regenerate();
         return response()->json([
             'success' => true,
-              '_benchmark' => microtime(true) -  $this->time_start,
+            '_benchmark' => microtime(true) -  $this->time_start,
             // 'errors' => $validator->errors(),
         ], 200);
     }

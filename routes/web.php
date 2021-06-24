@@ -26,9 +26,27 @@ Route::get('test', [UsersController::class, 'index']);
 
 // Route::get('export1', [UsersController::class, 'export']);
 // Route::get('export2', [UsersController::class, 'export2']);
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('sendemail', function () {
+
+    $data = array(
+        'name' => "Learning Laravel",
+    );
+
+    Mail::send('emails.welcome', $data, function ($message) {
+
+        $message->from('noreply@inhinyeru.com', 'Learning Laravel');
+
+        $message->to('jmangaluz@gmail.com')->subject('Learning Laravel test email');
+
+    });
+
+    return "Your email has been sent successfully";
+
+});
 
 Route::get('send-mail', function () {
    

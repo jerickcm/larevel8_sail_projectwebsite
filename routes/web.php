@@ -30,17 +30,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('sendemail', function () {
+Route::get('send-email', function () {
 
     $data = array(
-        'name' => "Learning Laravel",
+        'name' => "My data",
     );
 
-    Mail::send('emails.welcome', $data, function ($message) {
+    Mail::send('emails.welcom', $data, function ($message) {
 
-        $message->from('noreply@inhinyeru.com', 'Learning Laravel');
+        $message->from('noreply@comapany.com', 'Title ');
 
-        $message->to('jmangaluz@gmail.com')->subject('Learning Laravel test email');
+        $message->to('mysendemaik@gmail.com')->subject('Subject');
 
     });
 

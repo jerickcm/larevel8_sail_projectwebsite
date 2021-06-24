@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 </head>
 <body>
-<h2>Learning Laravel!</h2>
+<h2>Hello!</h2>
 
 <div>
     Welcome to {!! $name !!} website!

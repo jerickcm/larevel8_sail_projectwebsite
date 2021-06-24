@@ -35,6 +35,13 @@ class BlogController extends Controller
             foreach ($query as $key => $value) {
                 $query[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
                 $query[$key]['image'] = url($value['image']);
+                $b = Blog::find($value['id']);
+                $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
+
+                foreach ($r  as $keys =>  $tags) {
+                    $query[$key]['tags'][$keys]  = $tags->name;
+                }
+
             }
         }
 

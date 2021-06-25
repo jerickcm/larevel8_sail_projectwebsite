@@ -32,6 +32,7 @@ class AdminUsersLogs extends Model
     {
         $this->attributes['meta'] = json_encode($value);
     }
+
     public function getTypeDescAttribute($value)
     {
         switch ($this->attributes['type']) {

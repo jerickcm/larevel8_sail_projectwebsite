@@ -41,7 +41,6 @@ class BlogController extends Controller
                 foreach ($r  as $keys =>  $tags) {
                     $query[$key]['tags'][$keys]  = $tags->name;
                 }
-
             }
         }
 
@@ -491,6 +490,7 @@ class BlogController extends Controller
         $blogs = Blog::find(51);
         dd($blogs->tagsblogs);
     }
+
     public function testpivot2()
     {
         $blogs = Blog::find(53);

@@ -14,6 +14,13 @@ class Blog extends Model
     protected $softDelete = true;
     protected $table = "blogs";
     public $timestamps = true;
+
+    protected $appends = [
+        'tagged',
+    ];
+
+
+
     protected $fillable = [
         'ckeditor_log', 'title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
     ];
@@ -25,6 +32,17 @@ class Blog extends Model
 
     public function tagsblogs()
     {
-        return $this->belongsToMany(Tagsblogs::class, 'tagsblogs_blogs','blog_id', 'tagsblogs_id' )->withoutTrashed();
+        return $this->belongsToMany(Tagsblogs::class, 'tagsblogs_blogs', 'blog_id', 'tagsblogs_id')->withoutTrashed();
+    }
+
+    public function getTaggedAttribute()
+    {
+
+        $blog = Blog::find($this->attributes['id']);
+        foreach ($blog->tagsblogs as $keys =>  $tags) {
+            $this->attributes['tagged'][$keys]  = $tags->name;
+        }
+
+        return $this->attributes['tagged'];
     }
 }

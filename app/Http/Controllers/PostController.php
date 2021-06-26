@@ -574,4 +574,12 @@ class PostController extends Controller
             'success' => 1,
         ], 200);
     }
+
+    public function sitemap()
+    {
+        $data = Post::select('slug','id')->get();
+        return response()->json(
+            $data
+        , 200);
+    }
 }

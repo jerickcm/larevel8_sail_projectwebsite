@@ -1,15 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserDetailsController;
-use App\Http\Controllers\PostController;
+
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ImageStaffProductsController;
 use App\Http\Controllers\TagVideoPostController;
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BlogController;
-use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserDetailsController;
+
 use App\Models\User;
 use App\Models\Blog;
 /*
@@ -22,58 +24,63 @@ use App\Models\Blog;
 | contains the "web" middleware group. Now create something great!
 */
 
-Route::get('usercomputed', function () {
-
-    $user = User::where('id', 1)->first();
-
-    echo ($user->name_email);
-});
-
-Route::get('checktags', function () {
-
-    $blog = Blog::where('id', 47)->first();
-    dd($blog->tagged);
-});
-// dd($blog->tagged);
-
-
-
-Route::get('test', [UsersController::class, 'index']);
-
-
-// Route::get('export1', [UsersController::class, 'export']);
-// Route::get('export2', [UsersController::class, 'export2']);
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('send-email', function () {
+Route::get('blogs/sitemap', [BlogController::class, 'sitemap']);
+Route::get('posts/sitemap', [PostController::class, 'sitemap']);
+Route::get('news/sitemap', [NewsController::class, 'sitemap']);
+Route::get('userdetails/sitemap', [UserDetailsController::class, 'sitemap']);
 
-    $data = array(
-        'name' => "My data",
-    );
+// Route::get('usercomputed', function () {
 
-    Mail::send('emails.welcom', $data, function ($message) {
+//     $user = User::where('id', 1)->first();
 
-        $message->from('noreply@comapany.com', 'Title ');
+//     echo ($user->name_email);
+// });
 
-        $message->to('mysendemaik@gmail.com')->subject('Subject');
-    });
+// Route::get('checktags', function () {
 
-    return "Your email has been sent successfully";
-});
+//     $blog = Blog::where('id', 47)->first();
+//     dd($blog->tagged);
+// });
 
-Route::get('send-mail', function () {
 
-    $details = [
-        'title' => 'Mail from ItSolutionStuff.com',
-        'body' => 'This is for testing email using smtp'
-    ];
+// Route::get('test', [UsersController::class, 'index']);
 
-    \Mail::to('jmangaluz@gmail.com')->send(new \App\Mail\MyTestMail($details));
 
-    dd("Email is Sent.");
-});
+// Route::get('export1', [UsersController::class, 'export']);
+// Route::get('export2', [UsersController::class, 'export2']);
+
+
+// Route::get('send-email', function () {
+
+//     $data = array(
+//         'name' => "My data",
+//     );
+
+//     Mail::send('emails.welcom', $data, function ($message) {
+
+//         $message->from('noreply@comapany.com', 'Title ');
+
+//         $message->to('mysendemaik@gmail.com')->subject('Subject');
+//     });
+
+//     return "Your email has been sent successfully";
+// });
+
+// Route::get('send-mail', function () {
+
+//     $details = [
+//         'title' => 'Mail from ItSolutionStuff.com',
+//         'body' => 'This is for testing email using smtp'
+//     ];
+
+//     \Mail::to('jmangaluz@gmail.com')->send(new \App\Mail\MyTestMail($details));
+
+//     dd("Email is Sent.");
+// });
 
 // Route::get('checkpivot', [BlogController::class, 'testpivot']);
 // Route::get('checkpivot1', [BlogController::class, 'testpivot1']);

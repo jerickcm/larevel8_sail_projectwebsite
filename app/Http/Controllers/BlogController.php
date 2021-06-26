@@ -513,4 +513,12 @@ class BlogController extends Controller
             ->get();
         dd($blogs);
     }
+
+    public function sitemap()
+    {
+        $data = Blog::select('slug','id')->get();
+        return response()->json(
+            $data
+        , 200);
+    }
 }

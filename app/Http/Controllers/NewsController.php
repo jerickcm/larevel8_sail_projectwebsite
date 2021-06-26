@@ -440,4 +440,13 @@ class NewsController extends Controller
             'take' => $request->itemsPerPage
         ], 200);
     }
+
+
+    public function sitemap()
+    {
+        $data = News::select('slug','id')->get();
+        return response()->json(
+            $data
+        , 200);
+    }
 }

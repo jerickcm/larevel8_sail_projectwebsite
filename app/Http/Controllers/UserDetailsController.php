@@ -148,4 +148,11 @@ class UserDetailsController extends Controller
         // dd($user);
 
     }
+    public function sitemap()
+    {
+        $data = UserDetails::select('username','id')->where('username',  '<>', '')->get();
+        return response()->json(
+            $data
+        , 200);
+    }
 }

@@ -63,12 +63,14 @@ Route::group(['prefix' => 'post'], function () {
 
 Route::group(['prefix' => 'blog'], function () {
 
+    Route::get('/sitemap', [BlogController::class, 'sitemap']);
     Route::get('/page/{page}/item/{perpage}', [BlogController::class, 'show']);
     Route::post('/create', [BlogController::class, 'create']);
     Route::post('/datatable', [BlogController::class, 'datatable']);
     Route::delete('/delete/{id}', [BlogController::class, 'delete']);
     Route::post('/update/{id}', [BlogController::class, 'update']);
     Route::get('/{slug}', [BlogController::class, 'index']);
+
 });
 
 Route::group(['prefix' => 'news'], function () {

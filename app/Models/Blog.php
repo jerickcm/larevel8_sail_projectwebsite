@@ -38,6 +38,7 @@ class Blog extends Model
     public function getTaggedAttribute()
     {
 
+        $this->attributes['tagged'][0] = null;
         $blog = Blog::find($this->attributes['id']);
         foreach ($blog->tagsblogs as $keys =>  $tags) {
             $this->attributes['tagged'][$keys]  = $tags->name;

@@ -58,7 +58,7 @@ class PostController extends Controller
 
         return response()->json([
             'success' => true,
-              '_benchmark' => microtime(true) -  $this->time_start,
+            '_benchmark' => microtime(true) -  $this->time_start,
             $request->user()
             // 'errors' => $validator->errors(),
         ], 200);
@@ -121,7 +121,7 @@ class PostController extends Controller
 
         return response()->json([
             'success' => true,
-              '_benchmark' => microtime(true) -  $this->time_start,
+            '_benchmark' => microtime(true) -  $this->time_start,
             'user' => $request->user(),
             'user_id' => $request->user()->id,
             'data' => $request->input('name'),
@@ -149,15 +149,98 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function show_($id)
+
+
+    public function show_v2(Request $request, $page, $itemsperpage)
     {
-        $user = User::findOrFail($id);
 
-        foreach ($user->posts as $post) {
 
-            echo $post->title . " " . $post->content . '<br/>';
+        $skip = $request->page;
+        if ($page == 1) {
+            $skip = 0;
+        } else {
+            $skip = $page * $page;
         }
+
+        $table = 'posts';
+
+        if ($request->sortBy == ""  && $request->sortDesc == "") {
+            $page = $page ? $page : 1;
+            $limit = $itemsperpage ? $itemsperpage : 10;
+
+            $posts = Post::where('posts.publish', 2)
+                ->orderBy($table . '.created_at', 'desc')
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image', 'posts.created_at')
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->take($itemsperpage)
+                ->get();
+
+            $posts_count = Post::where('posts.publish', 2)
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->get();
+        } else {
+
+            if ($request->sortDesc) {
+                $order = 'desc';
+            } else {
+                $order = 'asc';
+            }
+
+            $page = $page  ? $page  : 1;
+            $limit = $itemsperpage ? $itemsperpage : 10;
+
+            $posts = Post::where('posts.publish', 2)
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.image', 'posts.created_at')
+                ->orderBy($request->sortBy, $order)
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->take($itemsperpage)
+                ->get();
+
+            $posts_count = Post::where('posts.publish', 2)
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->get();
+        }
+
+        $postsCs =   $posts->count();
+        $postsCount =  $posts_count->count();
+
+        foreach ($posts as $key => $value) {
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['image'] = url($value['image']);
+            $posts[$key]['path'] = url($value['path']);
+        }
+
+        if ($postsCs > 0 && $postsCount == 0) {
+            $postsCount =   $postsCs;
+        }
+
+
+        return response()->json([
+            'data' => $posts,
+            'total' =>  $postsCount,
+            'skip' => $skip,
+            'take' => $itemsperpage,
+            '_benchmark' => microtime(true) -  $this->time_start
+        ], 200);
     }
+
+
+
+    // public function show_($id)
+    // {
+    //     $user = User::findOrFail($id);
+
+    //     foreach ($user->posts as $post) {
+
+    //         echo $post->title . " " . $post->content . '<br/>';
+    //     }
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -464,10 +547,6 @@ class PostController extends Controller
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $posts[$key]['image'] = url($value['image']);
         }
-
-
-
-
 
         return response()->json([
             'data' => $posts,

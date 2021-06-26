@@ -19,8 +19,6 @@ class Blog extends Model
         'tagged',
     ];
 
-
-
     protected $fillable = [
         'ckeditor_log', 'title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
     ];

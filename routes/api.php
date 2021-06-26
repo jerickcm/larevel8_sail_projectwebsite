@@ -48,7 +48,7 @@ Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::clas
 Route::post('/ckeditor', [PostController::class, 'ckeditor']);
 
 Route::group(['prefix' => 'post'], function () {
-
+    Route::get('/page/{page}/item/{perpage}', [PostController::class, 'show_v2']);
     Route::post('/create', [PostController::class, 'create']);
     Route::post('/get', [PostController::class, 'index']);
     Route::post('/datatable', [PostController::class, 'datatable']);

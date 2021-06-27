@@ -51,7 +51,7 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'name_email'
+        'name_email', 'fullname'
     ];
 
     public function social()
@@ -105,5 +105,10 @@ class User extends Authenticatable
     public function getNameEmailAttribute()
     {
         return $this->attributes['name'] . " and " . $this->attributes['email'];
+    }
+
+    public function getFullnameAttribute()
+    {
+        return $this->attributes['name'];
     }
 }

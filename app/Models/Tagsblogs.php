@@ -15,8 +15,10 @@ class Tagsblogs extends Model
     protected $fillable = ['name'];
     protected $table = "tagsblogs";
     public $timestamps = true;
+
+
     public function blogs()
     {
-        return $this->belongsToMany(Blog::class, 'tagsblogs_blogs')->withoutTrashed();
+        return $this->belongsToMany(Blog::class, 'tagsblogs_blogs',  'tagsblogs_id', 'blog_id');
     }
 }

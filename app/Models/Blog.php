@@ -30,7 +30,7 @@ class Blog extends Model
 
     public function tagsblogs()
     {
-        return $this->belongsToMany(Tagsblogs::class, 'tagsblogs_blogs', 'blog_id', 'tagsblogs_id')->withoutTrashed();
+        return $this->belongsToMany(Tagsblogs::class, 'tagsblogs_blogs', 'blog_id', 'tagsblogs_id');
     }
 
     public function getTaggedAttribute()

@@ -63,7 +63,10 @@ Route::group(['prefix' => 'post'], function () {
 
 Route::group(['prefix' => 'blog'], function () {
 
+
     Route::get('/page/{page}/item/{perpage}/tags/{tag}', [BlogController::class, 'show_v2']);
+    Route::get('/page/{page}/item/{perpage}/tag/{tag}', [BlogController::class, 'show_v2']);
+
     Route::get('/sitemap', [BlogController::class, 'sitemap']);
 
     Route::get('/page/{page}/item/{perpage}', [BlogController::class, 'show']);

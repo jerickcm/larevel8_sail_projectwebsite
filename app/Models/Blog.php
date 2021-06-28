@@ -15,12 +15,12 @@ class Blog extends Model
     protected $table = "blogs";
     public $timestamps = true;
 
-    protected $appends = [
-        'description'
-    ];
     // protected $appends = [
-    //     'tagged', 'description'
+    //     'description'
     // ];
+    protected $appends = [
+        'tagged',
+    ];
 
     protected $fillable = [
         'ckeditor_log', 'title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
@@ -36,20 +36,15 @@ class Blog extends Model
         return $this->belongsToMany(Tagsblogs::class, 'tagsblogs_blogs', 'blog_id', 'tagsblogs_id');
     }
 
-    // public function getTaggedAttribute()
-    // {
-
-    //     $this->attributes['tagged'][0] = null;
-    //     $blog = Blog::find($this->attributes['id']);
-    //     foreach ($blog->tagsblogs as $keys =>  $tags) {
-    //         $this->attributes['tagged'][$keys]  = $tags->name;
-    //     }
-
-    //     return $this->attributes['tagged'];
-    // }
-
-    public function getDescriptionAttribute()
+    public function getTaggedAttribute()
     {
-        return $this->attributes['title'];
+
+        $this->attributes['tagged'][0] = null;
+        $blog = Blog::find($this->attributes['id']);
+        foreach ($blog->tagsblogs as $keys =>  $tags) {
+            $this->attributes['tagged'][$keys]  = $tags->name;
+        }
+
+        return $this->attributes['tagged'];
     }
 }

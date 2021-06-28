@@ -6,7 +6,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserDetailsController;
-
+use App\Http\Controllers\UniversalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,14 +18,16 @@ use App\Http\Controllers\UserDetailsController;
 | contains the "web" middleware group. Now create something great!
 */
 
+// backend welcome
 Route::get('/', function () {
     return view('welcome');
 });
 
+// timestamp
 Route::get('blogs/sitemap', [BlogController::class, 'sitemap']);
 Route::get('posts/sitemap', [PostController::class, 'sitemap']);
 Route::get('news/sitemap', [NewsController::class, 'sitemap']);
 Route::get('userdetails/sitemap', [UserDetailsController::class, 'sitemap']);
-
-
 Route::get('blogs/tag/sitemap', [BlogController::class, 'tags_sitemap']);
+
+Route::get('api/search', [UniversalController::class, 'search']);

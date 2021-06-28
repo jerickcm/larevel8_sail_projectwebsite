@@ -65,7 +65,7 @@ Route::group(['prefix' => 'blog'], function () {
 
     Route::get('/page/{page}/item/{perpage}/tags/{tag}', [BlogController::class, 'show_v2']);
     Route::get('/sitemap', [BlogController::class, 'sitemap']);
-    Route::get('/tags/sitemap', [BlogController::class, 'tags_sitemap']);
+
     Route::get('/page/{page}/item/{perpage}', [BlogController::class, 'show']);
     Route::post('/create', [BlogController::class, 'create']);
     Route::post('/datatable', [BlogController::class, 'datatable']);

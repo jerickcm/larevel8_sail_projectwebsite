@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use App\Models\News;
+use App\Models\Blog;
+use App\Models\Post;
+use App\Models\UserDetails;
+
+class UniversalController extends Controller
+{
+
+    public function search()
+    {
+
+        $news = News::select('slug', 'title', 'id', 'image')->get();
+        foreach ($news  as $key => $value) {
+            $news[$key]['page'] = '/news/';
+            $news[$key]['icon'] = 'mdi-newspaper-variant-multiple-outline';
+            $news[$key]['image'] = url($value['image']);
+        }
+
+        $post = Post::select('slug', 'title', 'id', 'image')->get();
+        foreach ($post  as $key => $value) {
+            $post[$key]['page'] = '/post/';
+            $post[$key]['icon'] = 'mdi-post-outline';
+            $post[$key]['image'] = url($value['image']);
+        }
+
+        $blog = Blog::select('slug', 'title', 'id', 'image')->get();
+        foreach ($blog as $key => $value) {
+            $blog[$key]['page'] = '/blog/';
+            $blog[$key]['icon'] = 'mdi-blogger';
+            $blog[$key]['image'] = url($value['image']);
+        }
+
+        $userdetails = UserDetails::select('username', 'id')->whereNotNull('username')->get();
+
+        foreach ($userdetails as $key => $value) {
+            $userdetails[$key]['title'] = $value['username'];
+            $userdetails[$key]['slug'] = $value['username'];
+            $userdetails[$key]['page'] = '/';
+            $userdetails[$key]['icon'] = 'mdi-card-account-details-outline';
+        }
+
+        //merge
+
+        foreach ($news as $newssingle) {
+            $post->add($newssingle);
+        }
+
+        foreach ($post as $postsingle) {
+            $blog->add($postsingle);
+        }
+
+        foreach ($blog as $blogsingle) {
+            $userdetails->add($blogsingle);
+        }
+
+
+        $results = $userdetails;
+
+        return response()->json(
+            [
+                'count' => count($results),
+                'entries' =>   $results,
+            ],
+            200
+        );
+    }
+}

@@ -238,10 +238,16 @@ class BlogController extends Controller
         ], 200);
     }
 
-
-    public function show_v2(Request $request, $page, $itemsperpage, $tag)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show_v2(Request $request, $page, $itemsperpage, $tagname)
     {
 
+        $Tag = Tagsblogs::where('name', $tagname)->first();
 
         $skip = $request->page;
         if ($page == 1) {
@@ -257,17 +263,21 @@ class BlogController extends Controller
             $limit = $itemsperpage ? $itemsperpage : 10;
 
             $blogs = Blog::where('blogs.publish', 2)
-                ->orderBy($table . '.created_at', 'desc')
+                ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
+                ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->orderBy($table . '.created_at', 'desc')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($itemsperpage)
                 ->get();
 
             $blogs_count = Blog::where('blogs.publish', 2)
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
+                ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                 ->get();
         } else {
 
@@ -281,6 +291,8 @@ class BlogController extends Controller
             $limit = $itemsperpage ? $itemsperpage : 10;
 
             $blogs = Blog::where('blogs.publish', 2)
+                ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
+                ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->orderBy($request->sortBy, $order)
@@ -290,8 +302,11 @@ class BlogController extends Controller
                 ->get();
 
             $blogs_count = Blog::where('blogs.publish', 2)
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
+                ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
+                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+
                 ->get();
         }
 
@@ -302,7 +317,6 @@ class BlogController extends Controller
             $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $blogs[$key]['image'] = url($value['image']);
             $blogs[$key]['path'] = url($value['path']);
-
             $b = Blog::find($value['id']);
             $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
             foreach ($r  as $keys =>  $tags) {
@@ -325,109 +339,6 @@ class BlogController extends Controller
             '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function show_v2(Request $request, $page, $itemsperpage, $tagname)
-    // {
-
-    //     $Tag = Tagsblogs::where('name', $tagname)->first();
-
-    //     $skip = $request->page;
-    //     if ($page == 1) {
-    //         $skip = 0;
-    //     } else {
-    //         $skip = $page * $page;
-    //     }
-
-    //     $table = 'blogs';
-
-    //     if ($request->sortBy == ""  && $request->sortDesc == "") {
-    //         $page = $page ? $page : 1;
-    //         $limit = $itemsperpage ? $itemsperpage : 10;
-
-    //         $blogs = Blog::where('blogs.publish', 2)
-    //             ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
-    //             ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
-    //             ->join('users', 'users.id', '=', 'blogs.user_id')
-    //             ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
-    //             ->orderBy($table . '.created_at', 'desc')
-    //             ->limit($limit)
-    //             ->offset(($page - 1) * $limit)
-    //             ->take($itemsperpage)
-    //             ->get();
-
-    //         $blogs_count = Blog::where('blogs.publish', 2)
-    //             ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
-    //             ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
-    //             ->join('users', 'users.id', '=', 'blogs.user_id')
-    //             ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-    //             ->get();
-    //     } else {
-
-    //         if ($request->sortDesc) {
-    //             $order = 'desc';
-    //         } else {
-    //             $order = 'asc';
-    //         }
-
-    //         $page = $page  ? $page  : 1;
-    //         $limit = $itemsperpage ? $itemsperpage : 10;
-
-    //         $blogs = Blog::where('blogs.publish', 2)
-    //             ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
-    //             ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
-    //             ->join('users', 'users.id', '=', 'blogs.user_id')
-    //             ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
-    //             ->orderBy($request->sortBy, $order)
-    //             ->limit($limit)
-    //             ->offset(($page - 1) * $limit)
-    //             ->take($itemsperpage)
-    //             ->get();
-
-    //         $blogs_count = Blog::where('blogs.publish', 2)
-    //             ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
-    //             ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
-    //             ->join('users', 'users.id', '=', 'blogs.user_id')
-    //             ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-
-    //             ->get();
-    //     }
-
-    //     $blogsCs =   $blogs->count();
-    //     $blogsCount =  $blogs_count->count();
-
-    //     foreach ($blogs as $key => $value) {
-    //         $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-    //         $blogs[$key]['image'] = url($value['image']);
-    //         $blogs[$key]['path'] = url($value['path']);
-    //         $b = Blog::find($value['id']);
-    //         $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
-    //         foreach ($r  as $keys =>  $tags) {
-    //             $blogs[$key]['tags'][$keys]  = $tags->name;
-    //         }
-    //     }
-
-
-    //     if ($blogsCs > 0 && $blogsCount == 0) {
-    //         $blogsCount =   $blogsCs;
-    //     }
-    //     // $blogs = array_reverse($blogs);
-
-
-    //     return response()->json([
-    //         'data' => $blogs,
-    //         'total' =>  $blogsCount,
-    //         'skip' => $skip,
-    //         'take' => $itemsperpage,
-    //         '_benchmark' => microtime(true) -  $this->time_start,
-    //     ], 200);
-    // }
 
     /**
      * Show the form for editing the specified resource.

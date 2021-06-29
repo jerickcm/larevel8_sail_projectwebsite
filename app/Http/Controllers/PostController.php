@@ -220,7 +220,6 @@ class PostController extends Controller
             $postsCount =   $postsCs;
         }
 
-
         return response()->json([
             'data' => $posts,
             'total' =>  $postsCount,
@@ -229,18 +228,6 @@ class PostController extends Controller
             '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
     }
-
-
-
-    // public function show_($id)
-    // {
-    //     $user = User::findOrFail($id);
-
-    //     foreach ($user->posts as $post) {
-
-    //         echo $post->title . " " . $post->content . '<br/>';
-    //     }
-    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -577,9 +564,10 @@ class PostController extends Controller
 
     public function sitemap()
     {
-        $data = Post::select('slug','id')->get();
+        $data = Post::select('slug', 'id')->get();
         return response()->json(
-            $data
-        , 200);
+            $data,
+            200
+        );
     }
 }

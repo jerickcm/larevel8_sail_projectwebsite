@@ -408,7 +408,6 @@ class QuotesController extends Controller
 
     public function random_item(Request $request)
     {
-
         $Quotes = Quotes::inRandomOrder()
             ->select('message', 'author', 'id')
             ->limit(1)

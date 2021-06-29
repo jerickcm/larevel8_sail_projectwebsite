@@ -570,4 +570,27 @@ class PostController extends Controller
             200
         );
     }
+
+    public function  random_item()
+    {
+
+        $posts = Post::inRandomOrder()
+            ->join('users', 'users.id', '=', 'posts.user_id')
+            ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')
+            ->orderBy('posts.created_at', 'desc')
+            ->where('posts.publish', 2)
+            ->limit(1)
+            ->get();
+
+        foreach ($posts as $key => $value) {
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['image'] = url($value['image']);
+        }
+
+        return response()->json([
+            'data' => $posts,
+            'success' => 1,
+            '_benchmark' => microtime(true) -  $this->time_start
+        ], 200);
+    }
 }

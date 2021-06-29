@@ -444,9 +444,45 @@ class NewsController extends Controller
 
     public function sitemap()
     {
-        $data = News::select('slug','id')->get();
+        $data = News::select('slug', 'id')->get();
         return response()->json(
-            $data
-        , 200);
+            $data,
+            200
+        );
+    }
+
+
+    public function random_item(Request $request)
+    {
+
+        $news = News::inRandomOrder()
+            ->where('news.publish', 2)
+            ->join('users', 'users.id', '=', 'news.user_id')
+            ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at')
+            ->limit(1)
+            ->get();
+
+        $news_count = News::where('news.publish', 2)
+            ->join('users', 'users.id', '=', 'news.user_id')
+            ->get();
+
+        $newsCs =   $news->count();
+        $newsCount =  $news_count->count();
+
+        foreach ($news as $key => $value) {
+            $news[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $news[$key]['image'] = url($value['image']);
+            $news[$key]['path'] = url($value['path']);
+        }
+
+        if ($newsCs > 0 && $newsCount == 0) {
+            $newsCount =   $newsCs;
+        }
+
+        return response()->json([
+            'data' => $news,
+            'total' =>  $newsCount,
+            '_benchmark' => microtime(true) -  $this->time_start
+        ], 200);
     }
 }

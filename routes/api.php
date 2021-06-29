@@ -48,6 +48,9 @@ Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::clas
 Route::post('/ckeditor', [PostController::class, 'ckeditor']);
 
 Route::group(['prefix' => 'post'], function () {
+
+    Route::get('/item', [PostController::class, 'random_item']);
+
     Route::get('/page/{page}/item/{perpage}', [PostController::class, 'show_v2']);
     Route::post('/create', [PostController::class, 'create']);
     Route::post('/get', [PostController::class, 'index']);
@@ -63,7 +66,7 @@ Route::group(['prefix' => 'post'], function () {
 
 Route::group(['prefix' => 'blog'], function () {
 
-
+    Route::get('/item', [BlogController::class, 'random_item']);
     Route::get('/page/{page}/item/{perpage}/tags/{tag}', [BlogController::class, 'show_v2']);
     Route::get('/sitemap', [BlogController::class, 'sitemap']);
 
@@ -76,6 +79,9 @@ Route::group(['prefix' => 'blog'], function () {
 });
 
 Route::group(['prefix' => 'news'], function () {
+
+    Route::get('/item', [NewsController::class, 'random_item']);
+
     Route::get('/page/{page}/item/{perpage}', [NewsController::class, 'show']);
     Route::post('/create', [NewsController::class, 'create']);
     Route::post('/datatable', [NewsController::class, 'datatable']);
@@ -86,6 +92,7 @@ Route::group(['prefix' => 'news'], function () {
 
 
 Route::group(['prefix' => 'quotes'], function () {
+
     Route::get('/item', [QuotesController::class, 'random_item']);
     Route::get('/page/{page}/item/{perpage}', [QuotesController::class, 'show']);
     Route::post('/create', [QuotesController::class, 'create']);

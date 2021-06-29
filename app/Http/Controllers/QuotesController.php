@@ -16,6 +16,10 @@ class QuotesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+
+
     public function index(Request $request)
     {
 
@@ -399,6 +403,21 @@ class QuotesController extends Controller
             'total' =>  $QuotesCount,
             'skip' => $skip,
             'take' => $request->itemsPerPage
+        ], 200);
+    }
+
+    public function random_item(Request $request)
+    {
+
+        $Quotes = Quotes::inRandomOrder()
+            ->select('message', 'author', 'id')
+            ->limit(1)
+            ->first();
+
+        return response()->json([
+            'data' =>  $Quotes,
+            'success' => 1,
+            '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
     }
 }

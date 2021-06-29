@@ -86,6 +86,7 @@ Route::group(['prefix' => 'news'], function () {
 
 
 Route::group(['prefix' => 'quotes'], function () {
+    Route::get('/item', [QuotesController::class, 'random_item']);
     Route::get('/page/{page}/item/{perpage}', [QuotesController::class, 'show']);
     Route::post('/create', [QuotesController::class, 'create']);
     Route::post('/datatable', [QuotesController::class, 'datatable']);

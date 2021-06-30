@@ -608,4 +608,34 @@ class BlogController extends Controller
             '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
+
+    public function random($items)
+    {
+
+        $blogs = Blog::inRandomOrder()
+            ->where('blogs.publish', 2)
+            ->join('users', 'users.id', '=', 'blogs.user_id')
+            ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+            ->limit($items)
+            ->get();
+
+
+        foreach ($blogs as $key => $value) {
+            $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $blogs[$key]['image'] = url($value['image']);
+            $blogs[$key]['path'] = url($value['path']);
+            $b = Blog::find($value['id']);
+            $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
+            foreach ($r  as $keys =>  $tags) {
+                $blogs[$key]['tags'][$keys]  = $tags->name;
+            }
+        }
+
+
+        return response()->json([
+            'data' => $blogs,
+
+            '_benchmark' => microtime(true) -  $this->time_start,
+        ], 200);
+    }
 }

@@ -49,6 +49,7 @@ Route::post('/ckeditor', [PostController::class, 'ckeditor']);
 
 Route::group(['prefix' => 'post'], function () {
 
+    Route::get('/item/{items}', [PostController::class, 'random']);
     Route::get('/item', [PostController::class, 'random_item']);
 
     Route::get('/page/{page}/item/{perpage}', [PostController::class, 'show_v2']);
@@ -66,6 +67,7 @@ Route::group(['prefix' => 'post'], function () {
 
 Route::group(['prefix' => 'blog'], function () {
 
+    Route::get('/item/{items}', [BlogController::class, 'random']);
     Route::get('/item', [BlogController::class, 'random_item']);
     Route::get('/page/{page}/item/{perpage}/tags/{tag}', [BlogController::class, 'show_v2']);
     Route::get('/sitemap', [BlogController::class, 'sitemap']);
@@ -80,8 +82,8 @@ Route::group(['prefix' => 'blog'], function () {
 
 Route::group(['prefix' => 'news'], function () {
 
+    Route::get('/item/{items}', [NewsController::class, 'random']);
     Route::get('/item', [NewsController::class, 'random_item']);
-
     Route::get('/page/{page}/item/{perpage}', [NewsController::class, 'show']);
     Route::post('/create', [NewsController::class, 'create']);
     Route::post('/datatable', [NewsController::class, 'datatable']);
@@ -106,9 +108,7 @@ Route::group(['prefix' => 'quotes'], function () {
 Route::group(['prefix' => 'er'], function () {
 
     Route::get('/page/{page}/item/{perpage}/date/{date}', [EarthRemindersController::class, 'show']);
-
     Route::get('/page/{page}/item/{perpage}/month/{month}', [EarthRemindersController::class, 'show_month']);
-
     Route::post('/create', [EarthRemindersController::class, 'create']);
     Route::post('/datatable', [EarthRemindersController::class, 'datatable']);
     Route::delete('/delete/{id}', [EarthRemindersController::class, 'delete']);
@@ -128,12 +128,3 @@ Route::group(['prefix' => 'user_details'], function () {
     Route::post('/update/{id}', [UserDetailsController::class, 'update']);
     Route::get('/{slug}', [UserDetailsController::class, 'index']);
 });
-
-// Route::post('/blog/tags', function () {
-//     return response()->json([
-//         'success' => true,
-//         'test' =>'hello'
-//     ], 200);
-// });
-
-//  Route::get('/blog/tags', [BlogController::class, 'tagsme']);

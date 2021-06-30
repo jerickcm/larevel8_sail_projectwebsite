@@ -485,4 +485,28 @@ class NewsController extends Controller
             '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
     }
+
+
+    public function random($items)
+    {
+
+        $news = News::inRandomOrder()
+            ->where('news.publish', 2)
+            ->join('users', 'users.id', '=', 'news.user_id')
+            ->select('users.name', 'users.email', 'news.id', 'news.title', 'news.content', 'news.slug', 'news.id', 'news.publish', 'news.image', 'news.created_at')
+            ->limit($items)
+            ->get();
+
+
+        foreach ($news as $key => $value) {
+            $news[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $news[$key]['image'] = url($value['image']);
+            $news[$key]['path'] = url($value['path']);
+        }
+
+        return response()->json([
+            'data' => $news,
+            '_benchmark' => microtime(true) -  $this->time_start
+        ], 200);
+    }
 }

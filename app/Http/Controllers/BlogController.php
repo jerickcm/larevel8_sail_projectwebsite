@@ -586,16 +586,9 @@ class BlogController extends Controller
             ->where('blogs.publish', 2)
             ->join('users', 'users.id', '=', 'blogs.user_id')
             ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
-            ->limit(3)
+            ->limit(1)
             ->get();
 
-        $blogs_count = Blog::where('blogs.publish', 2)
-            ->join('users', 'users.id', '=', 'blogs.user_id')
-            ->get();
-
-
-        $blogsCs =   $blogs->count();
-        $blogsCount =  $blogs_count->count();
 
         foreach ($blogs as $key => $value) {
             $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
@@ -608,14 +601,10 @@ class BlogController extends Controller
             }
         }
 
-        if ($blogsCs > 0 && $blogsCount == 0) {
-            $blogsCount =   $blogsCs;
-        }
-
 
         return response()->json([
             'data' => $blogs,
-            'total' =>  $blogsCount,
+
             '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }

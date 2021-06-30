@@ -18,10 +18,6 @@ class RegisterController extends Controller
     public function create(Request $request)
     {
 
-
-        // $user = User::where('email',$email);
-        // dd($user);
-
         if ($request->email) {
 
             $user = User::where('email', $request->email)->first();
@@ -35,7 +31,8 @@ class RegisterController extends Controller
                 ]);
 
                 UserDetails::create([
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'profile_picture' => $request->image
                 ]);
 
                 Socials::create([
@@ -46,6 +43,14 @@ class RegisterController extends Controller
             }
 
             $user = User::where('email', $request->email)->first();
+
+            $user_details = UserDetails::where('user_id', $user->id)->first();
+
+            if (!$user_details->profile_picture) {
+                $user_details->profile_picture = $request->image;
+                $user_details->save();
+            }
+
 
             if (!Socials::where('name', $request->social)->first()) {
                 Socials::create([

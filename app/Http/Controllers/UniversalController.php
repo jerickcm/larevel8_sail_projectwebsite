@@ -17,6 +17,7 @@ class UniversalController extends Controller
 
         $news = News::select('slug', 'title', 'id', 'image')->get();
         foreach ($news  as $key => $value) {
+            $news[$key]['user'] = false;
             $news[$key]['page'] = '/news/';
             $news[$key]['icon'] = 'mdi-newspaper-variant-multiple-outline';
             $news[$key]['image'] = url($value['image']);
@@ -24,6 +25,7 @@ class UniversalController extends Controller
 
         $post = Post::select('slug', 'title', 'id', 'image')->get();
         foreach ($post  as $key => $value) {
+            $post[$key]['user'] = false;
             $post[$key]['page'] = '/post/';
             $post[$key]['icon'] = 'mdi-post-outline';
             $post[$key]['image'] = url($value['image']);
@@ -31,18 +33,21 @@ class UniversalController extends Controller
 
         $blog = Blog::select('slug', 'title', 'id', 'image')->get();
         foreach ($blog as $key => $value) {
+            $blog[$key]['user'] = false;
             $blog[$key]['page'] = '/blog/';
             $blog[$key]['icon'] = 'mdi-blogger';
             $blog[$key]['image'] = url($value['image']);
         }
 
-        $userdetails = UserDetails::select('username', 'id')->whereNotNull('username')->get();
+        $userdetails = UserDetails::select('username', 'id', 'profile_picture')->whereNotNull('username')->get();
 
         foreach ($userdetails as $key => $value) {
+            $userdetails[$key]['user'] = true;
             $userdetails[$key]['title'] = $value['username'];
             $userdetails[$key]['slug'] = $value['username'];
             $userdetails[$key]['page'] = '/';
             $userdetails[$key]['icon'] = 'mdi-card-account-details-outline';
+            $userdetails[$key]['image'] = filter_var($value['profile_picture'], FILTER_VALIDATE_URL) ? $value['profile_picture'] : url($value['profile_picture']);
         }
 
         //merge

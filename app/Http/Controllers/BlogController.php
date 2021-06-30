@@ -166,7 +166,8 @@ class BlogController extends Controller
             $blogs = Blog::where('blogs.publish', 2)
                 ->orderBy($table . '.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->join('user_details', 'user_details.user_id', '=', 'users.id')
+                ->select('user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($itemsperpage)
@@ -188,8 +189,9 @@ class BlogController extends Controller
             $limit = $itemsperpage ? $itemsperpage : 10;
 
             $blogs = Blog::where('blogs.publish', 2)
-                ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->join('user', 'users.id', '=', 'blogs.user_id')
+                ->join('user_details', 'user_details.user_id', '=', 'users.id')
+                ->select('user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -585,7 +587,8 @@ class BlogController extends Controller
         $blogs = Blog::inRandomOrder()
             ->where('blogs.publish', 2)
             ->join('users', 'users.id', '=', 'blogs.user_id')
-            ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+            ->join('user_details', 'user_details.user_id', '=', 'users.id')
+            ->select('user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
             ->limit(1)
             ->get();
 
@@ -615,7 +618,8 @@ class BlogController extends Controller
         $blogs = Blog::inRandomOrder()
             ->where('blogs.publish', 2)
             ->join('users', 'users.id', '=', 'blogs.user_id')
-            ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+            ->join('user_details', 'user_details.user_id', '=', 'users.id')
+            ->select('user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
             ->limit($items)
             ->get();
 

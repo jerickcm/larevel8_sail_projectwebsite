@@ -154,7 +154,6 @@ class PostController extends Controller
     public function show_v2(Request $request, $page, $itemsperpage)
     {
 
-
         $skip = $request->page;
         if ($page == 1) {
             $skip = 0;

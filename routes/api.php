@@ -52,7 +52,9 @@ Route::group(['prefix' => 'post'], function () {
     Route::get('/item/{items}', [PostController::class, 'random']);
     Route::get('/item', [PostController::class, 'random_item']);
 
+
     Route::get('/page/{page}/item/{perpage}', [PostController::class, 'show_v2']);
+
     Route::post('/create', [PostController::class, 'create']);
     Route::post('/get', [PostController::class, 'index']);
     Route::post('/datatable', [PostController::class, 'datatable']);
@@ -62,6 +64,7 @@ Route::group(['prefix' => 'post'], function () {
     Route::get('/list/{page}', [PostController::class, 'show_by_get']);
     Route::post('/getbyslug', [PostController::class, 'show_by_slug']);
     Route::get('/slug/{slug}', [PostController::class, 'index']);
+
 });
 
 

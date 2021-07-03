@@ -21,17 +21,6 @@ class PostController extends Controller
     public function index($slug)
     {
 
-        //
-        //
-        //
-
-        // return response()->json([
-        //     'success' => true,
-        //       '_benchmark' => microtime(true) -  $this->time_start,
-        //     // $request->user()
-        //     // 'errors' => $validator->errors(),
-        // ], 200);
-
 
         $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
             ->where('posts.slug', $slug)
@@ -40,7 +29,7 @@ class PostController extends Controller
 
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $posts[$key]['image'] = url($value['image']);
+            $posts[$key]['image'] = ($value['image']!=null) ? url($value['image']) : null;
         }
 
         return response()->json([
@@ -211,7 +200,7 @@ class PostController extends Controller
 
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $posts[$key]['image'] = url($value['image']);
+            $posts[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
             $posts[$key]['path'] = url($value['path']);
         }
 
@@ -583,7 +572,8 @@ class PostController extends Controller
 
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $posts[$key]['image'] = url($value['image']);
+            $posts[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
+
         }
 
         return response()->json([
@@ -607,7 +597,7 @@ class PostController extends Controller
 
         foreach ($posts as $key => $value) {
             $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $posts[$key]['image'] = url($value['image']);
+            $posts[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
         }
 
         return response()->json([

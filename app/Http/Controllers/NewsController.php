@@ -18,8 +18,6 @@ class NewsController extends Controller
     public function index(Request $request)
     {
 
-
-
         if ($request->slug) {
 
             $table = 'news';
@@ -31,12 +29,9 @@ class NewsController extends Controller
 
             foreach ($query as $key => $value) {
                 $query[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-                $query[$key]['image'] = url($value['image']);
+                $query[$key]['image'] =($value['image']!=null) ? url($value['image']) : null;
             }
         }
-
-
-
 
         return response()->json([
             'data' => $query,
@@ -205,7 +200,7 @@ class NewsController extends Controller
 
         foreach ($news as $key => $value) {
             $news[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $news[$key]['image'] = url($value['image']);
+            $news[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
             $news[$key]['path'] = url($value['path']);
         }
 
@@ -471,7 +466,7 @@ class NewsController extends Controller
 
         foreach ($news as $key => $value) {
             $news[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $news[$key]['image'] = url($value['image']);
+            $news[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
             $news[$key]['path'] = url($value['path']);
         }
 
@@ -500,8 +495,9 @@ class NewsController extends Controller
 
         foreach ($news as $key => $value) {
             $news[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $news[$key]['image'] = url($value['image']);
+            $news[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
             $news[$key]['path'] = url($value['path']);
+
         }
 
         return response()->json([

@@ -249,96 +249,108 @@ class BlogController extends Controller
     {
 
         $Tag = Tagsblogs::where('name', $tagname)->first();
-
-        $skip = $request->page;
-        if ($page == 1) {
-            $skip = 0;
-        } else {
-            $skip = $page * $page;
-        }
-
-        $table = 'blogs';
-
-        if ($request->sortBy == ""  && $request->sortDesc == "") {
-            $page = $page ? $page : 1;
-            $limit = $itemsperpage ? $itemsperpage : 10;
-
-            $blogs = Blog::where('blogs.publish', 2)
-                ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
-                ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
-                ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
-                ->orderBy($table . '.created_at', 'desc')
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->take($itemsperpage)
-                ->get();
-
-            $blogs_count = Blog::where('blogs.publish', 2)
-                ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
-                ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
-                ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-                ->get();
-        } else {
-
-            if ($request->sortDesc) {
-                $order = 'desc';
+        if( $Tag ){
+            $skip = $request->page;
+            if ($page == 1) {
+                $skip = 0;
             } else {
-                $order = 'asc';
+                $skip = $page * $page;
             }
 
-            $page = $page  ? $page  : 1;
-            $limit = $itemsperpage ? $itemsperpage : 10;
+            $table = 'blogs';
 
-            $blogs = Blog::where('blogs.publish', 2)
-                ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
-                ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
-                ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
-                ->orderBy($request->sortBy, $order)
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->take($itemsperpage)
-                ->get();
+            if ($request->sortBy == ""  && $request->sortDesc == "") {
+                $page = $page ? $page : 1;
+                $limit = $itemsperpage ? $itemsperpage : 10;
 
-            $blogs_count = Blog::where('blogs.publish', 2)
-                ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
-                ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
-                ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                $blogs = Blog::where('blogs.publish', 2)
+                    ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
+                    ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
+                    ->join('users', 'users.id', '=', 'blogs.user_id')
+                    ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                    ->orderBy($table . '.created_at', 'desc')
+                    ->limit($limit)
+                    ->offset(($page - 1) * $limit)
+                    ->take($itemsperpage)
+                    ->get();
 
-                ->get();
-        }
+                $blogs_count = Blog::where('blogs.publish', 2)
+                    ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
+                    ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
+                    ->join('users', 'users.id', '=', 'blogs.user_id')
+                    ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+                    ->get();
+            } else {
 
-        $blogsCs =   $blogs->count();
-        $blogsCount =  $blogs_count->count();
+                if ($request->sortDesc) {
+                    $order = 'desc';
+                } else {
+                    $order = 'asc';
+                }
 
-        foreach ($blogs as $key => $value) {
-            $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $blogs[$key]['image'] = url($value['image']);
-            $blogs[$key]['path'] = url($value['path']);
-            $b = Blog::find($value['id']);
-            $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
-            foreach ($r  as $keys =>  $tags) {
-                $blogs[$key]['tags'][$keys]  = $tags->name;
+                $page = $page  ? $page  : 1;
+                $limit = $itemsperpage ? $itemsperpage : 10;
+
+                $blogs = Blog::where('blogs.publish', 2)
+                    ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
+                    ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
+                    ->join('users', 'users.id', '=', 'blogs.user_id')
+                    ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                    ->orderBy($request->sortBy, $order)
+                    ->limit($limit)
+                    ->offset(($page - 1) * $limit)
+                    ->take($itemsperpage)
+                    ->get();
+
+                $blogs_count = Blog::where('blogs.publish', 2)
+                    ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
+                    ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
+                    ->join('users', 'users.id', '=', 'blogs.user_id')
+                    ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+
+                    ->get();
             }
-        }
+
+            $blogsCs =   $blogs->count();
+            $blogsCount =  $blogs_count->count();
+
+            foreach ($blogs as $key => $value) {
+                $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+                $blogs[$key]['image'] = $value['image']? url($value['image']):null;
+                $blogs[$key]['path'] = url($value['path']);
+                $b = Blog::find($value['id']);
+                $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
+                foreach ($r  as $keys =>  $tags) {
+                    $blogs[$key]['tags'][$keys]  = $tags->name;
+                }
+            }
 
 
-        if ($blogsCs > 0 && $blogsCount == 0) {
-            $blogsCount =   $blogsCs;
+            if ($blogsCs > 0 && $blogsCount == 0) {
+                $blogsCount =   $blogsCs;
+            }
+
+            return response()->json([
+                'data' => $blogs,
+                'total' =>  $blogsCount,
+                'skip' => $skip,
+                'take' => $itemsperpage,
+                '_benchmark' => microtime(true) -  $this->time_start,
+            ], 200);
+
+        }else{
+
+            return response()->json([
+                'data' =>[],
+                '_benchmark' => microtime(true) -  $this->time_start,
+            ], 200);
+
         }
+
         // $blogs = array_reverse($blogs);
 
 
-        return response()->json([
-            'data' => $blogs,
-            'total' =>  $blogsCount,
-            'skip' => $skip,
-            'take' => $itemsperpage,
-            '_benchmark' => microtime(true) -  $this->time_start,
-        ], 200);
+
     }
 
     /**

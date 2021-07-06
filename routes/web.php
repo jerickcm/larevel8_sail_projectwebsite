@@ -31,3 +31,4 @@ Route::get('userdetails/sitemap', [UserDetailsController::class, 'sitemap']);
 Route::get('blogs/tag/sitemap', [BlogController::class, 'tags_sitemap']);
 
 Route::get('api/search', [UniversalController::class, 'search']);
+

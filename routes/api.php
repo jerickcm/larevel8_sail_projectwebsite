@@ -10,7 +10,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\QuotesController;
 use App\Http\Controllers\EarthRemindersController;
 use App\Http\Controllers\UserDetailsController;
-
+use App\Http\Controllers\UniversalController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -46,6 +46,7 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/validate/account', [RegisterController::class, 'create']);
 Route::get('/msgoftheday', [App\Http\Controllers\MessageofthedayController::class, 'index']);
 Route::post('/ckeditor', [PostController::class, 'ckeditor']);
+Route::get('tags', [UniversalController::class, 'tags']);
 
 Route::group(['prefix' => 'post'], function () {
 

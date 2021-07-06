@@ -8,9 +8,24 @@ use App\Models\News;
 use App\Models\Blog;
 use App\Models\Post;
 use App\Models\UserDetails;
+use App\Models\Tagsblogs;
 
 class UniversalController extends Controller
 {
+    public function tags()
+    {
+        $tags = Tagsblogs::select('name','id')->get();
+        return response()->json(
+            [
+                'data' => $tags ,
+                '_benchmark' => microtime(true) -  $this->time_start,
+
+            ],
+            200
+        );
+
+    }
+
 
     public function search()
     {
@@ -71,8 +86,10 @@ class UniversalController extends Controller
             [
                 'count' => count($results),
                 'entries' =>   $results,
+                '_benchmark' => microtime(true) -  $this->time_start,
             ],
             200
         );
     }
 }
+

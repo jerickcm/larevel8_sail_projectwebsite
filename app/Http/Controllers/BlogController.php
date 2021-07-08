@@ -501,10 +501,15 @@ class BlogController extends Controller
 
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
-            $Blogs = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+            $Blogs = Blog::where('user_id',$request->user()->id)
+                    ->where(function($q) use ($request){
+                        return $q
+                        ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
+                         ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                         ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                         ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
+                    }
+                 )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
                 ->limit($limit)
@@ -512,12 +517,18 @@ class BlogController extends Controller
                 ->take($request->itemsPerPage)
                 ->get();
 
-            $Blogs_count = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+            $Blogs_count = Blog::where('user_id',$request->user()->id)
+                    ->where(function($q) use ($request){
+                        return $q
+                        ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
+                    }
+                )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->get();
+
         } else {
 
             if ($request->sortDesc) {
@@ -529,10 +540,15 @@ class BlogController extends Controller
             $page = $request->has('page') ? $request->get('page') : 1;
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
-            $Blogs = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+            $Blogs = Blog::where('user_id',$request->user()->id)
+                    ->where(function($q) use ($request){
+                        return $q
+                        ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
+                    }
+                )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
                 ->orderBy($request->sortBy, $order)
@@ -541,10 +557,15 @@ class BlogController extends Controller
                 ->take($request->itemsPerPage)
                 ->get();
 
-            $Blogs_count = Blog::where([['title', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
+            $Blogs_count = Blog::where('user_id',$request->user()->id)
+                    ->where(function($q) use ($request){
+                        return $q
+                        ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                        ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
+                    }
+                )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->get();
         }
@@ -563,6 +584,7 @@ class BlogController extends Controller
         }
 
         return response()->json([
+            'user' => $request->user()->id,
             'data' => $Blogs,
             'total' =>  $BlogsCount,
             'skip' => $skip,

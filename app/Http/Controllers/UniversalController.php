@@ -17,6 +17,7 @@ class UniversalController extends Controller
         $tags = Tagsblogs::select('name','id')->get();
         return response()->json(
             [
+                'total' =>count( $tags ),
                 'data' => $tags ,
                 '_benchmark' => microtime(true) -  $this->time_start,
 

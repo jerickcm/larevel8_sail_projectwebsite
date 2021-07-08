@@ -151,8 +151,8 @@ class BlogController extends Controller
     public function show(Request $request, $page, $itemsperpage)
     {
 
-
         $skip = $request->page;
+
         if ($page == 1) {
             $skip = 0;
         } else {
@@ -210,7 +210,7 @@ class BlogController extends Controller
         $blogsCount =  $blogs_count->count();
 
         foreach ($blogs as $key => $value) {
-            $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['created_at'])->format('F d ,Y'): Carbon::parse($value['created_at'])->diffForHumans();
 
             $blogs[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
 
@@ -316,6 +316,7 @@ class BlogController extends Controller
 
             foreach ($blogs as $key => $value) {
                 $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+                // $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])> 86400 ? 'more than 1 day' : '1 day';
                 $blogs[$key]['image'] = $value['image']? url($value['image']):null;
                 $blogs[$key]['path'] = url($value['path']);
                 $b = Blog::find($value['id']);

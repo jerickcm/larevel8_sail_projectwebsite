@@ -28,7 +28,8 @@ class PostController extends Controller
             ->get();
 
         foreach ($posts as $key => $value) {
-            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['created_at'])->format('F d ,Y'): Carbon::parse($value['created_at'])->diffForHumans();
+            // $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $posts[$key]['image'] = ($value['image']!=null) ? url($value['image']) : null;
         }
 
@@ -199,7 +200,8 @@ class PostController extends Controller
         $postsCount =  $posts_count->count();
 
         foreach ($posts as $key => $value) {
-            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['created_at'])->format('F d ,Y'): Carbon::parse($value['created_at'])->diffForHumans();
+            // $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $posts[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
             $posts[$key]['path'] = url($value['path']);
         }
@@ -490,7 +492,8 @@ class PostController extends Controller
 
 
         foreach ($posts as $key => $value) {
-            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['created_at'])->format('F d ,Y'): Carbon::parse($value['created_at'])->diffForHumans();
+            // $posts[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $posts[$key]['image'] = url($value['image']);
         }
 

@@ -199,7 +199,8 @@ class NewsController extends Controller
         $newsCount =  $news_count->count();
 
         foreach ($news as $key => $value) {
-            $news[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
+            $news[$key]['human_date'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['created_at'])->format('F d ,Y'): Carbon::parse($value['created_at'])->diffForHumans();
+            // $news[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $news[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
             $news[$key]['path'] = url($value['path']);
         }

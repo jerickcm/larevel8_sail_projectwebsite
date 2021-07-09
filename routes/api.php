@@ -82,6 +82,9 @@ Route::group(['prefix' => 'blog'], function () {
     Route::delete('/delete/{id}', [BlogController::class, 'delete']);
     Route::post('/update/{id}', [BlogController::class, 'update']);
     Route::get('/{slug}', [BlogController::class, 'index']);
+
+    Route::get('/tags/data', [BlogController::class, 'get_tags']);
+
 });
 
 Route::group(['prefix' => 'news'], function () {

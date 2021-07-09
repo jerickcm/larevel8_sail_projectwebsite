@@ -9,7 +9,6 @@ use App\Models\Blog;
 use App\Models\Post;
 use App\Models\UserDetails;
 use App\Models\Tagsblogs;
-
 class UniversalController extends Controller
 {
     public function tags()

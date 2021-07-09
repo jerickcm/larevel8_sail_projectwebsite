@@ -36,7 +36,7 @@ class UniversalController extends Controller
             $news[$key]['user'] = false;
             $news[$key]['page'] = '/news/';
             $news[$key]['icon'] = 'mdi-newspaper-variant-multiple-outline';
-            $news[$key]['image'] = url($value['image']);
+            $news[$key]['image'] =  ($value['image'])? url($value['image']): null;
         }
 
         $post = Post::select('slug', 'title', 'id', 'image')->get();
@@ -44,7 +44,7 @@ class UniversalController extends Controller
             $post[$key]['user'] = false;
             $post[$key]['page'] = '/post/';
             $post[$key]['icon'] = 'mdi-post-outline';
-            $post[$key]['image'] = url($value['image']);
+            $post[$key]['image'] = ($value['image'])? url($value['image']): null;
         }
 
         $blog = Blog::select('slug', 'title', 'id', 'image')->get();
@@ -52,7 +52,7 @@ class UniversalController extends Controller
             $blog[$key]['user'] = false;
             $blog[$key]['page'] = '/blog/';
             $blog[$key]['icon'] = 'mdi-blogger';
-            $blog[$key]['image'] = url($value['image']);
+            $blog[$key]['image'] =  ($value['image'])? url($value['image']): null;
         }
 
         $userdetails = UserDetails::select('username', 'id', 'profile_picture')->whereNotNull('username')->get();
@@ -63,7 +63,7 @@ class UniversalController extends Controller
             $userdetails[$key]['slug'] = $value['username'];
             $userdetails[$key]['page'] = '/';
             $userdetails[$key]['icon'] = 'mdi-card-account-details-outline';
-            $userdetails[$key]['image'] = filter_var($value['profile_picture'], FILTER_VALIDATE_URL) ? $value['profile_picture'] : url($value['profile_picture']);
+            $userdetails[$key]['image'] = filter_var($value['profile_picture'], FILTER_VALIDATE_URL) ? $value['profile_picture'] : (($value['profile_picture'])? url($value['profile_picture']):null);
         }
 
         //merge

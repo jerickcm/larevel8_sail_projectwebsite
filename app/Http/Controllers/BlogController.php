@@ -676,6 +676,11 @@ class BlogController extends Controller
             $Blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
             $Blogs[$key]['image'] = $value['image'] ? url($value['image']) : '';
             $Blogs[$key]['path'] = $value['path'] ? url($value['path']) : '';
+            $b = Blog::find($value['id']);
+            $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
+            foreach ($r  as $keys =>  $tags) {
+                $Blogs[$key]['tags'][$keys]  = $tags->name;
+            }
         }
 
         if ($BlogsCs > 0 && $BlogsCount == 0) {
@@ -683,12 +688,10 @@ class BlogController extends Controller
         }
 
         return response()->json([
-            'user' => $request->user()->id,
             'data' => $Blogs,
             'total' =>  $BlogsCount,
             'skip' => $skip,
-            'take' => $request->itemsPerPage,
-            '_benchmark' => microtime(true) -  $this->time_start,
+            'take' => $request->itemsPerPage
         ], 200);
     }
 
@@ -785,5 +788,6 @@ class BlogController extends Controller
             'data' => $blogs,
             '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
+
     }
 }

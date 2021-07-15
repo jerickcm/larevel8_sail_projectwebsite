@@ -38,6 +38,7 @@ class BlogController extends Controller
                 // $query[$key]['image1'] =$value['image'];
 
                 $query[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
+
                 // $query[$key]['image'] = url($value['image']);
                 $b = Blog::find($value['id']);
                 $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();

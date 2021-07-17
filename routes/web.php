@@ -24,11 +24,18 @@ Route::get('/', function () {
 });
 
 // timestamp
-Route::get('blogs/sitemap', [BlogController::class, 'sitemap']);
-Route::get('posts/sitemap', [PostController::class, 'sitemap']);
-Route::get('news/sitemap', [NewsController::class, 'sitemap']);
-Route::get('userdetails/sitemap', [UserDetailsController::class, 'sitemap']);
-Route::get('blogs/tag/sitemap', [BlogController::class, 'tags_sitemap']);
 
-Route::get('api/search', [UniversalController::class, 'search']);
+Route::group(['middleware' => 'throttle:50,1'], function () {
+
+    Route::get('blogs/sitemap', [BlogController::class, 'sitemap']);
+    Route::get('posts/sitemap', [PostController::class, 'sitemap']);
+    Route::get('news/sitemap', [NewsController::class, 'sitemap']);
+    Route::get('userdetails/sitemap', [UserDetailsController::class, 'sitemap']);
+    Route::get('blogs/tag/sitemap', [BlogController::class, 'tags_sitemap']);
+
+    Route::get('api/search', [UniversalController::class, 'search']);
+
+});
+
+
 

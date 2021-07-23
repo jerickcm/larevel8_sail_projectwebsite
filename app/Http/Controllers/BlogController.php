@@ -21,19 +21,31 @@ class BlogController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    // public function pageview(Request $request){
 
+        // Blog::where('slug', $request->slug)
+        // ->update([
+        //   'pageview'=> DB::raw('count+1'),['timestamps' => false]
+        // ]);
+
+        // return response()->json([
+        //     'success' => 1,
+        //     '_benchmark' => microtime(true) -  $this->time_start,
+        // ], 200);
+    // }
 
     public function index(Request $request)
     {
 
         if ($request->slug) {
 
-            Blog::where('slug', $request->slug)
-            ->update(['pageview'=> DB::raw('pageview+1')],['timestamps' => false]);
+
 
             $table = 'blogs';
+            Blog::where($table .'.slug', $request->slug)
+                 ->update(['pageview'=> DB::raw('pageview+1'), 'updated_at' => DB::raw('updated_at')]
+            );
 
-            //
             $query = Blog::join('users', 'users.id', '=', $table . '.user_id')
                 ->where($table . '.slug', $request->slug)
                 ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish',$table . '.updated_at', $table . '.created_at', $table . '.image', $table . '.pageview')

@@ -323,7 +323,8 @@ class BlogController extends Controller
                 $page = $page ? $page : 1;
                 $limit = $itemsperpage ? $itemsperpage : 10;
 
-                $blogs = Blog::where('blogs.publish', 2)
+                $blogs = Blog::oldest()
+                    ->where('blogs.publish', 2)
                     ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
                     ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                     ->join('users', 'users.id', '=', 'blogs.user_id')
@@ -340,6 +341,7 @@ class BlogController extends Controller
                     ->join('users', 'users.id', '=', 'blogs.user_id')
                     ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                     ->get();
+
             } else {
 
                 if ($request->sortDesc) {
@@ -351,7 +353,8 @@ class BlogController extends Controller
                 $page = $page  ? $page  : 1;
                 $limit = $itemsperpage ? $itemsperpage : 10;
 
-                $blogs = Blog::where('blogs.publish', 2)
+                $blogs = Blog::oldest()
+                    ->where('blogs.publish', 2)
                     ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
                     ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                     ->join('users', 'users.id', '=', 'blogs.user_id')

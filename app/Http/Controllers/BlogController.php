@@ -20,26 +20,30 @@ class BlogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+
     public function index(Request $request)
     {
 
         if ($request->slug) {
 
+            Blog::where('slug', $request->slug)
+            ->update(['pageview'=> DB::raw('pageview+1')],['timestamps' => false]);
+
             $table = 'blogs';
 
+            //
             $query = Blog::join('users', 'users.id', '=', $table . '.user_id')
                 ->where($table . '.slug', $request->slug)
-                ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish', $table . '.created_at', $table . '.image')
+                ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish',$table . '.updated_at', $table . '.created_at', $table . '.image', $table . '.pageview')
                 ->get();
 
             foreach ($query as $key => $value) {
-                $query[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-                // $query[$key]['image'] = ($value['image']=="" || $value['image']==null) ? null:url($value['image']) ;
-                // $query[$key]['image1'] =$value['image'];
-
+                $query[$key]['created'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['created_at'])->format('F d ,Y'): Carbon::parse($value['created_at'])->diffForHumans();
+                $query[$key]['updated'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['updated_at'])->format('F d ,Y'): Carbon::parse($value['updated_at'])->diffForHumans();
                 $query[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
 
-                // $query[$key]['image'] = url($value['image']);
                 $b = Blog::find($value['id']);
                 $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
 
@@ -64,8 +68,6 @@ class BlogController extends Controller
 
     public function create(Request $request)
     {
-
-
 
         $user = User::findOrFail($request->user()->id);
 
@@ -215,7 +217,7 @@ class BlogController extends Controller
                 ->orderBy($table . '.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->join('user_details', 'user_details.user_id', '=', 'users.id')
-                ->select('user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->select('user_details.username','user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($itemsperpage)
@@ -239,7 +241,7 @@ class BlogController extends Controller
             $blogs = Blog::where('blogs.publish', 2)
                 ->join('user', 'users.id', '=', 'blogs.user_id')
                 ->join('user_details', 'user_details.user_id', '=', 'users.id')
-                ->select('user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->select('user_details.username','user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -362,7 +364,6 @@ class BlogController extends Controller
 
             foreach ($blogs as $key => $value) {
                 $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-                // $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])> 86400 ? 'more than 1 day' : '1 day';
                 $blogs[$key]['image'] = $value['image']? url($value['image']):null;
                 $blogs[$key]['path'] = url($value['path']);
                 $b = Blog::find($value['id']);
@@ -393,9 +394,6 @@ class BlogController extends Controller
             ], 200);
 
         }
-
-        // $blogs = array_reverse($blogs);
-
 
 
     }

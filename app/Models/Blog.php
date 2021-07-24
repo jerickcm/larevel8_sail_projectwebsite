@@ -23,7 +23,7 @@ class Blog extends Model
     ];
 
     protected $fillable = [
-        'ckeditor_log', 'title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text'
+        'ckeditor_log', 'title', 'content', 'user_id', 'name', 'slug', 'video', 'image', 'publish', 'publish_text', 'headline'
     ];
 
     public function tags()

@@ -48,7 +48,7 @@ class BlogController extends Controller
 
             $query = Blog::join('users', 'users.id', '=', $table . '.user_id')
                 ->where($table . '.slug', $request->slug)
-                ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish',$table . '.updated_at', $table . '.created_at', $table . '.image', $table . '.pageview')
+                ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.headline', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish',$table . '.updated_at', $table . '.created_at', $table . '.image', $table . '.pageview')
                 ->get();
 
             foreach ($query as $key => $value) {
@@ -126,11 +126,12 @@ class BlogController extends Controller
         $newBlog = new Blog(
             [
                 'title' => $request->input('title'),
+                'headline' => $request->input('headline'),
                 'content' => $request->input('content'),
                 'slug' => Str::slug($request->input('title') . "-" . time(), '-'),
                 'image' => $FileNameToStore,
                 'publish' =>  $blog->publish,
-                'publish_test' =>  $blog->publish_text,
+                'publish_text' =>  $blog->publish_text,
                 'ckeditor_log' => $request->input('ckeditor_log')
             ]
         );
@@ -229,7 +230,7 @@ class BlogController extends Controller
                 ->orderBy($table . '.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->join('user_details', 'user_details.user_id', '=', 'users.id')
-                ->select('user_details.username','user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->select('user_details.username','user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title','blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($itemsperpage)
@@ -253,7 +254,7 @@ class BlogController extends Controller
             $blogs = Blog::where('blogs.publish', 2)
                 ->join('user', 'users.id', '=', 'blogs.user_id')
                 ->join('user_details', 'user_details.user_id', '=', 'users.id')
-                ->select('user_details.username','user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->select('user_details.username','user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title','blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -410,7 +411,6 @@ class BlogController extends Controller
 
         }
 
-
     }
 
     /**
@@ -470,6 +470,7 @@ class BlogController extends Controller
         $Blog = Blog::findOrFail($id);
 
         $Blog->title = $request->title;
+        $Blog->headline = $request->headline;
         $Blog->content = $request->content;
         $Blog->publish = $request->publish;
 
@@ -626,7 +627,7 @@ class BlogController extends Controller
                     }
                  )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
+                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
@@ -665,7 +666,7 @@ class BlogController extends Controller
                     }
                 )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
+                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title','blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)

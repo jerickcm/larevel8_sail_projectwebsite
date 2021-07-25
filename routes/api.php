@@ -53,7 +53,7 @@ Route::post('/ckeditor', [PostController::class, 'ckeditor']);
 
 
 
-Route::group(['prefix' => 'post','middleware' => 'throttle:50,1'], function () {
+Route::group(['prefix' => 'post','middleware' => 'throttle:500,1'], function () {
 
     Route::get('/item/{items}', [PostController::class, 'random']);
     Route::get('/item', [PostController::class, 'random_item']);
@@ -74,9 +74,12 @@ Route::group(['prefix' => 'post','middleware' => 'throttle:50,1'], function () {
 });
 
 
-Route::group(['prefix' => 'blog','middleware' => 'throttle:50,1'], function () {
+Route::group(['prefix' => 'blog','middleware' => 'throttle:500,1'], function () {
 
     Route::get('/item/{items}', [BlogController::class, 'random']);
+    Route::get('/index/{items}', [BlogController::class, 'random_index']);
+    Route::get('/latest/{items}', [BlogController::class, 'latest_index']);
+
     Route::get('/item', [BlogController::class, 'random_item']);
     Route::get('/page/{page}/item/{perpage}/tags/{tag}', [BlogController::class, 'show_v2']);
     Route::get('/sitemap', [BlogController::class, 'sitemap']);
@@ -92,7 +95,7 @@ Route::group(['prefix' => 'blog','middleware' => 'throttle:50,1'], function () {
 
 });
 
-Route::group(['prefix' => 'news','middleware' => 'throttle:50,1'], function () {
+Route::group(['prefix' => 'news','middleware' => 'throttle:500,1'], function () {
 
     Route::get('/item/{items}', [NewsController::class, 'random']);
     Route::get('/item', [NewsController::class, 'random_item']);
@@ -105,7 +108,7 @@ Route::group(['prefix' => 'news','middleware' => 'throttle:50,1'], function () {
 });
 
 
-Route::group(['prefix' => 'quotes','middleware' => 'throttle:50,1'], function () {
+Route::group(['prefix' => 'quotes','middleware' => 'throttle:500,1'], function () {
 
     Route::get('/item', [QuotesController::class, 'random_item']);
     Route::get('/page/{page}/item/{perpage}', [QuotesController::class, 'show']);
@@ -117,7 +120,7 @@ Route::group(['prefix' => 'quotes','middleware' => 'throttle:50,1'], function ()
 });
 
 
-Route::group(['prefix' => 'er','middleware' => 'throttle:50,1'], function () {
+Route::group(['prefix' => 'er','middleware' => 'throttle:500,1'], function () {
 
     Route::get('/page/{page}/item/{perpage}/date/{date}', [EarthRemindersController::class, 'show']);
     Route::get('/page/{page}/item/{perpage}/month/{month}', [EarthRemindersController::class, 'show_month']);
@@ -129,7 +132,7 @@ Route::group(['prefix' => 'er','middleware' => 'throttle:50,1'], function () {
 });
 
 
-Route::group(['prefix' => 'user_details','middleware' => 'throttle:50,1'], function () {
+Route::group(['prefix' => 'user_details','middleware' => 'throttle:500,1'], function () {
 
     Route::get('/', [UserDetailsController::class, 'show']);
     Route::get('/{email}', [UserDetailsController::class, 'show']);

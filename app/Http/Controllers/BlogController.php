@@ -795,6 +795,44 @@ class BlogController extends Controller
             '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
     }
+    public function random_index($items)
+    {
+
+        $blogs = Blog::inRandomOrder()
+        ->where('blogs.publish', 2)
+        ->join('users', 'users.id', '=', 'blogs.user_id')
+        ->join('user_details', 'user_details.user_id', '=', 'users.id')
+        ->select( 'blogs.id', 'blogs.title', 'blogs.slug')
+        ->limit($items)
+        ->get();
+
+
+        return response()->json([
+            'data' => $blogs,
+
+            '_benchmark' => microtime(true) -  $this->time_start,
+        ], 200);
+
+    }
+
+    public function latest_index($items)
+    {
+
+        $blogs = Blog::where('blogs.publish', 2)
+        ->join('users', 'users.id', '=', 'blogs.user_id')
+        ->join('user_details', 'user_details.user_id', '=', 'users.id')
+        ->select( 'blogs.id', 'blogs.title', 'blogs.slug')
+        ->limit($items)
+        ->get();
+
+
+        return response()->json([
+            'data' => $blogs,
+
+            '_benchmark' => microtime(true) -  $this->time_start,
+        ], 200);
+
+    }
 
     public function get_tags(Request $request)
     {

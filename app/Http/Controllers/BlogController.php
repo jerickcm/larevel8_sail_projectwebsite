@@ -12,49 +12,35 @@ use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use App\Models\Tagsblogs_blogs;
 use Illuminate\Support\Facades\DB;
+
 class BlogController extends Controller
 {
-    // public'_benchmark' => microtime(true) -  $this->time_start,
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
 
-    // public function pageview(Request $request){
-
-        // Blog::where('slug', $request->slug)
-        // ->update([
-        //   'pageview'=> DB::raw('count+1'),['timestamps' => false]
-        // ]);
-
-        // return response()->json([
-        //     'success' => 1,
-        //     '_benchmark' => microtime(true) -  $this->time_start,
-        // ], 200);
-    // }
-
     public function index(Request $request)
     {
 
         if ($request->slug) {
 
-
-
             $table = 'blogs';
-            Blog::where($table .'.slug', $request->slug)
-                 ->update(['pageview'=> DB::raw('pageview+1'), 'updated_at' => DB::raw('updated_at')]
-            );
+            Blog::where($table . '.slug', $request->slug)
+                ->update(
+                    ['pageview' => DB::raw('pageview+1'), 'updated_at' => DB::raw('updated_at')]
+                );
 
             $query = Blog::join('users', 'users.id', '=', $table . '.user_id')
                 ->where($table . '.slug', $request->slug)
-                ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.headline', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish',$table . '.updated_at', $table . '.created_at', $table . '.image', $table . '.pageview')
+                ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.headline', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish', $table . '.updated_at', $table . '.created_at', $table . '.image', $table . '.pageview')
                 ->get();
 
             foreach ($query as $key => $value) {
-                $query[$key]['created'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['created_at'])->format('F d ,Y'): Carbon::parse($value['created_at'])->diffForHumans();
-                $query[$key]['updated'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['updated_at'])->format('F d ,Y'): Carbon::parse($value['updated_at'])->diffForHumans();
-                $query[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
+                $query[$key]['created'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['created_at'])->format('F d ,Y') : Carbon::parse($value['created_at'])->diffForHumans();
+                $query[$key]['updated'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['updated_at'])->format('F d ,Y') : Carbon::parse($value['updated_at'])->diffForHumans();
+                $query[$key]['image'] = $value['image'] != null ? url($value['image']) : null;
 
                 $b = Blog::find($value['id']);
                 $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
@@ -140,8 +126,6 @@ class BlogController extends Controller
 
         $pieces = explode(",", $request->input('tags'));
 
-        $code = '';
-
         foreach ($pieces as $key => $value) {
             $code = $value;
 
@@ -177,9 +161,6 @@ class BlogController extends Controller
                 ]);
             }
         }
-
-
-
 
         return response()->json([
             'save' =>  $newBlog,
@@ -230,7 +211,7 @@ class BlogController extends Controller
                 ->orderBy($table . '.created_at', 'desc')
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->join('user_details', 'user_details.user_id', '=', 'users.id')
-                ->select('user_details.username','user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title','blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->select('user_details.username', 'user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.headline', 'blogs.pageview', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.updated_at')
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($itemsperpage)
@@ -254,7 +235,7 @@ class BlogController extends Controller
             $blogs = Blog::where('blogs.publish', 2)
                 ->join('user', 'users.id', '=', 'blogs.user_id')
                 ->join('user_details', 'user_details.user_id', '=', 'users.id')
-                ->select('user_details.username','user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title','blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                ->select('user_details.username', 'user_details.profile_picture', 'users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.headline', 'blogs.pageview', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.updated_at')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -271,9 +252,10 @@ class BlogController extends Controller
         $blogsCount =  $blogs_count->count();
 
         foreach ($blogs as $key => $value) {
-            $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffInSeconds() >86400 ?Carbon::parse($value['created_at'])->format('F d ,Y'): Carbon::parse($value['created_at'])->diffForHumans();
-
-            $blogs[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
+            $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['created_at'])->format('F d ,Y') : Carbon::parse($value['created_at'])->diffForHumans();
+            $blogs[$key]['created'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['created_at'])->format('F d ,Y') : Carbon::parse($value['created_at'])->diffForHumans();
+            $blogs[$key]['updated'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['updated_at'])->format('F d ,Y') : Carbon::parse($value['updated_at'])->diffForHumans();
+            $blogs[$key]['image'] = $value['image'] != null ? url($value['image']) : null;
 
             $blogs[$key]['path'] = url($value['path']);
 
@@ -310,7 +292,7 @@ class BlogController extends Controller
     {
 
         $Tag = Tagsblogs::where('name', $tagname)->first();
-        if( $Tag ){
+        if ($Tag) {
             $skip = $request->page;
             if ($page == 1) {
                 $skip = 0;
@@ -329,7 +311,7 @@ class BlogController extends Controller
                     ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
                     ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                     ->join('users', 'users.id', '=', 'blogs.user_id')
-                    ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                    ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.pageview', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.updated_at')
                     ->orderBy($table . '.created_at', 'desc')
                     ->limit($limit)
                     ->offset(($page - 1) * $limit)
@@ -342,7 +324,6 @@ class BlogController extends Controller
                     ->join('users', 'users.id', '=', 'blogs.user_id')
                     ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                     ->get();
-
             } else {
 
                 if ($request->sortDesc) {
@@ -359,7 +340,7 @@ class BlogController extends Controller
                     ->where('tagsblogs_blogs.tagsblogs_id',   $Tag->id)
                     ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                     ->join('users', 'users.id', '=', 'blogs.user_id')
-                    ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at')
+                    ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.pageview', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.updated_at')
                     ->orderBy($request->sortBy, $order)
                     ->limit($limit)
                     ->offset(($page - 1) * $limit)
@@ -380,8 +361,10 @@ class BlogController extends Controller
 
             foreach ($blogs as $key => $value) {
                 $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-                $blogs[$key]['image'] = $value['image']? url($value['image']):null;
+                $blogs[$key]['image'] = $value['image'] ? url($value['image']) : null;
                 $blogs[$key]['path'] = url($value['path']);
+                $blogs[$key]['created'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['created_at'])->format('F d ,Y') : Carbon::parse($value['created_at'])->diffForHumans();
+                $blogs[$key]['updated'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['updated_at'])->format('F d ,Y') : Carbon::parse($value['updated_at'])->diffForHumans();
                 $b = Blog::find($value['id']);
                 $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
                 foreach ($r  as $keys =>  $tags) {
@@ -401,16 +384,13 @@ class BlogController extends Controller
                 'take' => $itemsperpage,
                 '_benchmark' => microtime(true) -  $this->time_start,
             ], 200);
-
-        }else{
+        } else {
 
             return response()->json([
-                'data' =>[],
+                'data' => [],
                 '_benchmark' => microtime(true) -  $this->time_start,
             ], 200);
-
         }
-
     }
 
     /**
@@ -617,15 +597,16 @@ class BlogController extends Controller
 
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
-            $Blogs = Blog::where('user_id',$request->user()->id)
-                    ->where(function($q) use ($request){
+            $Blogs = Blog::where('user_id', $request->user()->id)
+                ->where(
+                    function ($q) use ($request) {
                         return $q
-                        ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
-                         ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                         ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                         ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
+                            ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
                     }
-                 )
+                )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
                 ->limit($limit)
@@ -633,18 +614,18 @@ class BlogController extends Controller
                 ->take($request->itemsPerPage)
                 ->get();
 
-            $Blogs_count = Blog::where('user_id',$request->user()->id)
-                    ->where(function($q) use ($request){
+            $Blogs_count = Blog::where('user_id', $request->user()->id)
+                ->where(
+                    function ($q) use ($request) {
                         return $q
-                        ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
+                            ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
                     }
                 )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
                 ->get();
-
         } else {
 
             if ($request->sortDesc) {
@@ -656,30 +637,32 @@ class BlogController extends Controller
             $page = $request->has('page') ? $request->get('page') : 1;
             $limit = $request->has('itemsPerPage') ? $request->get('itemsPerPage') : 10;
 
-            $Blogs = Blog::where('user_id',$request->user()->id)
-                    ->where(function($q) use ($request){
+            $Blogs = Blog::where('user_id', $request->user()->id)
+                ->where(
+                    function ($q) use ($request) {
                         return $q
-                        ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
+                            ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
                     }
                 )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
-                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title','blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
+                ->select('users.name', 'users.email', 'blogs.id', 'blogs.title', 'blogs.headline', 'blogs.content', 'blogs.slug', 'blogs.id', 'blogs.publish', 'blogs.image', 'blogs.created_at', 'blogs.ckeditor_log')
                 ->orderBy($request->sortBy, $order)
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->take($request->itemsPerPage)
                 ->get();
 
-            $Blogs_count = Blog::where('user_id',$request->user()->id)
-                    ->where(function($q) use ($request){
+            $Blogs_count = Blog::where('user_id', $request->user()->id)
+                ->where(
+                    function ($q) use ($request) {
                         return $q
-                        ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
-                        ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
+                            ->orWhere([['blogs.title', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['users.name', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['slug', 'LIKE', "%" . $request->search . "%"]])
+                            ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]]);
                     }
                 )
                 ->join('users', 'users.id', '=', 'blogs.user_id')
@@ -748,7 +731,7 @@ class BlogController extends Controller
 
         foreach ($blogs as $key => $value) {
             $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $blogs[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
+            $blogs[$key]['image'] = $value['image'] != null ? url($value['image']) : null;
             $blogs[$key]['path'] = url($value['path']);
             $b = Blog::find($value['id']);
             $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
@@ -779,7 +762,7 @@ class BlogController extends Controller
 
         foreach ($blogs as $key => $value) {
             $blogs[$key]['human_date'] = Carbon::parse($value['created_at'])->diffForHumans();
-            $blogs[$key]['image'] = $value['image']!=null? url($value['image']) :null ;
+            $blogs[$key]['image'] = $value['image'] != null ? url($value['image']) : null;
             $blogs[$key]['path'] = url($value['path']);
             $b = Blog::find($value['id']);
             $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
@@ -799,12 +782,12 @@ class BlogController extends Controller
     {
 
         $blogs = Blog::inRandomOrder()
-        ->where('blogs.publish', 2)
-        ->join('users', 'users.id', '=', 'blogs.user_id')
-        ->join('user_details', 'user_details.user_id', '=', 'users.id')
-        ->select( 'blogs.id', 'blogs.title', 'blogs.slug')
-        ->limit($items)
-        ->get();
+            ->where('blogs.publish', 2)
+            ->join('users', 'users.id', '=', 'blogs.user_id')
+            ->join('user_details', 'user_details.user_id', '=', 'users.id')
+            ->select('blogs.id', 'blogs.title', 'blogs.slug')
+            ->limit($items)
+            ->get();
 
 
         return response()->json([
@@ -812,18 +795,17 @@ class BlogController extends Controller
 
             '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
-
     }
 
     public function latest_index($items)
     {
 
         $blogs = Blog::where('blogs.publish', 2)
-        ->join('users', 'users.id', '=', 'blogs.user_id')
-        ->join('user_details', 'user_details.user_id', '=', 'users.id')
-        ->select( 'blogs.id', 'blogs.title', 'blogs.slug')
-        ->limit($items)
-        ->get();
+            ->join('users', 'users.id', '=', 'blogs.user_id')
+            ->join('user_details', 'user_details.user_id', '=', 'users.id')
+            ->select('blogs.id', 'blogs.title', 'blogs.slug')
+            ->limit($items)
+            ->get();
 
 
         return response()->json([
@@ -831,7 +813,6 @@ class BlogController extends Controller
 
             '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
-
     }
 
     public function get_tags(Request $request)
@@ -843,6 +824,5 @@ class BlogController extends Controller
             'data' => $blogs,
             '_benchmark' => microtime(true) -  $this->time_start
         ], 200);
-
     }
 }

@@ -65,6 +65,14 @@ class UniversalController extends Controller
             $userdetails[$key]['image'] = filter_var($value['profile_picture'], FILTER_VALIDATE_URL) ? $value['profile_picture'] : (($value['profile_picture'])? url($value['profile_picture']):null);
         }
 
+        $tags = Tagsblogs::select('name','id')->get();
+        foreach ($tags  as $key => $value) {
+            $tags[$key]['user'] = false;
+            $tags[$key]['tag'] = true;
+            $tags[$key]['slug'] = $value['name'];
+            $tags[$key]['title'] = $value['name'];
+            $tags[$key]['page'] = '/blog/tags/';
+        }
         //merge
 
         foreach ($news as $newssingle) {
@@ -79,8 +87,11 @@ class UniversalController extends Controller
             $userdetails->add($blogsingle);
         }
 
+        foreach ($userdetails as $userdetailssingle) {
+            $tags->add($userdetailssingle);
+        }
 
-        $results = $userdetails;
+        $results = $tags;
 
         return response()->json(
             [

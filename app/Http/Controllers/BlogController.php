@@ -324,6 +324,7 @@ class BlogController extends Controller
                     ->join('users', 'users.id', '=', 'blogs.user_id')
                     ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                     ->get();
+
             } else {
 
                 if ($request->sortDesc) {
@@ -352,8 +353,8 @@ class BlogController extends Controller
                     ->join('tagsblogs_blogs', 'tagsblogs_blogs.blog_id', '=', 'blogs.id')
                     ->join('users', 'users.id', '=', 'blogs.user_id')
                     ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
-
                     ->get();
+                    
             }
 
             $blogsCs =   $blogs->count();

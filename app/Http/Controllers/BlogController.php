@@ -27,6 +27,7 @@ class BlogController extends Controller
         if ($request->slug) {
 
             $table = 'blogs';
+
             Blog::where($table . '.slug', $request->slug)
                 ->update(
                     ['pageview' => DB::raw('pageview+1'), 'updated_at' => DB::raw('updated_at')]
@@ -37,7 +38,11 @@ class BlogController extends Controller
                 ->select('users.name', 'users.email', $table . '.id', $table . '.title', $table . '.headline', $table . '.content', $table . '.slug', $table . '.id', $table . '.publish', $table . '.updated_at', $table . '.created_at', $table . '.image', $table . '.pageview')
                 ->get();
 
+            $blog_key = 0;
+            $related_blogs = [];
+
             foreach ($query as $key => $value) {
+
                 $query[$key]['created'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['created_at'])->format('F d ,Y') : Carbon::parse($value['created_at'])->diffForHumans();
                 $query[$key]['updated'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['updated_at'])->format('F d ,Y') : Carbon::parse($value['updated_at'])->diffForHumans();
                 $query[$key]['image'] = $value['image'] != null ? url($value['image']) : null;
@@ -46,9 +51,17 @@ class BlogController extends Controller
                 $r = $b->tagsblogs()->where('tagsblogs_blogs.deleted_at', null)->get();
 
                 foreach ($r  as $keys =>  $tags) {
+
                     $query[$key]['tags'][$keys]  = $tags->name;
+                    $Tagblogs = Tagsblogs::where('name', $tags->name)->first();
+                    foreach ($Tagblogs->blogs as $tkeys => $tvalues) {
+                        $related_blogs[$blog_key]['title'] = $tvalues['title'];
+                        $related_blogs[$blog_key]['slug'] =  $tvalues['slug'];
+                        $blog_key = $blog_key + 1;
+                    }
                 }
             }
+            $query[$key]['related_blogs']  = $related_blogs;
         }
 
         return response()->json([
@@ -293,6 +306,7 @@ class BlogController extends Controller
 
         $Tag = Tagsblogs::where('name', $tagname)->first();
         if ($Tag) {
+
             $skip = $request->page;
             if ($page == 1) {
                 $skip = 0;
@@ -324,7 +338,6 @@ class BlogController extends Controller
                     ->join('users', 'users.id', '=', 'blogs.user_id')
                     ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                     ->get();
-
             } else {
 
                 if ($request->sortDesc) {
@@ -354,7 +367,6 @@ class BlogController extends Controller
                     ->join('users', 'users.id', '=', 'blogs.user_id')
                     ->orWhere([['publish_text', 'LIKE', "%" . $request->search . "%"]])
                     ->get();
-                    
             }
 
             $blogsCs =   $blogs->count();

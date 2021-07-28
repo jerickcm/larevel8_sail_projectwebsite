@@ -20,8 +20,7 @@ class PostController extends Controller
 
     public function index($slug)
     {
-
-
+        
         $posts = Post::join('users', 'users.id', '=', 'posts.user_id')
             ->where('posts.slug', $slug)
             ->select('users.name', 'users.email', 'posts.id', 'posts.title', 'posts.content', 'posts.slug', 'posts.id', 'posts.publish', 'posts.created_at', 'posts.image')

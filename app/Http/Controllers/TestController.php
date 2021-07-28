@@ -37,6 +37,7 @@ class TestController extends Controller
             'data' => $Blogs,
             '_benchmark' => microtime(true) -  $this->time_start,
         ], 200);
+        
     }
     public function tag_to_blog()
     {

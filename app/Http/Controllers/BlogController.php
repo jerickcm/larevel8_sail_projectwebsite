@@ -59,18 +59,22 @@ class BlogController extends Controller
                     foreach ($Tagblogs->blogs as $tkeys => $tvalues) {
 
                         if ($tvalues['publish'] == 1) {
+
                         } elseif ($query[$key]['id'] == $tvalues['id']) {
+
                         } else {
 
                             if (in_array($tvalues['id'], $id, TRUE)){
 
 
                             }else{
+
                                 $id[$blog_key]['id'] = $tvalues['id'];
                                 $related_blogs[$blog_key]['id'] = $tvalues['id'];
                                 $related_blogs[$blog_key]['title'] = $tvalues['title'];
                                 $related_blogs[$blog_key]['slug'] =  $tvalues['slug'];
                                 $blog_key = $blog_key + 1;
+                                
                             }
 
                         }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\QuotesController;
 use App\Http\Controllers\Admin\EarthRemindersController;
 use App\Http\Controllers\Admin\UserDetailsController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\TagsController;
 
 Route::group(['prefix' => 'post'], function () {
     Route::post('/datatable', [PostController::class, 'datatable']);
@@ -90,4 +91,10 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('/{slug}', [UsersController::class, 'index']);
 
     Route::post('/datatable_logs', [UsersController::class, 'datatable_logs']);
+});
+
+Route::group(['prefix' => 'tags'], function () {
+    Route::post('/update/', [TagsController::class, 'update']);
+    Route::post('/datatable', [TagsController::class, 'datatable']);
+    Route::post('/delete', [TagsController::class, 'destroy']);
 });

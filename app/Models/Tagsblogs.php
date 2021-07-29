@@ -16,7 +16,6 @@ class Tagsblogs extends Model
     protected $table = "tagsblogs";
     public $timestamps = true;
 
-
     public function blogs()
     {
         return $this->belongsToMany(Blog::class, 'tagsblogs_blogs',  'tagsblogs_id', 'blog_id');

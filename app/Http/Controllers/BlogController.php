@@ -40,7 +40,7 @@ class BlogController extends Controller
 
             $blog_key = 0;
             $related_blogs = [];
-
+            $id = [];
             foreach ($query as $key => $value) {
 
                 $query[$key]['created'] = Carbon::parse($value['created_at'])->diffInSeconds() > 86400 ? Carbon::parse($value['created_at'])->format('F d ,Y') : Carbon::parse($value['created_at'])->diffForHumans();
@@ -53,11 +53,27 @@ class BlogController extends Controller
                 foreach ($r  as $keys =>  $tags) {
 
                     $query[$key]['tags'][$keys]  = $tags->name;
+
                     $Tagblogs = Tagsblogs::where('name', $tags->name)->first();
+
                     foreach ($Tagblogs->blogs as $tkeys => $tvalues) {
-                        $related_blogs[$blog_key]['title'] = $tvalues['title'];
-                        $related_blogs[$blog_key]['slug'] =  $tvalues['slug'];
-                        $blog_key = $blog_key + 1;
+
+                        if ($tvalues['publish'] == 1) {
+                        } elseif ($query[$key]['id'] == $tvalues['id']) {
+                        } else {
+
+                            if (in_array($tvalues['id'], $id, TRUE)){
+
+
+                            }else{
+                                $id[$blog_key]['id'] = $tvalues['id'];
+                                $related_blogs[$blog_key]['id'] = $tvalues['id'];
+                                $related_blogs[$blog_key]['title'] = $tvalues['title'];
+                                $related_blogs[$blog_key]['slug'] =  $tvalues['slug'];
+                                $blog_key = $blog_key + 1;
+                            }
+
+                        }
                     }
                 }
             }
